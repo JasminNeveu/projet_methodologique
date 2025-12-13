@@ -1,0 +1,81 @@
+
+\documentclass[a4paper,11pt]{article}
+\usepackage{graphicx}  
+\usepackage[utf8]{inputenc}  % UTF-8 encoding
+\usepackage[T1]{fontenc}     % Better font encoding
+\usepackage[french]{babel}   % Typographie française
+\usepackage{lipsum}          % For dummy text
+\usepackage{amsfonts}
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+\usepackage{caption}
+\captionsetup[figure]{justification=centering}
+
+\title{Notes d'avancement du projet méthodologique de deuxième année}
+\author{Jasmin NEVEU \\ Référent : Javier GONZALEZ-DELGADO}
+\date{\today}
+
+
+\begin{document}
+\maketitle
+
+\noindent
+Lien GitHub : \href{https://github.com/ton-user/ton-repo}{https://github.com/ton-user/ton-repo}\\
+Article de recherche :
+\href{https://arxiv.org/pdf/2012.02936}{Selective Inference for Hierarchical Clustering~$\rightarrow$}
+
+
+\section{Introduction}
+
+Ce document a pour objectif de suivre l'avancement de mon projet méthodologique de deuxième année à l'ENSAI. Il contient des notes, des observations et les étapes réalisées tout au long de la progression du projet. 
+
+%TODO: détailler présentation du papier
+
+\section{Compréhension du problème}
+
+Les méthodes de clustering ne disposent pas de garanties théoriques sur les sorties qu'elles génèrent. Pour s'assurer que les résultats soit cohérents aux attentes, il est très fréquent de réaliser des tests d'égalités des moyennes parmi les différents clusters. Cependant un simple z-test ou test de Wald mène à une inflation de l'erreur de type I. En effet, le choix du test se fait après avoir observé les données (après le passage de l'algorithme de clusterin
+g). Ce problème est similaire à celui de l'\textit{overfitting} pour les algorithmes d'apprentissage supervisé. Si les données sont à la fois utilitées pour l'entrainement et l'évaluation, le modèle risque de ne pas généraliser et de trop \textit{coller} aux données.
+Ici, faire un test sans prendre en compte l'aléa apporté par les algorithmes de clustering mène à une non maitrise du risque de type I.
+
+\newpage
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|l|}
+    \hline
+    Inférence classique & Inférence sélective \\
+    \hline
+    1. Hypothèse sur la loi de $X$        & 1. Hypothèse sur la loi de $X$         \\
+    2. Choix de la question $Q$           & 2. Observation des données             \\
+    3. Tests en utilisant $X \rightarrow H_0$
+                                         & 3. Choix de la question $Q(X)$         \\
+                                          & 4. Tests en utilisant $X \rightarrow H_0(X)$ \\
+    \hline
+  \end{tabular}
+  \caption{Type d'inférence}
+  \label{tab:def_inference}
+\end{table}
+
+
+\section{Importance de l'inférence sélective}
+
+% TODO: Montrer que la pvalue suit une loi uniforme sur [0,1]
+Pour montrer l'importance de réaliser des tests adaptés dans le cadre de l'inférence selective, j'ai simulé des tirages de variables aléatoires gaussiens sur lesquelles j'ai appliqué des méthodes de clustering (\textit{CAH} et \textit{kmeans}), j'ai ensuite réalisé des tests d'égalités des moyennes (\textit{z-test}) de clusters choisi de manière aléatoires.
+Si le test controle correctement l'erreur de type I, alors la \textit{pvalue} du test doit suivre une loi uniforme sur $[0,1]$. En effet,...
+
+
+
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.45\textwidth]{images/cah_pvalues}%
+  \hfill
+  \includegraphics[width=0.45\textwidth]{images/kmeans_df.png}
+  \caption{Fonction de répartition des p-values obtenues par tests d'égalité des moyennes des clusters après un algorithme de \textit{CAH} et de \textit{kmeans}. Les fonctions de répartitions ont été calculées à partir de $M = 2000$ simulations d'une loi normale multivariée avec $\mu = 0_{n\times p}$ et $\Sigma = 0.98^{|i-j|}$ pour $1 \leq i,j \leq n \times p$. J'ai fixé $n = 100$ et $p = 5$.}
+  \label{fig:deux_images}
+
+\end{figure}
+
+On voit clairement qu'ici l'erreur de type I n'est pas controlé i.e $\mathbb{P}(... \leq ...) >\alpha$
+
+\end{document}

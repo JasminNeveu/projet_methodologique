@@ -1,0 +1,20 @@
+[project]
+name = "selective-inference"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Jasmin Neveu", email = "neveu.jasmin5@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "matplotlib>=3.10.8",
+    "numpy>=2.3.5",
+    "pathlib>=1.0.1",
+    "scikit-learn>=1.8.0",
+    "statsmodels>=0.14.6",
+]
+
+[build-system]
+requires = ["uv_build>=0.9.11,<0.10.0"]
+build-backend = "uv_build"
