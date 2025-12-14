@@ -1,8 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.cluster import AgglomerativeClustering, KMeans
+from sklearn.linear_model import Lasso, lasso_path
 from statsmodels.stats.weightstats import ztest
 from pathlib import Path
+from scipy.stats import t
 
 images_path = Path("images/")
 images_path.mkdir(parents=True, exist_ok=True)
@@ -89,5 +91,52 @@ def pvalues_kmeans(n_clusters=3):
 
 
 # pvalues_kmeans(n_clusters=3)
-pvalues_kmeans()
+
+
 # TODO: faire aussi avec la regression Lasso
+
+
+def generate_data_lasso(n: int):
+    p = 8
+    i = np.arange(p)
+    j = np.arange(p)
+    R = 0.5 ** np.abs(i[:, None] - j[None, :])
+    X = np.random.multivariate_normal(np.zeros(p), R, size=n)
+
+    beta = np.array([3, 1.5, 0, 0, 2, 0, 0, 0])
+    y = X @ beta + np.random.randn(n)
+
+    return y, X
+
+
+pvalues = np.empty(M)
+j = 2  # vrai beta_j = 0
+
+for i in range(M):
+    y, X = generate_data_lasso(n=100)
+    model = Lasso(alpha=0.1).fit(X, y)
+
+    if np.abs(model.coef_[j]) < 1e-6:
+        continue  # j non sélectionnée
+
+    y_hat = model.predict(X)
+    n, p = X.shape
+    sigma2_hat = np.sum((y - y_hat) ** 2) / (n - p - 1)
+
+    X_design = np.c_[np.ones(n), X]
+    XtX_inv = np.linalg.inv(X_design.T @ X_design)
+    se_j = np.sqrt(sigma2_hat * XtX_inv[j + 1, j + 1])
+
+    t_j = model.coef_[j] / se_j
+    df = n - p - 1
+    pval = 2 * (1 - t.cdf(abs(t_j), df))
+    pvalues[i] = pval
+
+y = np.arange(1, len(pvalues) + 1) / len(pvalues)
+plt.plot(np.sort(pvalues), y)
+plt.plot(y, y, "--", color="gray")
+plt.title("Regression Lasso", loc="left")
+plt.xlabel("p-value")
+plt.grid()
+
+plt.savefig(images_path / "pvalues_lasso.png", format="png")

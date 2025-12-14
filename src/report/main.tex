@@ -131,12 +131,15 @@ Une méthode pour savoir si un test est bien construit est donc d'observer que l
 
 \section{Importance de l'inférence sélective}
 
+\subsection{Clustering}
+
 Pour montrer l'importance de réaliser des tests adaptés dans le cadre de l'inférence selective, j'ai simulé des tirages de variables aléatoires gaussiens sur lesquelles j'ai appliqué des méthodes de clustering (\textit{CAH} et \textit{kmeans}), j'ai ensuite réalisé des tests d'égalité des moyennes (\textit{z-test}) de clusters choisis de manière aléatoires.
 Si le test d’égalité des moyennes contrôlait correctement l’erreur de type I dans ce cadre, alors la \textit{p-valeur} devrait suivre une loi uniforme sur $[0,1]$ lorsque l'hypothèse nulle est vrai. Or, en pratique, la procédure “clustering + test post-sélection” conduit à une déviation de cette loi uniforme, ce qui montre la non-maîtrise du risque de type I.
 
+
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.45\textwidth]{images/cah_pvalues}%
+  \includegraphics[width=0.45\textwidth]{images/cah_pvalues.png}%
   \hfill
   \includegraphics[width=0.45\textwidth]{images/kmeans_df.png}
   \caption{Fonction de répartition des \textit{p-valeur} obtenues par tests d'égalité des moyennes des clusters après un algorithme de \textit{CAH} et de \textit{kmeans}. Les fonctions de répartitions ont été calculées à partir de $M = 2000$ simulations d'une loi normale multivariée avec $\mu = 0_{n\times p}$ et $\Sigma = 0.98^{|i-j|}$ pour $1 \leq i,j \leq n \times p$. J'ai fixé $n = 100$ et $p = 5$.}
@@ -144,5 +147,45 @@ Si le test d’égalité des moyennes contrôlait correctement l’erreur de typ
 
 \end{figure}
 
+
+
+\subsection{Régression Lasso}
+
+
+Pour savoir si une variable explicative permet d'expliquer une varibale cible au travers d'un modèle de regression linéaire, on effectue un test de significativité du coefficient à associé à cette variable.
+On test s'il est significativement différent de 0.
+Dans le cadre d'une regression linéaire, on se situe bien dans le cadre de l'inférence classique.
+En revanche, la régression Lasso, la pénalisation $L_1$ permet de selectionner des variables.
+Ainsi tout les coefficients ne sont pas à tester, seuls ceux qui n'ont pas été selectionner le sont.
+On ne peut donc pas définir par avance quels coefficients tester car il dépendent de cette regression Lasso
+On se retrouve donc bien dans une situation d'inférence sélective.
+Lors du cours de \textit{Programmation Algotithmique} encadré par Brian Staber, nous avons pu coder un algorithme de descente proximale.
+On a simulé un jeu de donnée de la sorte:
+
+Soient $x_1, \dots, x_8$ des variables aléatoires gaussiennes centrées, de matrice de corrélation $(R_{ij})_{1 \le i,j \le 8}$ définie par
+$R_{ij} = 0.5^{\lvert i-j\rvert}, $ pour $ 1 \le i,j \le 8.$
+La réponse est modélisée par $y = \beta^\top x + 3\varepsilon, $
+où $\varepsilon \sim \mathcal{N}(0,1)$ et
+$\beta = (3,\; 1.5,\; 0,\; 0,\; 2,\; 0,\; 0,\; 0)^\top.$
+On génère un échantillon de taille $n = 100$.
+On obtient le chemin de régularisation suivant
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width = 0.7\textwidth]{images/lasso_path.png}
+  \caption{Chemin de régularisation des coefficients obtenus par algorithme Lasso. On remarque que les certains coefficients sont nuls et que 3 autres s'approchent des valeurs théoriques (3,1.5,2).}
+  \label{fig:lasso_path}
+\end{figure}
+
+J'ai chosi de tester la significativité du 3eme coefficient, qui en théorie est nul (j'aurais très bien pu choisir le 4, 6,7 ou 8eme).
+Si $\lvert \hat{b_3} \rvert > 1e^{-6}$ alors j'estime que la 3eme variable est selectionnée, dans ce cas je calcul la \textit{p-valeur} associée au test de significativité. 
+On obtient la fonction de répartition suivante de la \textit{p-valeur}.
+\clearpage
+\begin{figure}[h]
+  \centering
+  \includegraphics[width = 0.7\textwidth]{images/pvalues_lasso.png}
+  \caption{Fonction de répartition des \textit{p-valeur} obenutes par tests de significativité du 2eme coefficient obtenu par une regression Lasso. La fonction de répartition à été calculées à partir de $M = 2000$ simulations.}
+  \label{fig:pvalue_lasso}
+\end{figure}
 
 \end{document}
