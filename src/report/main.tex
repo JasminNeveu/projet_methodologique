@@ -14,6 +14,16 @@
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}
 
+\usepackage{changes}
+\newcommand{\Javier}[1]{\textcolor{purple}{#1}}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{cor}[theorem]{Corollary}
+\newtheorem{prop}[theorem]{Proposition}
+\newtheorem{remark}{Remark}[section]
+\newtheorem{assumption}{Assumption}[section]
 
 \title{Notes d'avancement du projet méthodologique de deuxième année}
 \author{Jasmin NEVEU \\ Référent : Javier GONZALEZ-DELGADO}
@@ -33,11 +43,34 @@ Article de recherche :
 
 Ce document a pour objectif de suivre l'avancement de mon projet méthodologique de deuxième année à l'ENSAI. Il contient des notes, des observations et les étapes réalisées tout au long de la progression du projet. 
 
+\section*{Notes}
+
+Pour écrire les définitions/propositions:
+
+\begin{definition}\label{def_pvalue}
+My definition
+\end{definition}
+
+Avec une citation:
+
+\begin{prop}[Proposition 1.1 in~\cite{Gao}]\label{prop_pvalue}
+
+\end{prop}
+
+Labelling equations allows to cite them in the text: As we showed in Proposition~\ref{prop_pvalue}...
+
+Same goes for equations:
+
+\begin{equation}\label{eq1}
+1+1=2
+\end{equation}
+
+In that case we cite them using~\eqref{eq1}.
 
 \section{Compréhension du problème}
-Les méthodes de clustering ne disposent pas, en général, de garanties théoriques fortes sur les partitions qu'elles génèrent dans les situations pratiques usuelles.
-Pour s'assurer que les résultats sont cohérents avec les attentes, il est très fréquent de réaliser des tests d'égalité des moyennes parmi les différents clusters.
-Cependant, un simple z-test ou test de Wald mène à une inflation de l'erreur de type I. En effet, le choix des tests et des comparaisons se fait après avoir observé les données (après le passage de l'algorithme de clustering), donc de manière adaptative.
+Les méthodes de clustering ne disposent pas, en général, de garanties théoriques \deleted{fortes} sur les partitions qu'elles génèrent dans les situations pratiques usuelles.
+Pour s'assurer que les résultats sont cohérents avec les attentes \Javier{We don't usually have `attentes' in practice... Plutôt on cherche à avoir des garanties sur les différences réelles entre les groupes.}, \replaced{une possibilité serait de}{il est très fréquent de} réaliser des tests d'égalité des moyennes parmi les différents clusters.
+Cependant, un simple z-test ou test de Wald mène à une inflation de l'erreur de type I~\cite{Gao}. En effet, le choix \replaced{de l'hypothèse nulle}{des tests et des comparaisons} se fait après avoir observé les données (après le passage de l'algorithme de clustering), donc de manière adaptative.
 
 Ce problème est similaire à celui de l'\textit{overfitting} pour les algorithmes d'apprentissage supervisé. Si les données sont à la fois utilisées pour l'entraînement et l'évaluation, le modèle risque de ne pas généraliser et de trop \textit{coller} aux données. Ici, faire un test sans prendre en compte la variabilité introduite par la procédure de clustering mène à une absence de maîtrise du risque de type I.
 
@@ -49,11 +82,11 @@ Ce problème est similaire à celui de l'\textit{overfitting} pour les algorithm
     \hline
     Inférence classique & Inférence sélective \\
     \hline
-    1. Hypothèse sur la loi de $X$        & 1. Hypothèse sur la loi de $X$         \\
-    2. Choix de la question $Q$           & 2. Observation des données             \\
-    3. Tests en utilisant $X \rightarrow H_0$
-                                         & 3. Choix de la question $Q(X)$         \\
-                                          & 4. Tests en utilisant $X \rightarrow H_0(X)$ \\
+    1. \replaced{Modèle}{Hypothèse} sur la loi \added{$\mathcal{P}$} de $X$\added{: $\mathcal{P}\in\mathcal{M}$.}        & 1. \replaced{Modèle}{Hypothèse} sur la loi \added{$\mathcal{P}$} de $X$\added{: $\mathcal{P}\in\mathcal{M}$.}         \\
+    2. Choix de la question $Q$\added{: $\mathcal{P}\in\mathcal{M}_0\subset\mathcal{M}$?}           & 2. Observation des données             \\
+    3. \replaced{Answer $Q$}{Tests} en utilisant \replaced{$X$}{$X \rightarrow H_0$}
+                                         & 3. Choix de la question $Q(X)$\added{: $\mathcal{P}\in\mathcal{M}_0(X)\subset\mathcal{M}$?}          \\
+                                          & 4. \replaced{Answer $Q(X)$}{Tests} en utilisant \replaced{$X$}{$X \rightarrow H_0$} \\
     \hline
   \end{tabular}
   \caption{Type d'inférence}
@@ -187,5 +220,10 @@ On obtient la fonction de répartition suivante de la \textit{p-valeur}.
   \caption{Fonction de répartition des \textit{p-valeur} obenutes par tests de significativité du 3eme coefficient obtenu par une regression Lasso. La fonction de répartition à été calculées à partir de $M = 2000$ simulations.}
   \label{fig:pvalue_lasso}
 \end{figure}
+
+\bibliographystyle{abbrv} 
+\bibliography{biblio.bib}
+
+
 
 \end{document}
