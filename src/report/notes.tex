@@ -1,0 +1,229 @@
+
+\documentclass[a4paper,11pt]{article}
+\usepackage{graphicx}  
+\usepackage[utf8]{inputenc}  % UTF-8 encoding
+\usepackage[T1]{fontenc}     % Better font encoding
+\usepackage[french]{babel}   % Typographie française
+\usepackage{lipsum}          % For dummy text
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+\usepackage{caption}
+\captionsetup[figure]{justification=centering}
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+
+\usepackage{changes}
+\newcommand{\Javier}[1]{\textcolor{purple}{#1}}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{cor}[theorem]{Corollary}
+\newtheorem{prop}[theorem]{Proposition}
+\newtheorem{remark}{Remark}[section]
+\newtheorem{assumption}{Assumption}[section]
+
+\title{Notes d'avancement du projet méthodologique de deuxième année}
+\author{Jasmin NEVEU \\ Référent : Javier GONZALEZ-DELGADO}
+\date{\today}
+
+
+\begin{document}
+\maketitle
+
+\noindent
+GitHub : \href{https://github.com/JasminNeveu/projet_methodologique}{link $\nearrow$}\\
+Article de recherche :
+\href{https://arxiv.org/pdf/2012.02936}{Selective Inference for Hierarchical Clustering~$\nearrow$}
+
+
+\section{Introduction}
+
+Ce document a pour objectif de suivre l'avancement de mon projet méthodologique de deuxième année à l'ENSAI. Il contient des notes, des observations et les étapes réalisées tout au long de la progression du projet. 
+
+\section*{Notes}
+
+Pour écrire les définitions/propositions:
+
+\begin{definition}\label{def_pvalue}
+My definition
+\end{definition}
+
+Avec une citation:
+
+\begin{prop}[Proposition 1.1 in~\cite{Gao}]\label{prop_pvalue}
+
+\end{prop}
+
+Labelling equations allows to cite them in the text: As we showed in Proposition~\ref{prop_pvalue}...
+
+Same goes for equations:
+
+\begin{equation}\label{eq1}
+1+1=2
+\end{equation}
+
+In that case we cite them using~\eqref{eq1}.
+
+\section{Compréhension du problème}
+Les méthodes de clustering ne disposent pas, en général, de garanties théoriques \deleted{fortes} sur les partitions qu'elles génèrent dans les situations pratiques usuelles.
+Pour s'assurer que les résultats sont cohérents avec les attentes \Javier{We don't usually have `attentes' in practice... Plutôt on cherche à avoir des garanties sur les différences réelles entre les groupes.}, \replaced{une possibilité serait de}{il est très fréquent de} réaliser des tests d'égalité des moyennes parmi les différents clusters.
+Cependant, un simple z-test ou test de Wald mène à une inflation de l'erreur de type I~\cite{Gao}. En effet, le choix \replaced{de l'hypothèse nulle}{des tests et des comparaisons} se fait après avoir observé les données (après le passage de l'algorithme de clustering), donc de manière adaptative.
+
+Ce problème est similaire à celui de l'\textit{overfitting} pour les algorithmes d'apprentissage supervisé. Si les données sont à la fois utilisées pour l'entraînement et l'évaluation, le modèle risque de ne pas généraliser et de trop \textit{coller} aux données. Ici, faire un test sans prendre en compte la variabilité introduite par la procédure de clustering mène à une absence de maîtrise du risque de type I.
+
+\newpage
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|l|}
+    \hline
+    Inférence classique & Inférence sélective \\
+    \hline
+    1. \replaced{Modèle}{Hypothèse} sur la loi \added{$\mathcal{P}$} de $X$\added{: $\mathcal{P}\in\mathcal{M}$.}        & 1. \replaced{Modèle}{Hypothèse} sur la loi \added{$\mathcal{P}$} de $X$\added{: $\mathcal{P}\in\mathcal{M}$.}         \\
+    2. Choix de la question $Q$\added{: $\mathcal{P}\in\mathcal{M}_0\subset\mathcal{M}$?}           & 2. Observation des données             \\
+    3. \replaced{Answer $Q$}{Tests} en utilisant \replaced{$X$}{$X \rightarrow H_0$}
+                                         & 3. Choix de la question $Q(X)$\added{: $\mathcal{P}\in\mathcal{M}_0(X)\subset\mathcal{M}$?}          \\
+                                          & 4. \replaced{Answer $Q(X)$}{Tests} en utilisant \replaced{$X$}{$X \rightarrow H_0$} \\
+    \hline
+  \end{tabular}
+  \caption{Type d'inférence}
+  \label{tab:def_inference}
+\end{table}
+
+
+
+
+
+Tout l'enjeu est donc de maîtriser cette erreur de type I. Pour cela on définie la \textit{p-valeur}. La \textit{p-valeur} s'interprète comme la probabilité de se tromper si on rejette $H_0$. Formellement elle est défini comme suit.
+
+
+Soit,
+\begin{itemize}
+  \item un espace d'observation $\mathcal{X}$ et une famille de lois $(P_\theta)_{\theta \in \Theta}$,
+  \item une hypothèse nulle $H_0 \subset \Theta$,
+  \item une statistique de test $T : \mathcal{X} \to \mathbb{R}$,
+  \item une région de rejet correspondant à de grandes valeurs de $T$ (test unilatéral à droite).
+\end{itemize}
+
+Pour un échantillon $X$ de loi $P_\theta$ et une réalisation $x$, on note la statistique observée
+\[
+  t_{\text{obs}} = T(x).
+\]
+
+Pour $\theta_0 \in H_0$, on note $F_{T,\theta_0}$ la fonction de répartition de $T$ sous $P_{\theta_0}$.
+
+\paragraph{Définition formelle (test unilatéral à droite).}
+La p-valeur associée à l'observation $x$ est définie par
+\[
+  p(x) = \sup_{\theta \in H_0} P_\theta\bigl(T(X) \geq T(x)\bigr).
+\]
+
+\paragraph{Test unilatéral à gauche.}
+Lorsque la région de rejet correspond à de petites valeurs de $T$,
+\[
+  p(x) = \sup_{\theta \in H_0} P_\theta\bigl(T(X) \leq T(x)\bigr).
+\]
+
+\paragraph{Test bilatéral.}
+Dans le cas bilatéral, une définition classique est
+\[
+  p(x) = \sup_{\theta \in H_0} P_\theta\bigl(\lvert T(X) \rvert \geq \lvert T(x) \rvert\bigr),
+\]
+c'est-à-dire la plus grande probabilité, sous $H_0$, d'observer une valeur de la statistique de test au moins aussi extrême que celle observée.
+
+On rejette $H_0$ si la \textit{p-valeur} $\leq \alpha$.
+
+On remarque que la \textit{p-valeur}  s'écrit à partir d'une fonction de répartition d'une variable aléatoire, et est elle même une variable aléatoire.
+Une méthode pour savoir si un test est bien construit est donc d'observer que la \textit{p-valeur} suit bien une loi uniforme.
+
+\begin{proposition}
+  Soit $X$ une variable aléatoire continue, de fonction de répartition $F$ définie sur $I$, strictement croissante. Alors $F(X)$ suit une loi uniforme sur $]0,1[$.
+\end{proposition}
+
+\begin{proof}
+  On note $G$ la fonction quantile, définie sur $]0,1[$ par
+  \[
+    G(\omega) = \inf\{x \in \mathbb{R} \mid F(x) \ge \omega\}.
+  \]
+  Si $F$ est strictement croissante sur $I$, alors $G$ est la réciproque de $F$ sur $]0,1[$.
+
+  Pour $y \in ]0,1[$, on a
+  \[
+    \mathbb{P}\bigl(F(X) \le y\bigr)
+    = \mathbb{P}\bigl(X \le G(y)\bigr)
+    = F\bigl(G(y)\bigr)
+    = y,
+  \]
+  ce qui est bien la fonction de répartition de la loi uniforme $]0,1[$.
+\end{proof}
+
+
+
+\section{Importance de l'inférence sélective}
+
+\subsection{Clustering}
+
+Pour montrer l'importance de réaliser des tests adaptés dans le cadre de l'inférence selective, j'ai simulé des tirages de variables aléatoires gaussiens sur lesquelles j'ai appliqué des méthodes de clustering (\textit{CAH} et \textit{kmeans}), j'ai ensuite réalisé des tests d'égalité des moyennes (\textit{z-test}) de clusters choisis de manière aléatoires.
+Si le test d’égalité des moyennes contrôlait correctement l’erreur de type I dans ce cadre, alors la \textit{p-valeur} devrait suivre une loi uniforme sur $[0,1]$ lorsque l'hypothèse nulle est vrai. Or, en pratique, la procédure “clustering + test post-sélection” conduit à une déviation de cette loi uniforme, ce qui montre la non-maîtrise du risque de type I.
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.45\textwidth]{images/cah_pvalues.png}%
+  \hfill
+  \includegraphics[width=0.45\textwidth]{images/kmeans_df.png}
+  \caption{Fonction de répartition des \textit{p-valeur} obtenues par tests d'égalité des moyennes des clusters après un algorithme de \textit{CAH} et de \textit{kmeans}. Les fonctions de répartitions ont été calculées à partir de $M = 2000$ simulations d'une loi normale multivariée avec $\mu = 0_{n\times p}$ et $\Sigma = 0.98^{|i-j|}$ pour $1 \leq i,j \leq n \times p$. J'ai fixé $n = 100$ et $p = 5$.}
+  \label{fig:deux_images}
+
+\end{figure}
+
+
+
+\subsection{Régression Lasso}
+
+
+Pour savoir si une variable explicative permet d'expliquer une varibale cible au travers d'un modèle de regression linéaire, on effectue un test de significativité du coefficient à associé à cette variable.
+On test s'il est significativement différent de 0.
+Dans le cadre d'une regression linéaire, on se situe bien dans le cadre de l'inférence classique.
+En revanche, la régression Lasso, la pénalisation $L_1$ permet de selectionner des variables.
+Ainsi tout les coefficients ne sont pas à tester, seuls ceux qui n'ont pas été selectionner le sont.
+On ne peut donc pas définir par avance quels coefficients tester car il dépendent de cette regression Lasso
+On se retrouve donc bien dans une situation d'inférence sélective.
+Lors du cours de \textit{Programmation Algotithmique} encadré par Brian Staber, nous avons pu coder un algorithme de descente proximale.
+On a simulé un jeu de donnée de la sorte:
+
+Soient $x_1, \dots, x_8$ des variables aléatoires gaussiennes centrées, de matrice de corrélation $(R_{ij})_{1 \le i,j \le 8}$ définie par
+$R_{ij} = 0.5^{\lvert i-j\rvert}, $ pour $ 1 \le i,j \le 8.$
+La réponse est modélisée par $y = \beta^\top x + 3\varepsilon, $
+où $\varepsilon \sim \mathcal{N}(0,1)$ et
+$\beta = (3,\; 1.5,\; 0,\; 0,\; 2,\; 0,\; 0,\; 0)^\top.$
+On génère un échantillon de taille $n = 100$.
+On obtient le chemin de régularisation suivant
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width = 0.7\textwidth]{images/lasso_path.png}
+  \caption{Chemin de régularisation des coefficients obtenus par algorithme Lasso. On remarque que les certains coefficients sont nuls et que 3 autres s'approchent des valeurs théoriques (3,1.5,2).}
+  \label{fig:lasso_path}
+\end{figure}
+
+J'ai chosi de tester la significativité du 3eme coefficient, qui en théorie est nul (j'aurais très bien pu choisir le 4, 6,7 ou 8eme).
+Si $\lvert \hat{b_3} \rvert > 1e^{-6}$ alors j'estime que la 3eme variable est selectionnée, dans ce cas je calcul la \textit{p-valeur} associée au test de significativité. 
+On obtient la fonction de répartition suivante de la \textit{p-valeur}.
+\clearpage
+\begin{figure}[h]
+  \centering
+  \includegraphics[width = 0.7\textwidth]{images/pvalues_lasso.png}
+  \caption{Fonction de répartition des \textit{p-valeur} obenutes par tests de significativité du 3eme coefficient obtenu par une regression Lasso. La fonction de répartition à été calculées à partir de $M = 2000$ simulations.}
+  \label{fig:pvalue_lasso}
+\end{figure}
+
+\bibliographystyle{abbrv} 
+\bibliography{biblio.bib}
+
+
+
+\end{document}

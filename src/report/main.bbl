@@ -1,9 +1,13 @@
 \begin{thebibliography}{1}
 
-\bibitem{Gao}
-L.~L. Gao, J.~Bien, and D.~Witten.
-\newblock Selective inference for hierarchical clustering.
-\newblock {\em Journal of the American Statistical Association}, 0(0):1--11,
-  2022.
+\bibitem{fithian}
+W.~Fithian, D.~Sun, and J.~Taylor.
+\newblock Optimal inference after model selection, 2017.
+\newblock arXiv:1410.2597.
+
+\bibitem{Ramdas}
+A.~Ramdas and R.~Wang.
+\newblock {Hypothesis testing with e-values}.
+\newblock {\em arXiv}, Oct. 2024.
 
 \end{thebibliography}

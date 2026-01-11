@@ -1,22 +1,26 @@
 
 \documentclass[a4paper,11pt]{article}
-\usepackage{graphicx}  
-\usepackage[utf8]{inputenc}  % UTF-8 encoding
-\usepackage[T1]{fontenc}     % Better font encoding
-\usepackage[french]{babel}   % Typographie française
-\usepackage{lipsum}          % For dummy text
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lipsum}
 \usepackage{amsfonts}
 \usepackage{amsthm}
 \usepackage{amsmath}
-\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+\usepackage{float}
+\usepackage[colorlinks=true,
+            linkcolor=black,
+            citecolor=blue,
+            urlcolor=blue]{hyperref}
 \usepackage{caption}
+\usepackage{etoolbox}
+\pretocmd{\section}{\clearpage}{}{}
 \captionsetup[figure]{justification=centering}
 \theoremstyle{plain}
+
 \newtheorem{proposition}{Proposition}
-
-\usepackage{changes}
-\newcommand{\Javier}[1]{\textcolor{purple}{#1}}
-
+\newcommand{\1}{\mathbf{1}}
 \newtheorem{definition}{Definition}[section]
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
@@ -25,205 +29,370 @@
 \newtheorem{remark}{Remark}[section]
 \newtheorem{assumption}{Assumption}[section]
 
-\title{Notes d'avancement du projet méthodologique de deuxième année}
-\author{Jasmin NEVEU \\ Référent : Javier GONZALEZ-DELGADO}
+\title{Methodological project report}
+\author{Jasmin Neveu}
 \date{\today}
 
-
 \begin{document}
-\maketitle
 
-\noindent
-GitHub : \href{https://github.com/JasminNeveu/projet_methodologique}{link $\nearrow$}\\
-Article de recherche :
-\href{https://arxiv.org/pdf/2012.02936}{Selective Inference for Hierarchical Clustering~$\nearrow$}
 
+
+\begin{titlepage}
+    \centering
+
+    {\Large ENSAI \par}
+    \vspace{2cm}
+    {\large ATPA Track \par}
+    {\large Academic Year 2024--2025 \par}
+    \vspace{2cm}
+    {\Huge\bfseries Methodological Project Report \par}
+    \vspace{0.4cm}
+    {\LARGE\itshape Selective Inference for Hierarchical Clustering \par}
+    \vspace{2cm}
+    \begin{flushleft}
+        \textbf{Student:} Jasmin Neveu \\
+        \vspace{0.2cm}
+        \textbf{Supervisor:} Javier Gonzáles-Delgado
+    \end{flushleft}
+    \vspace{1cm}
+    \begin{flushleft}
+        \textbf{Analyzed article:} \\
+        Lucy L. Gao, Jacob Bien, and Daniela Witten, \\
+        \textit{Selective Inference for Hierarchical Clustering}, \\
+        arXiv: 2012.02936v3 [stat.ME] 31 Oct 2022 \\
+    \end{flushleft}
+    \vspace{1cm}
+    {\large Submission date: \today \par}
+\end{titlepage}
+
+
+\tableofcontents
+\newpage
 
 \section{Introduction}
 
-Ce document a pour objectif de suivre l'avancement de mon projet méthodologique de deuxième année à l'ENSAI. Il contient des notes, des observations et les étapes réalisées tout au long de la progression du projet. 
+Introduction text...
 
-\section*{Notes}
+\section{Classical versus selective testing}
 
-Pour écrire les définitions/propositions:
+\subsection{Hypothesis testing and \textit{p-values}}
 
-\begin{definition}\label{def_pvalue}
-My definition
+Let $(\Omega,\mathcal{F})$ and $(E,\mathcal{E})$ be a measurable spaces.
+We denote by $\mathcal{M}_1$ the set of all probability measures on $(\Omega,\mathcal{F})$.
+A random variable with values in $E$ is a measurable function $X: (\Omega,\mathcal{F},\mathbb{P}) \rightarrow (E,\mathcal{E})$, with $\mathbb{P} \in \mathcal{M}_{1}$
+
+\begin{definition}[Hypothesis, 1.1 in~\cite{Ramdas}]\label{def_dominate_sto}
+  A \textit{hypothesis} is a set of probability measures in $\mathcal{M}_1$.
+  A hypothesis is \textit{simple} if it is a singleton, such as $\{\mathbb{P}\}$ or $\{\mathbb{Q}\}$.
+  Otherwise it is \textit{composite}.
 \end{definition}
 
-Avec une citation:
+\begin{remark}
+  We define the alternative hypothesis to $\mathcal{H}_0$ as $\mathcal{M}_1 \setminus \mathcal{H}_0$.
+\end{remark}
 
-\begin{prop}[Proposition 1.1 in~\cite{Gao}]\label{prop_pvalue}
+\begin{definition}[Test]\label{def_test}
+  A \textit{test} is a function defined as
+  \[
+  \begin{array}{rcl}
+    \pi : \mathcal{F} &\to& \{0,1\} \\
+    x &\mapsto& \pi(x).
+  \end{array}
+  \]
+\end{definition}
 
-\end{prop}
+\begin{definition}[Type I error]\label{def_type_error}
+  We say that a test controls the type I error at level $\alpha$ if
+  \[
+    \mathbb{P}(\text{Reject }\mathcal{H}_0) \leq \alpha, \quad \alpha \in (0,1).
+  \]
+  We say that it controls exactly the type I error at level $\alpha$ if
+  \[
+    \mathbb{P}(\text{Reject }\mathcal{H}_0) = \alpha.
+  \]
+\end{definition}
 
-Labelling equations allows to cite them in the text: As we showed in Proposition~\ref{prop_pvalue}...
+\begin{definition}[Stochastic dominance]\label{def_sto_def}
+  Let $X$ and $Y$ be real-valued random variables.
+  We say that $Y$ stochastically dominates $X$, and write
+  \[
+    X \preceq_{\mathrm{st}} Y,
+  \]
+  if
+  \[
+    \mathbb{P}(X \leq u) \geq \mathbb{P}(Y \leq u), \quad \forall u \in \mathbb{R}.
+  \]
+\end{definition}
 
-Same goes for equations:
+\begin{definition}[Super uniform]\label{def_super_unif}
+  Let $X$ be a real-valued random variable. We say that $X$ is super uniform, and write
+  $X \sim SU(0,1)$, if $X$ stochastically dominates a uniform random
+  variable on $[0,1]$, that is,
+  \[
+    \mathbb{P}(X \leq u) \leq u, \quad \forall u \in [0,1].
+  \]
+\end{definition}
 
-\begin{equation}\label{eq1}
-1+1=2
-\end{equation}
-
-In that case we cite them using~\eqref{eq1}.
-
-\section{Compréhension du problème}
-Les méthodes de clustering ne disposent pas, en général, de garanties théoriques \deleted{fortes} sur les partitions qu'elles génèrent dans les situations pratiques usuelles.
-Pour s'assurer que les résultats sont cohérents avec les attentes \Javier{We don't usually have `attentes' in practice... Plutôt on cherche à avoir des garanties sur les différences réelles entre les groupes.}, \replaced{une possibilité serait de}{il est très fréquent de} réaliser des tests d'égalité des moyennes parmi les différents clusters.
-Cependant, un simple z-test ou test de Wald mène à une inflation de l'erreur de type I~\cite{Gao}. En effet, le choix \replaced{de l'hypothèse nulle}{des tests et des comparaisons} se fait après avoir observé les données (après le passage de l'algorithme de clustering), donc de manière adaptative.
-
-Ce problème est similaire à celui de l'\textit{overfitting} pour les algorithmes d'apprentissage supervisé. Si les données sont à la fois utilisées pour l'entraînement et l'évaluation, le modèle risque de ne pas généraliser et de trop \textit{coller} aux données. Ici, faire un test sans prendre en compte la variabilité introduite par la procédure de clustering mène à une absence de maîtrise du risque de type I.
-
-\newpage
-
-\begin{table}[h]
-  \centering
-  \begin{tabular}{|l|l|}
-    \hline
-    Inférence classique & Inférence sélective \\
-    \hline
-    1. \replaced{Modèle}{Hypothèse} sur la loi \added{$\mathcal{P}$} de $X$\added{: $\mathcal{P}\in\mathcal{M}$.}        & 1. \replaced{Modèle}{Hypothèse} sur la loi \added{$\mathcal{P}$} de $X$\added{: $\mathcal{P}\in\mathcal{M}$.}         \\
-    2. Choix de la question $Q$\added{: $\mathcal{P}\in\mathcal{M}_0\subset\mathcal{M}$?}           & 2. Observation des données             \\
-    3. \replaced{Answer $Q$}{Tests} en utilisant \replaced{$X$}{$X \rightarrow H_0$}
-                                         & 3. Choix de la question $Q(X)$\added{: $\mathcal{P}\in\mathcal{M}_0(X)\subset\mathcal{M}$?}          \\
-                                          & 4. \replaced{Answer $Q(X)$}{Tests} en utilisant \replaced{$X$}{$X \rightarrow H_0$} \\
-    \hline
-  \end{tabular}
-  \caption{Type d'inférence}
-  \label{tab:def_inference}
-\end{table}
-
-
-
-
-
-Tout l'enjeu est donc de maîtriser cette erreur de type I. Pour cela on définie la \textit{p-valeur}. La \textit{p-valeur} s'interprète comme la probabilité de se tromper si on rejette $H_0$. Formellement elle est défini comme suit.
-
-
-Soit,
-\begin{itemize}
-  \item un espace d'observation $\mathcal{X}$ et une famille de lois $(P_\theta)_{\theta \in \Theta}$,
-  \item une hypothèse nulle $H_0 \subset \Theta$,
-  \item une statistique de test $T : \mathcal{X} \to \mathbb{R}$,
-  \item une région de rejet correspondant à de grandes valeurs de $T$ (test unilatéral à droite).
-\end{itemize}
-
-Pour un échantillon $X$ de loi $P_\theta$ et une réalisation $x$, on note la statistique observée
-\[
-  t_{\text{obs}} = T(x).
-\]
-
-Pour $\theta_0 \in H_0$, on note $F_{T,\theta_0}$ la fonction de répartition de $T$ sous $P_{\theta_0}$.
-
-\paragraph{Définition formelle (test unilatéral à droite).}
-La p-valeur associée à l'observation $x$ est définie par
-\[
-  p(x) = \sup_{\theta \in H_0} P_\theta\bigl(T(X) \geq T(x)\bigr).
-\]
-
-\paragraph{Test unilatéral à gauche.}
-Lorsque la région de rejet correspond à de petites valeurs de $T$,
-\[
-  p(x) = \sup_{\theta \in H_0} P_\theta\bigl(T(X) \leq T(x)\bigr).
-\]
-
-\paragraph{Test bilatéral.}
-Dans le cas bilatéral, une définition classique est
-\[
-  p(x) = \sup_{\theta \in H_0} P_\theta\bigl(\lvert T(X) \rvert \geq \lvert T(x) \rvert\bigr),
-\]
-c'est-à-dire la plus grande probabilité, sous $H_0$, d'observer une valeur de la statistique de test au moins aussi extrême que celle observée.
-
-On rejette $H_0$ si la \textit{p-valeur} $\leq \alpha$.
-
-On remarque que la \textit{p-valeur}  s'écrit à partir d'une fonction de répartition d'une variable aléatoire, et est elle même une variable aléatoire.
-Une méthode pour savoir si un test est bien construit est donc d'observer que la \textit{p-valeur} suit bien une loi uniforme.
-
-\begin{proposition}
-  Soit $X$ une variable aléatoire continue, de fonction de répartition $F$ définie sur $I$, strictement croissante. Alors $F(X)$ suit une loi uniforme sur $]0,1[$.
+\begin{proposition}\label{prop_repartition}
+  Let $X$ and $Y$ be real-valued random variables, with distribution function $F_X$ and $F_Y$.
+  If $X \preceq_{\mathrm{st}} Y$ then $F_X(Y) \sim SU(0,1)$.
 \end{proposition}
 
-\begin{proof}
-  On note $G$ la fonction quantile, définie sur $]0,1[$ par
-  \[
-    G(\omega) = \inf\{x \in \mathbb{R} \mid F(x) \ge \omega\}.
-  \]
-  Si $F$ est strictement croissante sur $I$, alors $G$ est la réciproque de $F$ sur $]0,1[$.
 
-  Pour $y \in ]0,1[$, on a
-  \[
-    \mathbb{P}\bigl(F(X) \le y\bigr)
-    = \mathbb{P}\bigl(X \le G(y)\bigr)
-    = F\bigl(G(y)\bigr)
-    = y,
-  \]
-  ce qui est bien la fonction de répartition de la loi uniforme $]0,1[$.
+\begin{proof}
+Let \(G_X\) denote the generalized inverse (quantile function) of \(F_X\),
+defined for \(u\in[0,1]\) by
+\[
+G_X(u) = \inf\{x\in\mathbb{R} : F_X(x) \ge u\}.
+\]
+
+By definition of the generalized inverse,
+\[
+\{F_X(Y) \le u\} = \{Y < G_X(u)\}.
+\]
+Therefore,
+\[
+\mathbb{P}\bigl(F_X(Y)\le u\bigr)
+= \mathbb{P}\bigl(Y < G_X(u)\bigr)
+= F_Y\bigl(G_X(u)^-\bigr),
+\]
+where \(G_X(u)^-\) denotes the left limit at \(G_X(u)\).
+
+Since \(X \preceq_{\mathrm{st}} Y\), we have \(F_Y \le F_X\) pointwise, and thus
+\[
+F_Y\bigl(G_X(u)^-\bigr)
+\le F_X\bigl(G_X(u)^-\bigr).
+\]
+By the defining property of the generalized inverse,
+\[
+F_X\bigl(G_X(u)^-\bigr) \le u.
+\]
+
+Combining these inequalities yields
+\[
+\mathbb{P}\bigl(F_X(Y)\le u\bigr) \le u,
+\quad \forall u\in[0,1],
+\]
+which proves that \(F_X(Y)\) is super uniform.
 \end{proof}
 
 
+\begin{remark}\label{remark_FXX_unif}
+If \(X=Y\), then \(F_X(X)\) is super uniform on \([0,1]\).  
+Moreover, if \(X\) has a continuous distribution function \(F_X\), then
+\[
+F_X(X) \sim \mathcal{U}(0,1).
+\]
+\end{remark}
 
-\section{Importance de l'inférence sélective}
-
-\subsection{Clustering}
-
-Pour montrer l'importance de réaliser des tests adaptés dans le cadre de l'inférence selective, j'ai simulé des tirages de variables aléatoires gaussiens sur lesquelles j'ai appliqué des méthodes de clustering (\textit{CAH} et \textit{kmeans}), j'ai ensuite réalisé des tests d'égalité des moyennes (\textit{z-test}) de clusters choisis de manière aléatoires.
-Si le test d’égalité des moyennes contrôlait correctement l’erreur de type I dans ce cadre, alors la \textit{p-valeur} devrait suivre une loi uniforme sur $[0,1]$ lorsque l'hypothèse nulle est vrai. Or, en pratique, la procédure “clustering + test post-sélection” conduit à une déviation de cette loi uniforme, ce qui montre la non-maîtrise du risque de type I.
+\begin{proof}
+By the proposition \ref{prop_repartition}, we have that $F_X(X) \sim SU(0,1)$
 
 
-\begin{figure}[h]
+If \(F_X\) is continuous, then \(F_X(G_X(u)) = u\) for all \(u\in[0,1]\), and hence
+\[
+\mathbb{P}\bigl(F_X(X)\le u\bigr)
+= F_X\bigl(G_X(u)\bigr)
+= u,
+\quad \forall u\in[0,1].
+\]
+Therefore \(F_X(X)\sim \mathcal{U}(0,1)\) when \(X\) is continuously distributed.
+\end{proof}
+
+
+\begin{definition}[p-value, 1.1 in~\cite{Ramdas}]\label{def_pvalue}
+  Let $\mathcal{H}_0$ be a hypothesis. A p-value for $\mathcal{H}_0$ is a super
+  uniform random variable under $\mathcal{H}_0$. 
+\end{definition}
+
+\begin{proposition}
+  Let $\mathcal{R}$ be the rejection rule defined by
+  \[
+    \mathcal{R} = \1_{\{p \leq \alpha\}}, \quad \alpha \in (0,1).
+  \]
+  Let $p$ be a \textit{p-value} for $\mathcal{H}_0$. Then $\mathcal{R}$
+  controls the type I error at level $\alpha$.
+\end{proposition}
+
+
+\begin{proof}
+By definition of the rejection rule,
+\[
+  \mathbb{P}_{\mathcal{H}_0}(Reject ~ \mathcal{H}_0)
+= \mathbb{P}_{\mathcal{H}_0}(p \le \alpha).
+\]
+Since \(p\) is a p-value for \(\mathcal{H}_0\), it is super uniform under
+\(\mathcal{H}_0\), hence
+\[
+\mathbb{P}_{\mathcal{H}_0}(p \le \alpha) \le \alpha.
+\]
+This establishes control of the type~I error at level \(\alpha\).
+\end{proof}
+
+
+For the rest of the document, we will only consider unilateral test.
+Usually, we define the \textit{p-value} by 
+\[
+  p(X) = \mathbb{P}_{\mathcal{H}_0}(T(X) \geq t(x))
+\]
+
+But more generally, we will define \textit{p-value} with the following proposition.
+
+
+\begin{proposition}\label{prop_test_stat_pvalue}
+Let \(T\) and \(T'\) be two test statistics, i.e. transformations of $X$
+\[
+T : \mathcal{F} \to \mathbb{R},
+\qquad
+T' : \mathcal{F} \to \mathbb{R}.
+\]
+Let \(X\) be a random variable and \(x\) a realization of \(X\).
+Define
+\[
+p(x) = \mathbb{P}_{\mathcal{H}_0}\!\bigl(T'(X) \ge T(x)\bigr).
+\]
+If
+\[
+T'(X) \preceq_{\mathrm{st}} T(X)
+\quad \text{under } \mathcal{H}_0,
+\]
+then \(p\) is a p-value for \(\mathcal{H}_0\).
+\end{proposition}
+
+\begin{proof}
+Under \(\mathcal{H}_0\), let \(F_{T'(X)}\) denote the distribution
+function of \(T'(X)\).
+By proposition~\ref{prop_repartition}, the stochastic dominance
+\(T'(X) \preceq_{\mathrm{st}} T(X)\) implies that
+\[
+F_{T'(X)}\bigl(T(X)\bigr) \sim \mathrm{SU}(0,1).
+\]
+
+By definition,
+\[
+p(x)
+= \mathbb{P}_{\mathcal{H}_0}\!\bigl(T'(X) \ge T(x)\bigr)
+= 1 - F_{T'(X)}\bigl(T(x)\bigr).
+\]
+
+Let \(u \in [0,1]\). Then
+\begin{align*}
+\mathbb{P}_{\mathcal{H}_0}\bigl(p(X) \le u\bigr)
+&= \mathbb{P}_{\mathcal{H}_0}\!\left(1 - F_{T'(X)}(T(X)) \le u\right) \\
+&= \mathbb{P}_{\mathcal{H}_0}\!\left(F_{T'(X)}(T(X)) \ge 1-u\right) \\
+&= 1 - \mathbb{P}_{\mathcal{H}_0}\!\left(F_{T'(X)}(T(X)) \le 1-u\right).
+\end{align*}
+
+Since \(F_{T'(X)}(T(X))\) is super uniform,
+\[
+\mathbb{P}_{\mathcal{H}_0}\!\left(F_{T'(X)}(T(X)) \le 1-u\right) \le 1-u,
+\]
+and therefore
+\[
+\mathbb{P}_{\mathcal{H}_0}\bigl(p(X) \le u\bigr) \le u.
+\]
+
+Thus \(p\) is super uniform under \(\mathcal{H}_0\), and hence a p-value.
+\end{proof}
+
+\begin{remark}\label{remark_equal_statistics}
+If \(T' = T\) and the distribution function \(F_T\) of \(T(X)\) is continuous
+under \(\mathcal{H}_0\), then
+\[
+p \;\overset{\mathcal{H}_0}{\sim}\; \mathcal{U}(0,1).
+\]
+\end{remark}
+
+\begin{proof}
+When \(T'=T\)
+\[
+p(X) = \mathbb{P}_{\mathcal{H}_0}\bigl(T(X') \ge T(X)\bigr)
+      = 1 - F_T\bigl(T(X)\bigr),
+\]
+
+By remark~\ref{remark_FXX_unif}, if \(F_T\) is continuous,
+\[
+F_T\bigl(T(X)\bigr) \sim \mathcal{U}(0,1).
+\]
+Consequently, for any \(u\in[0,1]\),
+\begin{align*}
+\mathbb{P}_{\mathcal{H}_0}\bigl(p(X) \le u\bigr)
+&= \mathbb{P}_{\mathcal{H}_0}\bigl(1 - F_T(T(X)) \le u\bigr) \\
+&= \mathbb{P}_{\mathcal{H}_0}\bigl(F_T(T(X)) \ge 1-u\bigr) \\
+&= 1 - \mathbb{P}_{\mathcal{H}_0}\bigl(F_T(T(X)) \le 1-u\bigr) \\
+&= 1 - (1-u) \\
+&= u.
+\end{align*}
+Thus \(p\) is uniformly distributed on \([0,1]\) under \(\mathcal{H}_0\).
+\end{proof}
+
+\subsection{Examples motivating selective testing}
+
+
+
+
+\subsubsection{Lasso}
+
+To determine whether an explanatory variable helps explain a response variable through a linear regression model, one performs a significance test on the coefficient associated with that variable, testing whether it is significantly different from zero. In the context of classical linear regression, this falls within the framework of standard inference.
+
+In contrast, Lasso regression uses an \(\ell_1\)-penalty to perform variable selection. Not all coefficients are tested—only those selected by the Lasso are considered. It is therefore impossible to define in advance which coefficients will be tested, since they depend on the outcome of the Lasso regression. This creates a situation of selective inference.
+
+During the Algorithmic Programming course supervised by Brian Staber, we implemented a proximal gradient descent algorithm. We simulated a dataset as follows: let \(x_1, \dots, x_8\) be centered gaussian random variables with correlation matrix \((R_{ij})_{1\le i,j\le 8}\) defined by 
+\[
+R_{ij} = 0.5^{|i-j|}, \quad 1\le i,j\le 8.
+\]
+The response is modeled as
+\[
+y = \beta^\top x + 3 \varepsilon, \quad \varepsilon \sim \mathcal{N}(0,1), \quad \beta = (3,1.5,0,0,2,0,0,0)^\top.
+\]
+We generated a sample of size \(n=100\) and obtained the following regularization path.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = 0.7\textwidth]{images/lasso_path.png}
+  \caption{Regularization path of the coefficients obtained using the Lasso algorithm.
+Some coefficients are zero, and three converge toward the theoretical values 
+(3,1.5,2).}
+  \label{fig:lasso_path}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = 0.7\textwidth]{images/pvalues_lasso.png}
+  \caption{Cumulative distribution function of the p-values obtained from significance tests
+of the third coefficient estimated by a Lasso regression. The distribution function
+was computed using $M$ = 2000 simulations.}
+  \label{fig:pvalue_lasso}
+\end{figure}
+
+\subsubsection{Clustering}
+
+
+
+To illustrate the importance of using appropriate tests in the context of selective inference, I simulated samples of gaussian random variables to which I applied clustering methods (hierarchical clustering and \textit{k-means}).
+I then performed tests of equality of means (\textit{z-tests}) on clusters chosen in a data-dependent manner.
+If the test of equality of means correctly controlled the type I error in this setting, the resulting p-value would follow a uniform distribution on ([0,1]) when the null hypothesis is true.
+In practice, however, the “clustering + post-selection testing” procedure leads to a deviation from the uniform distribution, demonstrating the lack of control of the type I error.
+
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.45\textwidth]{images/cah_pvalues.png}%
   \hfill
   \includegraphics[width=0.45\textwidth]{images/kmeans_df.png}
-  \caption{Fonction de répartition des \textit{p-valeur} obtenues par tests d'égalité des moyennes des clusters après un algorithme de \textit{CAH} et de \textit{kmeans}. Les fonctions de répartitions ont été calculées à partir de $M = 2000$ simulations d'une loi normale multivariée avec $\mu = 0_{n\times p}$ et $\Sigma = 0.98^{|i-j|}$ pour $1 \leq i,j \leq n \times p$. J'ai fixé $n = 100$ et $p = 5$.}
+  \caption{Cumulative distribution functions of the p-values obtained from tests of equality of means
+    between clusters after hierarchical clustering (\textit{CAH}) and \textit{k-means} algorithms.
+The distribution functions were computed using $M$ = 2000 simulations from a multivariate normal distribution with
+  $\mu = 0_{n\times p}$ et $\Sigma = 0.98^{|i-j|}$ pour $1 \leq i,j \leq n \times p$, avec $n = 100$ et $p = 5$.}
   \label{fig:deux_images}
-
 \end{figure}
 
+\subsubsection{Publication bias}
+\cite{fithian}
+\subsection{Addressing selective testing}
 
+\section{Post clustering inference}
 
-\subsection{Régression Lasso}
-
-
-Pour savoir si une variable explicative permet d'expliquer une varibale cible au travers d'un modèle de regression linéaire, on effectue un test de significativité du coefficient à associé à cette variable.
-On test s'il est significativement différent de 0.
-Dans le cadre d'une regression linéaire, on se situe bien dans le cadre de l'inférence classique.
-En revanche, la régression Lasso, la pénalisation $L_1$ permet de selectionner des variables.
-Ainsi tout les coefficients ne sont pas à tester, seuls ceux qui n'ont pas été selectionner le sont.
-On ne peut donc pas définir par avance quels coefficients tester car il dépendent de cette regression Lasso
-On se retrouve donc bien dans une situation d'inférence sélective.
-Lors du cours de \textit{Programmation Algotithmique} encadré par Brian Staber, nous avons pu coder un algorithme de descente proximale.
-On a simulé un jeu de donnée de la sorte:
-
-Soient $x_1, \dots, x_8$ des variables aléatoires gaussiennes centrées, de matrice de corrélation $(R_{ij})_{1 \le i,j \le 8}$ définie par
-$R_{ij} = 0.5^{\lvert i-j\rvert}, $ pour $ 1 \le i,j \le 8.$
-La réponse est modélisée par $y = \beta^\top x + 3\varepsilon, $
-où $\varepsilon \sim \mathcal{N}(0,1)$ et
-$\beta = (3,\; 1.5,\; 0,\; 0,\; 2,\; 0,\; 0,\; 0)^\top.$
-On génère un échantillon de taille $n = 100$.
-On obtient le chemin de régularisation suivant
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width = 0.7\textwidth]{images/lasso_path.png}
-  \caption{Chemin de régularisation des coefficients obtenus par algorithme Lasso. On remarque que les certains coefficients sont nuls et que 3 autres s'approchent des valeurs théoriques (3,1.5,2).}
-  \label{fig:lasso_path}
-\end{figure}
-
-J'ai chosi de tester la significativité du 3eme coefficient, qui en théorie est nul (j'aurais très bien pu choisir le 4, 6,7 ou 8eme).
-Si $\lvert \hat{b_3} \rvert > 1e^{-6}$ alors j'estime que la 3eme variable est selectionnée, dans ce cas je calcul la \textit{p-valeur} associée au test de significativité. 
-On obtient la fonction de répartition suivante de la \textit{p-valeur}.
-\clearpage
-\begin{figure}[h]
-  \centering
-  \includegraphics[width = 0.7\textwidth]{images/pvalues_lasso.png}
-  \caption{Fonction de répartition des \textit{p-valeur} obenutes par tests de significativité du 3eme coefficient obtenu par une regression Lasso. La fonction de répartition à été calculées à partir de $M = 2000$ simulations.}
-  \label{fig:pvalue_lasso}
-\end{figure}
-
-\bibliographystyle{abbrv} 
+\bibliographystyle{abbrv}
 \bibliography{biblio.bib}
-
-
 
 \end{document}
