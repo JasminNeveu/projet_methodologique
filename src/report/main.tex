@@ -426,6 +426,39 @@ The distribution functions were computed using $M$ = 2000 simulations from a mul
 
 \subsection{Addressing selective testing}
 
+Since the type I error is no longer controlled, alternative approaches are required.
+Accordingly, we present three methods as described by Yoav Benjamini \cite{Benjamini}.
+
+\subsubsection{Simultaneous Inference}
+
+This approach controls the family-wise error rate across all hypotheses: 
+\[
+\mathbb{P}(\text{At least 1 false positive among all hypotheses}) \leq \alpha.
+\]
+
+This strategy proves highly conservative, ensuring that for every possible set of hypotheses, the probability of at least one false positive remains below $\alpha$.
+\subsubsection{Sample splitting}
+
+This approach consists in splitting the dataset into a training set $X$ and a test set $Y$.  
+The training set $X$ is used to choose which hypotheses to test, denoted $H_0(X)$.  
+Then, the tests are performed on the test set $Y$.
+
+Although relatively simple to implement, this method raises several issues.  
+First, statistical guarantees on the tests hold only if $X$ and $Y$ are independent, which is rarely the case in practice.  
+In addition, comparing cluster means on the observations in $Y$ requires assigning each test point to one of the clusters obtained from the clustering performed on $X$, a step that compromises validity.
+As discussed in \cite{Gao}, this strategy does not yield valid post-clustering inference in general.
+
+
+\subsubsection{Conditional Inference}
+
+This approach constitutes the most extensively studied framework for post-clustering inference.  
+It controls the false positive rate conditional on hypothesis selection:  
+\[
+\mathbb{P}(\text{Reject } H_0(X) \mid H_0 \text{ selected}) \leq \alpha.
+\]
+
+In the remainder of the article, we employ this method to develop a statistical procedure for testing equality of cluster means following a clustering algorithm.
+
 \section{Post clustering inference}
 
 \appendix
