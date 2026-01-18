@@ -18,3 +18,7 @@ wheels/
 *.synctex.gz
 *.fls
 *.fdb_latexmk
+*.blg
+*.synctex.gz
+*.pdf
+*.bbl
