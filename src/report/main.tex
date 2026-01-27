@@ -15,8 +15,10 @@
             urlcolor=blue]{hyperref}
 \usepackage{caption}
 \usepackage{etoolbox}
+\usepackage{dsfont} %for \mathds
 \pretocmd{\section}{\clearpage}{}{}
 \captionsetup[figure]{justification=centering}
+\usepackage{subcaption}
 \theoremstyle{plain}
 
 \usepackage{changes}
@@ -95,7 +97,6 @@ Introduction text...
 \begin{equation*}
 1+1.
 \end{equation*}
-Also, Definitions and Remarks are numbered like 2.1, 2.2 but Propositions like 1,2,3... The same numbering should be used for all.\\
 }
 %
 % Let $(\Omega,\mathcal{F})$ and $(E,\mathcal{E})$ be a measurable spaces.
@@ -109,36 +110,44 @@ Let $(\Omega, \mathcal{F},\mathbb{P})$ be a probability space, $(E,\mathcal{E})$
 \Javier{Probably the previous paragraph should be formulated more in detail, especially when defining $\mathcal{M}_1$. To discuss.}
 
 \begin{definition}[Hypothesis, Definition 1.1 in~\cite{Ramdas}]\label{def_dominate_sto}
-  A \textit{hypothesis} is a set of probability distributions in $\mathcal{M}_1$.
-  A hypothesis is \textit{simple} if it is a singleton, such as $\lbrace P \rbrace$ or $\lbrace Q \rbrace$.
-  Otherwise it is \textit{composite}.
-
-  We define the alternative hypothesis to $\mathcal{H}_0$ as $\mathcal{M}_1 \setminus \mathcal{H}_0$.
+  A \textit{hypothesis} \added{$\mathcal{H}_0$} is a set of probability distributions in $\mathcal{M}_1$.
+  A hypothesis is \textit{simple} if it is a singleton, such as $\lbrace P \rbrace$ or $\lbrace Q \rbrace$\replaced{, and \textit{composite} otherwise}{. Otherwise it is \textit{composite}}. \replaced{The complementary set}{We define the alternative hypothesis to $\mathcal{H}_0$ as} $\mathcal{M}_1 \setminus \mathcal{H}_0$ \added{is called its \textit{alternative hypothesis}}.
 \end{definition}
 
 \begin{definition}[Test]\label{def_test}
-  A \textit{test} is a function defined as
-  \[
+  A \textit{test} \added{for $\mathcal{H}_0$} is a \replaced{binary partition of the sample space, defined by a mapping}{function defined as}
+ \begin{equation}
   \begin{array}{rcl}
-    \pi : \Omega &\to& \{0,1\} \\
-    \omega &\mapsto& \pi(\omega).
+    \pi_{\mathcal{H}_0} : \Omega &\to& \{0,1\} \\
+    \omega &\mapsto& \pi_{\mathcal{H}_0}(\omega).
   \end{array}
-  \]
+ \end{equation}
+\added{For $\omega \in \Omega$, we say that the test \textit{rejects}
+  $\mathcal H_0$ based on $\omega$ if $\pi_{\mathcal{H}_0}(\omega)=1$, and \textit{does not reject}
+  $\mathcal H_0$ based on $\omega$ if $\pi_{\mathcal{H}_0}(\omega)=0$.}  
 \end{definition}
 
 %TODO: bien montrer que pi dépends de H_0, mais jsp comment l'écrire
-\begin{definition}[Rejection rule]
 
+\Javier{I have moved the `rejection' definition inside the test one. I think this is clearer. Then, no need to speak of \textit{rejection rule} but only of \textit{test} (equivalent concepts). I know I spoke about rejection rule but I think this is clearer.}
+
+\begin{definition}[Rejection rule]
+\deleted{
   Let $\mathcal H_0 \subset \mathcal M_1$ be a hypothesis
   and let $\pi : \Omega \to \{0,1\}$ be a test.
-  For $\omega \in \Omega$, we say that the test \emph{rejects}
-  $\mathcal H_0$ if $\pi(\omega)=1$, and \emph{does not reject}
-  $\mathcal H_0$ if $\pi(\omega)=0$.
+  For $\omega \in \Omega$, we say that the test \textit{rejects}
+  $\mathcal H_0$ if $\pi_{\mathcal{H}}(\omega)=1$, and \textit{does not reject}
+  $\mathcal H_0$ if $\pi(\omega)=0$.}
 \end{definition}
 
+\Javier{In what follows, we will be writing $\mathbb{P}(\text{Reject } \mathcal{H}_0)$, which is a standard and easy-to-read form. Before starting using that, you should write a note explaning that this is a notation that you will be adopting from now on, meaning:
+\begin{equation*}
+\mathbb{P}\left(\text{Reject } \mathcal{H}_0\right) = \mathbb{P}\left(\lbrace \omega \in \Omega\,:\,\pi_{\mathcal{H}_0}(\omega)=1\rbrace\right),
+\end{equation*}
+according to your previous definition. You can add that we make the dependence on $\pi$ implicit. In short: it is okay to use shortcuts as `Reject H0' but we always need to formally specify what we mean by them.
+}
 
-
-\Javier{The test function is defined on $\Omega$ (it makes a decision based on an observation of the sample space, not based on a measurable set!). In the following definition you speak about rejection of $\mathcal{H}_0$ but this has not been defined. There has to be a link between the definition of test function (if defined and used) and the concept of rejecting/accepting a hypothesis. \textbf{Importantly}: You have defined a (simple) hypothesis as a distribution $\lbrace P \rbrace$. Then, what do we mean by \textit{rejecting} a hypothesis? This should be defined (no need to define a test function for that if you don't want to). We need to define rejection of $\mathcal{H}_0$ before speaking about type I error. If this is not clear we will discuss next time.}
+\Javier{Don't use italics for \textit{Reject} in equations.}
 
 \begin{definition}[Type I error]\label{def_type_error}
   We say that a test controls the type I error at level $\alpha$ if
@@ -150,8 +159,6 @@ Let $(\Omega, \mathcal{F},\mathbb{P})$ be a probability space, $(E,\mathcal{E})$
     \mathbb{P}(\text{Reject }\mathcal{H}_0) = \alpha, \quad\text{for } \alpha \in (0,1).
   \]
 \end{definition}
-
-\Javier{Note: It is a good practice to write $\forall\,u$ instead of $\forall u$. I modified this in the following equations.}
 
 \begin{definition}[Stochastic dominance]\label{def_sto_def}
   Let $X$ and $Y$ be real-valued random variables.
@@ -165,7 +172,7 @@ Let $(\Omega, \mathcal{F},\mathbb{P})$ be a probability space, $(E,\mathcal{E})$
   \]
 \end{definition}
 
-\Javier{Note: Use $\mathcal{SU}(0,1)$ instead of $SU(0,1)$. I have also replaced it.}
+\Javier{Note: Use $\mathcal{SU}(0,1)$ instead of $SU(0,1)$!}
 
 \begin{definition}[Super\added{-}uniform random variable]\label{def_super_unif}
   Let $X$ be a real-valued random variable. We say that $X$ is super\added{-}uniform, and write
@@ -190,13 +197,17 @@ F_X(X) \sim \mathcal{U}(0,1).
 \]
 \end{remark}
 
-\Javier{Note: Write $p$-value instead of p-value.}
+\Javier{Note: Write $p$-value instead of p-value!}
 
 \begin{definition}[$p$-value, Definition 1.1 in~\cite{Ramdas}]\label{def_pvalue}
   Let $\mathcal{H}_0$ be a hypothesis. A $p$-value for $\mathcal{H}_0$ is a super-uniform random variable under $\mathcal{H}_0$. 
 \end{definition}
 
 $p$-values are often used to build a test by defining the partition of the sample sapce using the rejection rule $\mathcal{R} = \1_{\{p \leq \alpha\}}$ for any $\alpha \in (0,1)$.
+
+\Javier{Not amazing to start a sentence with the word $p$-value. Also you can use $\mathds{1}$ for the indicator function.}
+
+\Javier{The previous paragraph is okay, but (following my previous comment) I think we should only speak about \textit{test} and avoid \textit{rejection rule}. So you can say that we often build tests using $p$-values as $\pi=\mathds{1}\lbrace p \leq \alpha\rbrace$. So in the following proposition you can also replace $\mathcal{R}$ by $\pi$.}
 
 \begin{proposition}\label{prop_rejection_rule}
   Let $\mathcal{H}_0$ be a hypothesis, $p$ a $p$-value for $\mathcal{H}_0$ and $\mathcal{R}$ the rejection rule defined by
@@ -207,29 +218,22 @@ $p$-values are often used to build a test by defining the partition of the sampl
   controls the type I error at level $\alpha$. 
 \end{proposition}
 
-
-\Javier{Here you use the term `rejection rule` (which is fine), that is closely related to `test` (defined above). This should be clarified: either use only test, either use only `rejection rule`, or (better) define `rejection rule` as a particular type of test based on the $p$-value thresholding. After defining $p$-value, you can say that $p$-values are often used to build a test by defining the partition of the sample space using the rejection rule $\mathbb{1}\lbrace p\leq \alpha$, for any $\alpha\in(0,1)$.}
-
-\Javier{\textbf{Importantly}: in the previous proposition you say that the `rejection rule controls the type I error' but the type I error control has been defined in Def. 2.3 for a `test'. My previous comment should help clarify this.}
-
 \begin{definition}[Test statistic]
-  A test statistic is a measurable function
-  \[
-    T : \Omega \to \mathbb{R}
-  \]
+  A test statistic is a measurable function $T : \Omega \to \mathbb{R}$.
 \end{definition}
-From now on, we will consider the case of unilateral tests. In this setting, we define the the $p$-value has the form:
-\[
-  p(X) = \mathbb{P}_{\mathcal{H}_0}(T(X) \geq t(x))
-\]
-with $T$, $t$ being test statistics \Javier{what is $T$?}
 
-More generally, the $p$-value for unilateral test will be characterized using test statistics $T$. \Javier{If it is a proposition it can't be a definition! The $p$-value has already been defined in Def. 2.6, so it can't be defined again. What we are doing here is \textit{characterizing} the $p$-value for a unilateral test in terms of a statistic $T$.}
+From now on, we will consider the case of unilateral tests. In this setting, \replaced{to define a test based on the information given by a real-valued random variable $X$, $p$-values are often built in the form}{we define the the $p$-value has the form}:
+\begin{equation}\label{unilateral_uniform_pvalue}
+  \replaced{p(x)}{p(X)} = \mathbb{P}_{\mathcal{H}_0}(T(X) \geq \replaced{T(x)}{t(x)}),
+\end{equation}
+\replaced{where $T$ is a test statistic and $x$ is a realization of $X$.}{with $T$, $t$ being test statistics}
+
+More generally, the $p$-value for unilateral test will be characterized using test statistics $T$.
+
+\Javier{The previous sentence does not clearly justify why do we propose the following proposition. I would recall the following: 1. The $p$-value~\eqref{unilateral_uniform_pvalue} has a uniform distribution under $\mathcal{H}_0$. 2. However, we have defined $p$-values as being SU, which is a more general family of distributions. 3. To adapt the form of the $p$-value to that setting, we adopt the construction of the following proposition.}
 
 \begin{proposition}\label{prop_test_stat_pvalue}
-Let \(T\) and \(T'\) be two test statistics.
-\Javier{If $T$ transforms $X$ it can't be taking values from $\mathcal{F}$!}
-Let \(X\) be a random variable and \(x\) a realization of \(X\).
+Let \(T\) and \(T'\) be two test statistics. Let \(X\) be a random variable and \(x\) a realization of \(X\).
 Define
 \[
 p(x) = \mathbb{P}_{\mathcal{H}_0}\!\bigl(T'(X) \ge T(x)\bigr).
@@ -249,50 +253,57 @@ p \;\overset{\mathcal{H}_0}{\sim}\; \mathcal{U}(0,1).
 \]
 \end{remark}
 
-\Javier{Here we should have a paragraph introduce what selective testing is. Just saying that in the classical setting the null hypothesis is independent of the data but in several settings $\mathcal{H}_0$ is chosen after seeing the data, what makes the classical testing approaches unsuitable. This is called selective testing, and it is motivated with some examples in the next section. The reader needs to have an idea of what we mean by selective testing before starting reading the examples.}
-
-In the classical setting, the null hypothesis is independent of the data but in several setting $\mathcal{H}_0$ is chosen after seeing the data, what makes the classical testing approaches unsuitable. This is called selective testing, and it is motivated with some examples in the next section.
+In the classical setting, the null hypothesis is independent of the data\replaced{. However, in many practical applications}{ but in several setting} $\mathcal{H}_0$ is chosen \textit{after seeing the data}\replaced{. In this setting,}{, what makes} the classical testing approaches \added{built for type I error control are} unsuitable. \replaced{Instead, statistical guarantees need to be provided via \textit{selective inference}. In particular, the theory of statistical testing of data-driven null hypotheses is known as \textit{selective testing}\cite{fithian}. The next section provides some examples that motivate this framework.}{This is called selective testing, and it is motivated with some examples in the next section.} 
 \subsection{Examples motivating selective testing}
 
 \subsubsection{Lasso}
 
 To determine whether an explanatory variable helps explain a response variable through a linear regression model, a common practice is to test whether its associated coefficient is significantly different from zero.
-In the context of classical linear regression, this falls within the framework of non-selective inference.
-
-In contrast, Lasso regression uses an \(\ell_1\)-penalty to perform variable selection. Not all coefficients are tested—only those selected by the Lasso are considered. It is therefore impossible to define in advance which coefficients will be tested, since they depend on the outcome of the Lasso regression. This corresponds to a setting of selective inference.
-
-let \(x_1, \dots, x_8\) be centered gaussian random variables with correlation matrix \((R_{i,j})_{1\le i,j\le 8}\) defined by 
-
+In the context of classical linear regression, this falls within the framework of non-selective inference. In contrast, Lasso regression uses an \(\ell_1\)-penalty to perform variable selection \Javier{cite the Lasso paper}. \replaced{As only the coefficients selected by the Lasso can be tested, the null hypothesis depends}{Not all coefficients are tested—only those selected by the Lasso are considered. It is therefore impossible to define in advance which coefficients will be tested, since they depend} on the outcome of the Lasso regression\replaced{, and is therefore data-driven}{.} This corresponds to a setting of selective inference\replaced{, where the classical control of type I error fails}{.} \added{To illustrate so, consider a centered Gaussian vector $X=(X_1,\ldots,X_8)$} with correlation matrix \((R_{i,j})_{1\le i,j\le 8}\), defined by 
+\Javier{Standard notation: upper case for random variables and lower case for their realizations. Also, Gaussian is written in upper case.}
 \[
 R_{i,j} = 0.5^{|i-j|}, \quad 1\le i,j\le 8.
 \]
 The response is modeled as
 \[
-y = \beta^\top x + 3 \varepsilon, \quad \varepsilon \sim \mathcal{N}(0,1), \quad \beta = (3,1.5,0,0,2,0,0,0)^\top.
+Y = \beta^\top X + 3 \varepsilon, \quad \varepsilon \sim \mathcal{N}(0,1), \quad \beta = (3,1.5,0,0,2,0,0,0)^\top.
 \]
-We generated a sample of size \(n=100\) and obtained the following regularization path.
+\Javier{Is $\varepsilon$ one-dimensional?}
 
-\Javier{Say instead: to illustrate the unsuitability of classical inference in this context, we simulate samples... peform a LASSO for each sample, etc. You can add in a footnote that this is based on the code by Brian Staber.}
+We generated \replaced{$n=100$ independent realizations of $(X,Y)$ and implemented the Lasso algorithm, obtaining}{a sample of size \(n=100\) and obtained} the \deleted{following} regularization path \added{presented in Figure~\ref{fig:lasso_path}(a).} \added{Then,} we tested $\beta_3 = 0$. \replaced{After repeating this pipeline $M=2000$ times, we obtained}{for each simulated sample and obtained and obtained} the empirical $p$-value distribution depicted in Figure \ref{fig:lasso_path}(b). $p$-values are not super-uniform, therefore a selective inference approach should be used instead of naive testing after selection. \Javier{Avoid starting a sentence with the word $p$-value.}
+
+
+\Javier{Advice: use two panels in the same figure. I have modified it but you can undo if you don't like.}
+
+\Javier{I have modified a bit the text above but it is still not very clear. The simulation needs to be explained more clearly. One question: the coefficient $\beta_3$ is always selected across the $M$ simulations?}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width = 0.7\textwidth]{images/lasso_path.png}
-  \caption{Regularization path of the coefficients obtained using the Lasso algorithm.
+  \begin{subfigure}{0.47\textwidth}
+  \includegraphics[width = \textwidth]{images/lasso_path.png} 
+	\caption{}
+ \end{subfigure}
+ 	 \begin{subfigure}{0.47\textwidth}
+ 	 \includegraphics[width = \textwidth]{images/pvalues_lasso.png}
+  \caption{}
+  \end{subfigure}
+  \caption{(a) Regularization path of the coefficients obtained using the Lasso algorithm. \Javier{This is for a single realization of $(X,Y)$, right?}
 Some coefficients are zero, and three converge toward the theoretical values 
-(3,1.5,2).}
+(3,1.5,2). (b) \added{Empirical} cumulative distribution function \added{(ECDF)} of the $p$-values obtained from \replaced{testing $\beta_3 = 0$}{significance tests
+of the third} \replaced{after selecting the coefficient}{ coefficient estimated} by a Lasso regression. The \replaced{ECDF}{empirical distribution function}
+was computed \replaced{from}{using} $M$ = 2000 simulations.}
   \label{fig:lasso_path}
 \end{figure}
 
-\Javier{Some explanation is needed about the next figure. We tested $\beta_3=$ for each simulated sample and obtained the empirical $p$-value distribution depicted in Figure~\ref{fig:pvalue_lasso}. $p$-values are not super-uniform, therefore...}
-We tested $\beta_3 = 0$ for each simulated sample and obtained and obtained the empirical $p$-value distribution depitced in Figure \ref{fig:pvalue_lasso}. $p$-values are not super-uniform, therefore a selective inference approach should be used instead of naive testing after selection.
-\begin{figure}[H]
-  \centering
-  \includegraphics[width = 0.7\textwidth]{images/pvalues_lasso.png}
-  \caption{Cumulative distribution function of the $p$-values obtained from significance tests
-of the third coefficient estimated by a Lasso regression. The empirical distribution function
-was computed using $M$ = 2000 simulations.}
-  \label{fig:pvalue_lasso}
-\end{figure}
+
+%\begin{figure}[H]
+%  \centering
+%  \includegraphics[width = 0.7\textwidth]{images/pvalues_lasso.png}
+%  \caption{Cumulative distribution function of the $p$-values obtained from significance tests
+%of the third coefficient estimated by a Lasso regression. The empirical distribution function
+%was computed using $M$ = 2000 simulations.}
+%  \label{fig:pvalue_lasso}
+%\end{figure}
 
 
 \subsubsection{Publication bias}
@@ -303,35 +314,35 @@ If $Y_i \sim \mathcal{N}(\mu_i,1)$ represents the effect size of a scientific st
 Indeed, Fithian \cite{fithian} demonstrates that the false positive rate among true nulls reaches approximately 0.16, far exceeding the nominal 0.05 level.  
 Valid inference requires thresholding $|Y_i|$ at 2.41 rather than 1.96, the $0.95$ quantile of the standard normal, imposing a more stringent criterion.
 
-\Javier{Leave the clustering example at the end.}
-
-
+\Javier{To discuss together!}
 
 \subsubsection{Clustering}
 
-Another remarkable example of selective inference appears when evaluating the performance of clustering algorithms by testing for the equality of cluster mean.
-To illustrate the need of using appropriate tests in the context of selective inference, we simulated samples of gaussian random variables that were classified into $K = 3$ groups using hierarchical clustering and $k$-means
+Another remarkable example of selective inference appears when evaluating the performance of clustering algorithms by testing for the equality of cluster means.
+To illustrate the need of using appropriate tests in the context of selective inference, we simulated samples of \replaced{Gaussian}{gaussian} random variables \Javier{Not clear! Gaussian random vectors defined how? And how many samples?} that were classified into $K = 3$ groups using hierarchical clustering and $k$-means.
 
-\Javier{I would start maybe like: Another remarkable example of selective inference appears when evaluating the performace of clustering algorithms by testing for the equality of cluster means (or something like that).}
+For each sample, \added{the} equality of cluster means was tested using a classical z-test, for two randomly selected clusters. If the test controlled the type I error in this setting, the resulting $p$-value would be \added{(super-)}uniformly distributed under the null hypothesis. 
+However, the `clustering + post-selection testing' procedure leads to a deviation from \replaced{super-uniformity}{the uniform distribution, demonstrating the lack of control of the type I error}, as shown in Figure~\ref{fig:deux_images}.
 
-\Javier{Even if it is only you, avoid using `I` and use `we` or use passive tenses or forms like `we can simulate`, `this can be illustrated by simulating', etc.}
-
-For each sample, equality of cluster means was tested using a classical z-test, for two randomly selected clusters. If the test controlled the type I error in this setting, the resulting $p$-value would be uniformly distributed under the null hypothesis. 
-However, the 'clustering + post-selection testing' procedure leads to a deviation from the uniform distribution, demonstrating the lack of control of the type I error, as shown in Figure~\ref{fig:deux_images}.
 
 \begin{figure}[H]
+ 
+ \begin{subfigure}{0.47\textwidth}
   \centering
-  \includegraphics[width=0.45\textwidth]{images/cah_pvalues.png}%
+  \includegraphics[width=\textwidth]{images/cah_pvalues.png}%
+  \caption{}
+\end{subfigure}  
   \hfill
-  \includegraphics[width=0.45\textwidth]{images/kmeans_df.png}
+  \begin{subfigure}{0.47\textwidth}
+  \includegraphics[width=\textwidth]{images/kmeans_df.png}
+	\caption{}  
+  \end{subfigure}
   \caption{Cumulative distribution functions of the $p$-values obtained from tests of equality of means
-    between clusters after hierarchical clustering (CAH) and $k$-means algorithms.
+    between clusters after \added{(a)} hierarchical \added{agglomerative} clustering \replaced{(HAC)}{(CAH)} and \added{(b)} $k$-means algorithms.
 The distribution functions were computed using $M$ = 2000 simulations from a multivariate normal distribution with
   $\mu = 0_{n\times p}$ \Javier{I guess you mean $0_p$} and $\Sigma = 0.98^{|i-j|}$ for $1 \leq i,j \leq n \times p$, \Javier{I don't understand the $n\times p$ here}. with $n = 100$ et $p = 5$. \Javier{Mention that you set the clustering algorithms to choose $K=3$ clusters, and that you tested the equality of cluster means for two randomly selected clusters (if that's the case).}}
   \label{fig:deux_images}
 \end{figure}
-
-\Javier{Write $k$-means instead of \textit{k-means}, CAH instead of \textit{CAH} and $p$-value instead of p-value.}
 
 \subsection{Addressing selective testing}
 
@@ -367,6 +378,8 @@ It controls the false positive rate conditional on hypothesis selection:
 \]
 
 In the remainder of the article, we employ this method to develop a statistical procedure for testing equality of cluster means following a clustering algorithm.
+
+\Javier{Why new page?}
 
 \section{Post clustering inference}\label{sec:post_clustering_inf}
 
