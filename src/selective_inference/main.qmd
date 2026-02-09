@@ -1,0 +1,164 @@
+---
+title: "main"
+format: html
+---
+
+```{r}
+library(dplyr)
+library(MASS)
+library(glmnet)
+```
+
+
+# Lasso
+
+gen vecteur gaussien X centrée de matrix de var R
+on def des valeurs beta qu'on doit retrouver par regression lasso
+
+
+```{r}
+d <- 8
+n <- 500
+i_grid <- matrix(rep(1:d, d), nrow = d)
+j_grid <- t(i_grid)
+R <- 0.5 ^ abs(i_grid - j_grid)
+beta <- c(3,1.5,0,0,2,0,0,0)
+beta <- matrix(beta, ncol=1)  
+mu <- rep(0,d)
+X <- MASS::mvrnorm(n = n, mu = mu, Sigma = R)
+dim(X)
+X
+epsilon <- rnorm(n)
+Y = X%*%beta + epsilon
+dim(Y)
+
+```
+
+
+
+# Clustering
+
+```{r}
+set.seed(123)
+n <- 300
+X <- rnorm(n)
+
+kmeans_res <- kmeans(matrix(X, n, 1), centers = 3, nstart = 25)
+clusters <- kmeans_res$cluster
+
+# Densité globale
+x_dens <- density(X)
+plot(x_dens, main = "Distribution + K-means 3 clusters")
+
+
+```
+## kmeans
+```{r}
+M <- 2000
+n <- 1000
+pvals <- numeric(M)
+for(i in 1:M){
+  X <- rnorm(n)
+  kmeans_res <- kmeans(matrix(X, n, 1), centers = 3, nstart = 25)
+  clusters <- kmeans_res$cluster
+  selected_clusters = sample(1:3,2,replace= FALSE)
+  
+  c1 <- selected_clusters[1]
+  c2 <- selected_clusters[2]
+  pvals[i] <- t.test(
+    X[clusters == c1],
+    X[clusters == c2]
+  )$p.value
+}
+
+p <-ggplot(df, aes(x = pval)) +
+  stat_ecdf(geom = "step", color = "blue", size = 0.5) +
+  geom_abline(intercept = 0, slope = 1, color = "gray", linetype = "dashed", size = 0.5) +
+  labs(title = "k-means - n_clusters = 3",
+       x = "p-value",
+       y = "") +
+  theme_minimal() +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+ggsave("kmeans_pvalues.png", plot = p, width = 8, height = 6, dpi = 300)
+```
+
+## cah
+
+```{r}
+M <- 2000
+n <- 1000
+pvals <- numeric(M)
+
+for (m in seq_len(M)) {
+  X <- rnorm(n)
+  hc <- hclust(dist(X), method = "average")
+  clusters <- cutree(hc, k = 3)
+  
+  cluster_sizes <- table(clusters)
+  valid_sel <- sample(which(cluster_sizes >= 2), 2, replace = FALSE)
+  
+  if(length(valid_sel) == 2) {
+    pvals[m] <- t.test(X[clusters == valid_sel[1]], X[clusters == valid_sel[2]])$p.value
+  } else {
+    pvals[m] <- NA  
+  }
+}
+
+
+
+df <- data.frame(pval = pvals[!is.na(pvals)])
+
+d <- ggplot(df, aes(x = pval)) +
+  stat_ecdf(geom = "step", color = "blue", size = 0.5) +
+  geom_abline(intercept = 0, slope = 1, color = "gray", linetype = "dashed", size = 0.5) +
+  labs(title = "HAC - n_clusters = 3",
+       x = "p-value", y = "") +
+  theme_minimal() +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+ggsave("cah_pvalues.png", plot = d, width = 8, height = 6, dpi = 300)
+```
+## Lasso
+
+
+```{r}
+set.seed(123)
+n <- 100
+d <- 8
+beta <- c(3,1.5,0,0,2,0,0,0)
+M <- 2000
+pvals <- numeric(M)
+
+for (m in 1:M) {
+  X <- matrix(rnorm(n * d), n, d)
+  y <- X %*% beta + rnorm(n, sd = 1)
+  
+  cv_fit <- cv.glmnet(X, y, alpha = 1)
+  coef_lasso <- coef(cv_fit, s = "lambda.min")
+  
+  nonzero_idx <- which(as.vector(coef_lasso[-1, ]) != 0)
+  
+  if(length(nonzero_idx) >= 1) {
+    sel_coef <- sample(nonzero_idx, 1)
+    X_sel <- X[, sel_coef]
+    t_result <- summary(lm(y ~ X_sel))$coefficients
+    pvals[m] <- t_result[2, 4]
+  } else {
+    pvals[m] <- NA
+  }
+}
+
+
+d <- ggplot(df, aes(x = pval)) +
+  stat_ecdf(geom = "step", color = "red", size = 0.5) +
+  geom_abline(intercept = 0, slope = 1, color = "gray", linetype = "dashed", size = 0.5) +
+  labs(title = "Regression Lasso",
+       x = "p-value", y = "") +
+  theme_minimal() +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1))
+
+ggsave("lasso_pvalues.png", plot = d, width = 8, height = 6, dpi = 300)
+```
+

@@ -6,6 +6,7 @@
 \usepackage[english]{babel}
 \usepackage{lipsum}
 \usepackage{amsfonts}
+\usepackage{bm}
 \usepackage{amsthm}
 \usepackage{amsmath}
 \usepackage{float}
@@ -24,14 +25,10 @@
 \usepackage{changes}
 \newcommand{\Javier}[1]{\textcolor{purple}{#1}}
 
-% \newtheorem{proposition}{Proposition}
 \newcommand{\1}{\mathbf{1}}
-% \newtheorem{definition}{Definition}[section]
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{cor}[theorem]{Corollary}
-% \newtheorem{prop}[theorem]{Proposition}
-% \newtheorem{remark}{Remark}[section]
 \newtheorem{assumption}{Assumption}[section]
 
 
@@ -111,34 +108,26 @@ Let $(\Omega, \mathcal{F},\mathbb{P})$ be a probability space, $(E,\mathcal{E})$
 
 \begin{definition}[Hypothesis, Definition 1.1 in~\cite{Ramdas}]\label{def_dominate_sto}
   A \textit{hypothesis} \added{$\mathcal{H}_0$} is a set of probability distributions in $\mathcal{M}_1$.
-  A hypothesis is \textit{simple} if it is a singleton, such as $\lbrace P \rbrace$ or $\lbrace Q \rbrace$\replaced{, and \textit{composite} otherwise}{. Otherwise it is \textit{composite}}. \replaced{The complementary set}{We define the alternative hypothesis to $\mathcal{H}_0$ as} $\mathcal{M}_1 \setminus \mathcal{H}_0$ \added{is called its \textit{alternative hypothesis}}.
+  A hypothesis is \textit{simple} if it is a singleton, such as $\lbrace P \rbrace$ or $\lbrace Q \rbrace$, and \textit{composite} otherwise. The complementary set $\mathcal{M}_1 \setminus \mathcal{H}_0$ is called its \textit{alternative hypothesis}.
 \end{definition}
 
 \begin{definition}[Test]\label{def_test}
-  A \textit{test} \added{for $\mathcal{H}_0$} is a \replaced{binary partition of the sample space, defined by a mapping}{function defined as}
+  A \textit{test} for $\mathcal{H}_0$ is a binary partition of the sample space, defined by a mapping function.
  \begin{equation}
   \begin{array}{rcl}
     \pi_{\mathcal{H}_0} : \Omega &\to& \{0,1\} \\
     \omega &\mapsto& \pi_{\mathcal{H}_0}(\omega).
   \end{array}
  \end{equation}
-\added{For $\omega \in \Omega$, we say that the test \textit{rejects}
+ For $\omega \in \Omega$, we say that the test \textit{rejects}
   $\mathcal H_0$ based on $\omega$ if $\pi_{\mathcal{H}_0}(\omega)=1$, and \textit{does not reject}
-  $\mathcal H_0$ based on $\omega$ if $\pi_{\mathcal{H}_0}(\omega)=0$.}  
+  $\mathcal H_0$ based on $\omega$ if $\pi_{\mathcal{H}_0}(\omega)=0$.
 \end{definition}
 
 %TODO: bien montrer que pi dépends de H_0, mais jsp comment l'écrire
 
 \Javier{I have moved the `rejection' definition inside the test one. I think this is clearer. Then, no need to speak of \textit{rejection rule} but only of \textit{test} (equivalent concepts). I know I spoke about rejection rule but I think this is clearer.}
 
-\begin{definition}[Rejection rule]
-\deleted{
-  Let $\mathcal H_0 \subset \mathcal M_1$ be a hypothesis
-  and let $\pi : \Omega \to \{0,1\}$ be a test.
-  For $\omega \in \Omega$, we say that the test \textit{rejects}
-  $\mathcal H_0$ if $\pi_{\mathcal{H}}(\omega)=1$, and \textit{does not reject}
-  $\mathcal H_0$ if $\pi(\omega)=0$.}
-\end{definition}
 
 \Javier{In what follows, we will be writing $\mathbb{P}(\text{Reject } \mathcal{H}_0)$, which is a standard and easy-to-read form. Before starting using that, you should write a note explaning that this is a notation that you will be adopting from now on, meaning:
 \begin{equation*}
@@ -148,6 +137,14 @@ according to your previous definition. You can add that we make the dependence o
 }
 
 \Javier{Don't use italics for \textit{Reject} in equations.}
+
+From now, we will use the following notation:
+\begin{equation*}
+\mathbb{P}\left(\text{Reject } \mathcal{H}_0\right) = \mathbb{P}\left(\lbrace \omega \in \Omega\,:\,\pi_{\mathcal{H}_0}(\omega)=1\rbrace\right),
+\end{equation*}
+The dependence on $\pi$ is implicit.
+
+
 
 \begin{definition}[Type I error]\label{def_type_error}
   We say that a test controls the type I error at level $\alpha$ if
@@ -203,7 +200,7 @@ F_X(X) \sim \mathcal{U}(0,1).
   Let $\mathcal{H}_0$ be a hypothesis. A $p$-value for $\mathcal{H}_0$ is a super-uniform random variable under $\mathcal{H}_0$. 
 \end{definition}
 
-$p$-values are often used to build a test by defining the partition of the sample sapce using the rejection rule $\mathcal{R} = \1_{\{p \leq \alpha\}}$ for any $\alpha \in (0,1)$.
+We often build tests using $p$-values as $\pi = \mathds{1}\{p \leq \alpha \}$.
 
 \Javier{Not amazing to start a sentence with the word $p$-value. Also you can use $\mathds{1}$ for the indicator function.}
 
@@ -212,7 +209,7 @@ $p$-values are often used to build a test by defining the partition of the sampl
 \begin{proposition}\label{prop_rejection_rule}
   Let $\mathcal{H}_0$ be a hypothesis, $p$ a $p$-value for $\mathcal{H}_0$ and $\mathcal{R}$ the rejection rule defined by
   \[
-    \mathcal{R} = \1_{\{p \leq \alpha\}}, \quad \alpha \in (0,1).
+    \pi = \mathds{1}{\{p \leq \alpha\}}, \quad \alpha \in (0,1).
   \]
  Then, $\mathcal{R}$
   controls the type I error at level $\alpha$. 
@@ -222,13 +219,15 @@ $p$-values are often used to build a test by defining the partition of the sampl
   A test statistic is a measurable function $T : \Omega \to \mathbb{R}$.
 \end{definition}
 
-From now on, we will consider the case of unilateral tests. In this setting, \replaced{to define a test based on the information given by a real-valued random variable $X$, $p$-values are often built in the form}{we define the the $p$-value has the form}:
-\begin{equation}\label{unilateral_uniform_pvalue}
-  \replaced{p(x)}{p(X)} = \mathbb{P}_{\mathcal{H}_0}(T(X) \geq \replaced{T(x)}{t(x)}),
-\end{equation}
-\replaced{where $T$ is a test statistic and $x$ is a realization of $X$.}{with $T$, $t$ being test statistics}
 
-More generally, the $p$-value for unilateral test will be characterized using test statistics $T$.
+From now on, we will consider the case of unilateral tests.
+In this setting, to define a test based on the information given by a real-valued random variable $X$, $p$-values are foten built in the form: 
+\begin{equation}\label{unilateral_uniform_pvalue}
+  p(x) = \mathbb{P}_{H_0}(T(X) \geq T(x))
+\end{equation}
+where $T$ is a test statistic and $x$ a realization of $X$.
+
+The $p$-value \eqref{unilateral_uniform_pvalue} follow a uniform law under $\mathcal{H}_0$. However we have defined $p$-values as being $SU$, which is a more general family of distributions. To adapt the form of the $p$-value to that setting, we adopt the construction of the following proposition.
 
 \Javier{The previous sentence does not clearly justify why do we propose the following proposition. I would recall the following: 1. The $p$-value~\eqref{unilateral_uniform_pvalue} has a uniform distribution under $\mathcal{H}_0$. 2. However, we have defined $p$-values as being SU, which is a more general family of distributions. 3. To adapt the form of the $p$-value to that setting, we adopt the construction of the following proposition.}
 
@@ -253,24 +252,29 @@ p \;\overset{\mathcal{H}_0}{\sim}\; \mathcal{U}(0,1).
 \]
 \end{remark}
 
-In the classical setting, the null hypothesis is independent of the data\replaced{. However, in many practical applications}{ but in several setting} $\mathcal{H}_0$ is chosen \textit{after seeing the data}\replaced{. In this setting,}{, what makes} the classical testing approaches \added{built for type I error control are} unsuitable. \replaced{Instead, statistical guarantees need to be provided via \textit{selective inference}. In particular, the theory of statistical testing of data-driven null hypotheses is known as \textit{selective testing}\cite{fithian}. The next section provides some examples that motivate this framework.}{This is called selective testing, and it is motivated with some examples in the next section.} 
+
+In the classical setting, the null hypothesis is independent of the data . However, in many practical applications  $\mathcal{H}_0$ is chosen \textit{after seeing the data}. In this setting,  the classical testing approaches built for type I error control are unsuitable. Instead, statistical guarantees need to be provided via \textit{selective inference}. In particular, the theory of statistical testing of data-driven null hypotheses is known as \textit{selective testing}\cite{fithian}. The next section provides some examples that motivate this framework. 
 \subsection{Examples motivating selective testing}
 
 \subsubsection{Lasso}
 
 To determine whether an explanatory variable helps explain a response variable through a linear regression model, a common practice is to test whether its associated coefficient is significantly different from zero.
-In the context of classical linear regression, this falls within the framework of non-selective inference. In contrast, Lasso regression uses an \(\ell_1\)-penalty to perform variable selection \Javier{cite the Lasso paper}. \replaced{As only the coefficients selected by the Lasso can be tested, the null hypothesis depends}{Not all coefficients are tested—only those selected by the Lasso are considered. It is therefore impossible to define in advance which coefficients will be tested, since they depend} on the outcome of the Lasso regression\replaced{, and is therefore data-driven}{.} This corresponds to a setting of selective inference\replaced{, where the classical control of type I error fails}{.} \added{To illustrate so, consider a centered Gaussian vector $X=(X_1,\ldots,X_8)$} with correlation matrix \((R_{i,j})_{1\le i,j\le 8}\), defined by 
+In the context of classical linear regression, this falls within the framework of non-selective inference. In contrast, Lasso regression uses an \(\ell_1\)-penalty to perform variable selection \Javier{cite the Lasso paper}.
+As only the coefficients selected by the Lasso can be tested, the null hypothesis depends on the outcome of the Lasso regression, and is therefore data-driven. This corresponds to a setting of selective inference, where the classical control of type I error fails. To illustrate so, consider a centered Gaussian vector $X=(X_1,\ldots,X_8)$.
 \Javier{Standard notation: upper case for random variables and lower case for their realizations. Also, Gaussian is written in upper case.}
-\[
-R_{i,j} = 0.5^{|i-j|}, \quad 1\le i,j\le 8.
-\]
+% \[
+% R_{i,j} = 0.5^{|i-j|}, \quad 1\le i,j\le 8.
+% \]
 The response is modeled as
 \[
-Y = \beta^\top X + 3 \varepsilon, \quad \varepsilon \sim \mathcal{N}(0,1), \quad \beta = (3,1.5,0,0,2,0,0,0)^\top.
+Y = X \beta +  \varepsilon, \quad \varepsilon \sim \mathcal{N}(0,1), \quad \beta = (3,1.5,0,0,2,0,0,0)^\top.
 \]
 \Javier{Is $\varepsilon$ one-dimensional?}
 
-We generated \replaced{$n=100$ independent realizations of $(X,Y)$ and implemented the Lasso algorithm, obtaining}{a sample of size \(n=100\) and obtained} the \deleted{following} regularization path \added{presented in Figure~\ref{fig:lasso_path}(a).} \added{Then,} we tested $\beta_3 = 0$. \replaced{After repeating this pipeline $M=2000$ times, we obtained}{for each simulated sample and obtained and obtained} the empirical $p$-value distribution depicted in Figure \ref{fig:lasso_path}(b). $p$-values are not super-uniform, therefore a selective inference approach should be used instead of naive testing after selection. \Javier{Avoid starting a sentence with the word $p$-value.}
+We generated $n=100$ independent realizations of $(X,Y)$ and implemented the Lasso algorithm, obtaining the regularization path presented in Figure~\ref{fig:lasso_path}(a).
+Then, we tested whether a randomly chosen coefficient selected by Lasso regression equals 0.
+After repeating this pipeline $M=2000$ times, we obtained the empirical $p$-value distribution depicted in Figure \ref{fig:lasso_path}(b).
+We clearly see that the $p$-values are not super-uniform, therefore a selective inference approach should be used instead of naive testing after selection. \Javier{Avoid starting a sentence with the word $p$-value.}
 
 
 \Javier{Advice: use two panels in the same figure. I have modified it but you can undo if you don't like.}
@@ -284,14 +288,12 @@ We generated \replaced{$n=100$ independent realizations of $(X,Y)$ and implement
 	\caption{}
  \end{subfigure}
  	 \begin{subfigure}{0.47\textwidth}
- 	 \includegraphics[width = \textwidth]{images/pvalues_lasso.png}
+ 	 \includegraphics[width = \textwidth]{images/lasso_pvalues.png}
   \caption{}
   \end{subfigure}
   \caption{(a) Regularization path of the coefficients obtained using the Lasso algorithm. \Javier{This is for a single realization of $(X,Y)$, right?}
 Some coefficients are zero, and three converge toward the theoretical values 
-(3,1.5,2). (b) \added{Empirical} cumulative distribution function \added{(ECDF)} of the $p$-values obtained from \replaced{testing $\beta_3 = 0$}{significance tests
-of the third} \replaced{after selecting the coefficient}{ coefficient estimated} by a Lasso regression. The \replaced{ECDF}{empirical distribution function}
-was computed \replaced{from}{using} $M$ = 2000 simulations.}
+(3,1.5,2). (b) Empirical cumulative distribution function (ECDF) of the $p$-values obtained from tesing wheter a randomly chosen coefficient is null after selecting the coefficient by a Lasso regression. The ECDF was computed from $M$ = 2000 simulations.}
   \label{fig:lasso_path}
 \end{figure}
 
@@ -309,7 +311,8 @@ was computed \replaced{from}{using} $M$ = 2000 simulations.}
 \subsubsection{Publication bias}
 
 Most published studies gain publication due to their demonstrated significance.  
-Testing statistical effects from such studies falls within selective inference, as these studies have undergone a selection process.  
+Only studies presentating major results are published by scientifics.
+Thus, there is a selection process.
 If $Y_i \sim \mathcal{N}(\mu_i,1)$ represents the effect size of a scientific study and only those with $|Y_i| > 1$ are published, denoted $\hat{I} = \{i: |Y_i| > 1\}$, then a naive level $\alpha$ test $H_{0,i}: \mu_i = 0$ for $i \in \hat{I}$ is invalid.
 Indeed, Fithian \cite{fithian} demonstrates that the false positive rate among true nulls reaches approximately 0.16, far exceeding the nominal 0.05 level.  
 Valid inference requires thresholding $|Y_i|$ at 2.41 rather than 1.96, the $0.95$ quantile of the standard normal, imposing a more stringent criterion.
@@ -319,10 +322,10 @@ Valid inference requires thresholding $|Y_i|$ at 2.41 rather than 1.96, the $0.9
 \subsubsection{Clustering}
 
 Another remarkable example of selective inference appears when evaluating the performance of clustering algorithms by testing for the equality of cluster means.
-To illustrate the need of using appropriate tests in the context of selective inference, we simulated samples of \replaced{Gaussian}{gaussian} random variables \Javier{Not clear! Gaussian random vectors defined how? And how many samples?} that were classified into $K = 3$ groups using hierarchical clustering and $k$-means.
+To illustrate the need of using appropriate tests in the context of selective inference, we simulated $n = 1000$ samples of a centered Gaussian random variable \Javier{Not clear! Gaussian random vectors defined how? And how many samples?} that was classified into $K = 3$ groups using hierarchical clustering and $k$-means.
 
-For each sample, \added{the} equality of cluster means was tested using a classical z-test, for two randomly selected clusters. If the test controlled the type I error in this setting, the resulting $p$-value would be \added{(super-)}uniformly distributed under the null hypothesis. 
-However, the `clustering + post-selection testing' procedure leads to a deviation from \replaced{super-uniformity}{the uniform distribution, demonstrating the lack of control of the type I error}, as shown in Figure~\ref{fig:deux_images}.
+For each sample, the equality of cluster means was tested using a classical t-test, for two randomly selected clusters. If the test controlled the type I error in this setting, the resulting $p$-value would be super-uniformly distributed under the null hypothesis. 
+However, the `clustering + post-selection testing' procedure leads to a deviation from super-uniformity, as shown in Figure~\ref{fig:deux_images}.
 
 
 \begin{figure}[H]
@@ -334,13 +337,13 @@ However, the `clustering + post-selection testing' procedure leads to a deviatio
 \end{subfigure}  
   \hfill
   \begin{subfigure}{0.47\textwidth}
-  \includegraphics[width=\textwidth]{images/kmeans_df.png}
+  \includegraphics[width=\textwidth]{images/kmeans_pvalues.png}
 	\caption{}  
   \end{subfigure}
   \caption{Cumulative distribution functions of the $p$-values obtained from tests of equality of means
-    between clusters after \added{(a)} hierarchical \added{agglomerative} clustering \replaced{(HAC)}{(CAH)} and \added{(b)} $k$-means algorithms.
-The distribution functions were computed using $M$ = 2000 simulations from a multivariate normal distribution with
-  $\mu = 0_{n\times p}$ \Javier{I guess you mean $0_p$} and $\Sigma = 0.98^{|i-j|}$ for $1 \leq i,j \leq n \times p$, \Javier{I don't understand the $n\times p$ here}. with $n = 100$ et $p = 5$. \Javier{Mention that you set the clustering algorithms to choose $K=3$ clusters, and that you tested the equality of cluster means for two randomly selected clusters (if that's the case).}}
+    between clusters after (a) hierarchical agglomerative clustering (HAC) and (b) $k$-means algorithms.
+The distribution functions were computed using $M$ = 2000 simulations from a univariate centered normal distribution.
+}
   \label{fig:deux_images}
 \end{figure}
 
@@ -387,25 +390,25 @@ In the remainder of the article, we employ this method to develop a statistical 
 
 \subsection{Notation and preliminaries}
 
-Let $X \in \mathbb{R}^{n \times p}$ be the design matrix.
+Let $\mathbf{X} \in \mathbb{R}^{n \times p}$ be the design matrix.
 A cluster is an element of a partition of the samples.
-We note $C$ a clustering algorithm and $C_1 \in C(X)$ a cluster obtained by the algorithm $C$ on $X$.
+We note $C$ a clustering algorithm and $C_1 \in C(\mathbf{X})$ a cluster obtained by the algorithm $C$ on $\mathbf{X}$.
 
-We note $\mu = (\mu_{i,j})_{i,j}$ such as $\mu_{i,j} = \mathbb{E}[X_{i,j}]$, with $X_{i,j}$ the element in row i and column j of the matrix $X$.
-For a subset $G$ of $\{1,\ldots,n\}$, we note $\overline{\mu}_G = \frac{1}{|G|} \displaystyle\sum_{i \in G} \mu_i \in \mathbb{R}^p$ and $\overline{X}_G = \frac{1}{|G|} \displaystyle\sum_{i \in G} X_i \in \mathbb{R}^p$
+We note $\bm{\mu} = (\bm{\mu}_{ij})_{ij}$ such as $\bm{\mu}_{ij} = \mathbb{E}[\mathbf{X}_{ij}]$, with $\mathbf{X}_{ij}$ the element in row i and column j of the matrix $\mathbf{X}$.
+For a subset $G$ of $\{1,\ldots,n\}$, we note $\overline{\bm{\mu}}_G = \frac{1}{|G|} \displaystyle\sum_{i \in G} \mu_i \in \mathbb{R}^p$ and $\overline{\mathbf{X}}_G = \frac{1}{|G|} \displaystyle\sum_{i \in G} X_i \in \mathbb{R}^p$
 
 \begin{definition}[Null Hypothesis]
-  \[H_0^{\{C_1,C_2\}}: \overline{\mu}_{C_1(X)} = \overline{\mu}_{C_2(X)}\]
+  \[H_0^{\{C_1,C_2\}}: \overline{\bm{\mu}}_{C_1(X)} = \overline{\bm{\mu}}_{C_2(X)}\]
 \end{definition}
 
 \begin{definition}[Type I selective error for clustering]
   We say that a test controls the type I selective error for clustering at leval $\alpha$ if
   \[
-    \mathbb{P}_{H_0^{\{C_1,C_2\}}}(Reject ~ H_0^{\{C_1,C_2\}} ~ | ~ C_1,C_2 \in C(X)) \leq \alpha,\quad \alpha \in (0,1).
+    \mathbb{P}_{H_0^{\{C_1,C_2\}}}(\textup{Reject} ~ H_0^{\{C_1,C_2\}} ~ | ~ C_1,C_2 \in C(\mathbf{X})) \leq \alpha,\quad \alpha \in (0,1).
   \]
   We say that it constrols exactly the type I selective error for clustering at level $\alpha$ if
 \[
-    \mathbb{P}_{H_0^{\{C_1,C_2\}}}(Reject ~ H_0^{\{C_1,C_2\}} ~ | ~ C_1,C_2 \in C(X)) = \alpha, \quad \alpha \in (0,1).
+  \mathbb{P}_{H_0^{\{C_1,C_2\}}}(\textup{Reject} ~ H_0^{\{C_1,C_2\}} ~ | ~ C_1,C_2 \in C(\mathbf{X})) = \alpha, \quad \alpha \in (0,1).
   \]
 
 \end{definition}
@@ -415,21 +418,21 @@ For a subset $G$ of $\{1,\ldots,n\}$, we note $\overline{\mu}_G = \frac{1}{|G|} 
 To run a proper test, we need to control this error at level $\alpha$.
 In the ideal, we would like to define a p-value as following:
 \[
-  p_{ideal}(x) = \mathbb{P}_{H_0^{\{C_1,C_2\}}}(T(X) \geq T(x) ~ | ~ C_1,C_2 \in C(X))
+  p_{ideal}(x) = \mathbb{P}_{H_0^{\{C_1,C_2\}}}(T(\mathbf{X}) \geq T(x) ~ | ~ C_1,C_2 \in C(\mathbf{X}))
 \]
 with $T$ being a test statistic.
 
 With this p-value, we can control the selective type I error for clustering.
 
 \begin{proposition}\label{prop_pideal}
-  The selection rule $\mathcal{R} = \1_{\{p_{ideal} \leq \alpha\}}, \quad \alpha \in (0,1).$ controls the selective type I error for clustering at leval $\alpha$
+  The selection rule $\pi = \mathds{1}{\{p_{ideal} \leq \alpha\}}, \quad \alpha \in (0,1).$ controls the selective type I error for clustering at leval $\alpha$
 \end{proposition}
 
 %TODO: proof that p_ideal is a p-value
 However, $p_{ideal}$ cannot be evaluated in pratice as it depends on parameters that are unknown. 
 Thus, to address this issue, we need to add technical events to the conditioning set and consided:
 \[
-  p(x) = \mathbb{P}_{H_0^{\{C_1,C_2\}}}(T(X) \geq T(x) ~ | ~ C_1,C_2 \in C(X), E[X])
+  p(x) = \mathbb{P}_{H_0^{\{C_1,C_2\}}}(T(\mathbf{X}) \geq T(x) ~ | ~ C_1,C_2 \in C(\mathbf{X}), E[\mathbf{X}])
 \]
 
 \subsection{Gao et al. approach}
@@ -501,7 +504,7 @@ which concludes the proof. \Javier{It's okay, but no need to repeat what we are 
 
 By definition of the rejection rule,
 \[
-  \mathbb{P}_{\mathcal{H}_0}(Reject ~ \mathcal{H}_0)
+  \mathbb{P}_{\mathcal{H}_0}(\text{Reject} ~ \mathcal{H}_0)
 = \mathbb{P}_{\mathcal{H}_0}(p \le \alpha).
 \]
 Since \(p\) is a $p$-value for \(\mathcal{H}_0\), it is super-uniform under
@@ -582,17 +585,7 @@ Thus \(p\) is uniformly distributed on \([0,1]\) under \(\mathcal{H}_0\).
 \subsection{Proofs of Section~\ref{sec:post_clustering_inf}}
 
 \begin{proof}[Proof of Proposition~\ref{prop_pideal}]
-
-  By definition of the rejection rule,
-  \[ 
-    \mathbb{P}_{H_0^{\{C_1,C_2\}}}\bigl(\text{Reject } H_0^{\{C_1,C_2\}} ~ | ~ C_1,C_2 \in C(X)\bigr)
-    =\mathbb{P}_{H_0^{\{C_1,C_2\}}}\bigl(p_{\text{ideal}} \leq \alpha ~ | ~ C_1,C_2 \in C(X)\bigr) 
-  \]
-  Since $p_{ideal}$ is a p-value for $\mathcal{H}_0^{\{C_1,C_2\}}$, it is super uniform under $\mathcal{H}_0^{\{C_1,C_2\}}$, hence
-    \[
-    \mathbb{P}_{H_0^{\{C_1,C_2\}}}\bigl(\text{Reject } H_0^{\{C_1,C_2\}} ~ | ~ C_1,C_2 \in C(X)\bigr) \leq \alpha
-    \]
-  This establishes control of the type I error at leval $\alpha$.
+  ...
 \end{proof}
 
 

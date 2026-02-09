@@ -1,42 +1,4 @@
 \contentsline {added}{Added: \truncate {\Changestruncatewidth }{$\mathcal {H}_0$}}{3}{section*.2}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{, and \textit {composite} otherwise}}{3}{section*.3}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{The complementary set}}{3}{section*.4}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{is called its \textit {alternative hypothesis}}}{3}{section*.5}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{for $\mathcal {H}_0$}}{3}{section*.6}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{binary partition of the sample space, defined by a mapping}}{3}{section*.7}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{For $\omega \in \Omega $, we say that the test \textit {rejects} $\mathcal H_0$ based on $\omega $ if $\pi _{\mathcal {H}_0}(\omega )=1$, and \textit {does not reject} $\mathcal H_0$ based on $\omega $ if $\pi _{\mathcal {H}_0}(\omega )=0$.}}{4}{section*.8}%
-\contentsline {deleted}{Deleted: \truncate {\Changestruncatewidth }{ Let $\mathcal H_0 \subset \mathcal M_1$ be a hypothesis and let $\pi : \Omega \to \{0,1\}$ be a test. For $\omega \in \Omega $, we say that the test \textit {rejects} $\mathcal H_0$ if $\pi _{\mathcal {H}}(\omega )=1$, and \textit {does not reject} $\mathcal H_0$ if $\pi (\omega )=0$.}}{4}{section*.9}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{-}}{4}{section*.10}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{-}}{4}{section*.11}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{to define a test based on the information given by a real-valued random variable $X$, $p$-values are often built in the form}}{5}{section*.12}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{p(x)}}{5}{section*.13}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{T(x)}}{5}{section*.14}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{where $T$ is a test statistic and $x$ is a realization of $X$.}}{5}{section*.15}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{. However, in many practical applications}}{6}{section*.16}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{. In this setting,}}{6}{section*.17}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{built for type I error control are}}{6}{section*.18}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{Instead, statistical guarantees need to be provided via \textit {selective inference}. In particular, the theory of statistical testing of data-driven null hypotheses is known as \textit {selective testing}\cite {fithian}. The next section provides some examples that motivate this framework.}}{6}{section*.19}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{As only the coefficients selected by the Lasso can be tested, the null hypothesis depends}}{6}{section*.20}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{, and is therefore data-driven}}{6}{section*.21}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{, where the classical control of type I error fails}}{6}{section*.22}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{To illustrate so, consider a centered Gaussian vector $X=(X_1,\ldots ,X_8)$}}{6}{section*.23}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{$n=100$ independent realizations of $(X,Y)$ and implemented the Lasso algorithm, obtaining}}{7}{section*.24}%
-\contentsline {deleted}{Deleted: \truncate {\Changestruncatewidth }{following}}{7}{section*.25}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{presented in Figure~\ref {fig:lasso_path}(a).}}{7}{section*.26}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{Then,}}{7}{section*.27}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{After repeating this pipeline $M=2000$ times, we obtained}}{7}{section*.28}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{Empirical}}{7}{section*.36}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{(ECDF)}}{7}{section*.37}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{testing $\beta _3 = 0$}}{7}{section*.38}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{after selecting the coefficient}}{7}{section*.39}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{ECDF}}{7}{section*.40}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{from}}{7}{section*.41}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{Gaussian}}{8}{section*.42}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{the}}{8}{section*.43}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{(super-)}}{8}{section*.44}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{super-uniformity}}{8}{section*.45}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{(a)}}{9}{section*.51}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{agglomerative}}{9}{section*.52}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{(HAC)}}{9}{section*.53}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{(b)}}{9}{section*.54}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{,}}{13}{section*.55}%
+\contentsline {added}{Added: \truncate {\Changestruncatewidth }{-}}{4}{section*.3}%
+\contentsline {added}{Added: \truncate {\Changestruncatewidth }{-}}{4}{section*.4}%
+\contentsline {added}{Added: \truncate {\Changestruncatewidth }{,}}{12}{section*.7}%
