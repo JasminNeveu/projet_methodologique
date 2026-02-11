@@ -41,7 +41,7 @@ pvals <- numeric(B)
 
 for (b in 1:B) {
   x <- MASS::mvrnorm(n = n,rep(0,p),Sigma)
-  d <- dist(X, method = "euclidean")  
+  d <- dist(x, method = "euclidean")  
   hc <- hclust(d, method = "average")
   clusters <- cutree(hc, k = 3)
   clusters
@@ -54,7 +54,7 @@ for (b in 1:B) {
 }
 
 pval_df <- data.frame(pval = pvals)  
-hac_pval <- ggplot(pval_df, aes(x = pval)) +
+hac_pval<-ggplot(pval_df, aes(x = pval)) +
   stat_ecdf(geom = "step", color = "blue",size=0.8,pad = FALSE) +
   geom_abline(intercept = 0, slope = 1,size=0.1,linetype="dashed") +
   labs(x = "p-value", y = "ECDF") +
@@ -62,3 +62,4 @@ hac_pval <- ggplot(pval_df, aes(x = pval)) +
   ggtitle("HAC - average linkage") +
   coord_cartesian(xlim = c(0, 1),ylim=c(0,1))
 ggsave(filename="hac_pvalues.png",plot=hac_pval,dpi=300,width=6,height=4,units="in")
+
