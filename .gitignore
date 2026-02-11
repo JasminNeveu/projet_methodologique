@@ -22,3 +22,6 @@ wheels/
 *.synctex.gz
 *.pdf
 *.bbl
+
+*.RDATA
+*.Rhistory
