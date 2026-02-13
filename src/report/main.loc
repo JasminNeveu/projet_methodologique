@@ -1,52 +1,10 @@
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{:}}{3}{section*.2}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{In what follows}}{3}{section*.3}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{adopt the more standard}}{3}{section*.4}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{making the}}{3}{section*.5}%
-\contentsline {deleted}{Deleted: \truncate {\Changestruncatewidth }{is}}{3}{section*.6}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{-}}{4}{section*.7}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{-}}{4}{section*.8}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{on [0,1]}}{4}{section*.9}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{and}}{4}{section*.10}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{.}}{4}{section*.11}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{the test $\pi = \mathds {1}{\{p \leq \alpha \}}$}}{4}{section*.12}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{, for $\alpha \in (0,1)$}}{4}{section*.13}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{s}}{4}{section*.14}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{distribution}}{4}{section*.15}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{,}}{4}{section*.16}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{super-uniform random variables under the null}}{4}{section*.17}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{corresponds to}}{4}{section*.18}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{classical}}{4}{section*.19}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{\textup {\hbox {\mathsurround \z@ \normalfont (\ignorespaces \ref {unilateral_uniform_pvalue}\unskip \@@italiccorr )}}}}{4}{section*.20}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{introduce}}{4}{section*.21}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{cumulative}}{5}{section*.22}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{framework}}{5}{section*.23}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{, because all coeficients are fixed \textit {a priori}}}{5}{section*.24}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{and set the model}}{5}{section*.25}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{motivating the use of}}{5}{section*.26}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{testing}}{5}{section*.27}%
-\contentsline {deleted}{Deleted: \truncate {\Changestruncatewidth }{should be used}}{5}{section*.28}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{In many areas of research, scientists tend to test for signficance only when the associated effect is found to be substantial. In other words, testing is performed after a selection process that filters out small effects. In that setting, controlling type I error at a fixed level $\alpha $ yields inflated false positive rates when considering the ensemble of all published studies.}}{6}{section*.30}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{in}}{6}{section*.31}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{, whose significance is tested only if}}{6}{section*.32}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{,}}{6}{section*.33}%
-\contentsline {deleted}{Deleted: \truncate {\Changestruncatewidth }{for $i \in \hat {I}$}}{6}{section*.34}%
-\contentsline {deleted}{Deleted: \truncate {\Changestruncatewidth }{all studies}}{6}{section*.35}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{one-dimensional}}{7}{section*.36}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{standard}}{7}{section*.37}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{Each sample}}{7}{section*.38}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{agglomerative}}{7}{section*.39}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{Then}}{7}{section*.40}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{Empirical}}{7}{section*.46}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{after testing the}}{7}{section*.47}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{cluster}}{7}{section*.48}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{for}}{7}{section*.49}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{Selective type I}}{9}{section*.51}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{selective type I}}{9}{section*.52}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{selective type I}}{9}{section*.53}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{Ideally}}{10}{section*.54}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{follows}}{10}{section*.55}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{To}}{10}{section*.56}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{the authors in~\cite {Gao} propose}}{10}{section*.57}%
-\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{, considering the following quantity:}}{10}{section*.58}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{as a $p$-value for~\textup {\hbox {\mathsurround \z@ \normalfont (\ignorespaces \ref {h0c1c2}\unskip \@@italiccorr )}}.}}{10}{section*.59}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{,}}{12}{section*.60}%
+\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{Selective type I}}{9}{section*.5}%
+\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{selective type I}}{9}{section*.6}%
+\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{selective type I}}{9}{section*.7}%
+\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{Ideally}}{10}{section*.8}%
+\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{follows}}{10}{section*.9}%
+\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{To}}{10}{section*.10}%
+\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{the authors in~\cite {Gao} propose}}{10}{section*.11}%
+\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{, considering the following quantity:}}{10}{section*.12}%
+\contentsline {added}{Added: \truncate {\Changestruncatewidth }{as a $p$-value for~\eqref {h0c1c2}.}}{10}{section*.13}%
+\contentsline {added}{Added: \truncate {\Changestruncatewidth }{,}}{12}{section*.14}%

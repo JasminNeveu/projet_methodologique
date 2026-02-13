@@ -3,7 +3,7 @@ library(MASS)
 
 set.seed(123)
 
-n <- 50       
+n <- 100      
 B <- 2000       
 p <- 5
 pvals <- numeric(B)
@@ -25,12 +25,18 @@ for (b in 1:B) {
 
 pval_df <- data.frame(pval = pvals)  
 kmean_pval <- ggplot(pval_df, aes(x = pval)) +
-  stat_ecdf(geom = "step", color = "blue",size=0.8,pad = FALSE) +
-  geom_abline(intercept = 0, slope = 1,size=0.1,linetype="dashed") +
-  labs(x = "p-value", y = "ECDF") +
+  stat_ecdf(geom = "step", color = "blue", size = 0.8, pad = FALSE) +
+  geom_abline(intercept = 0, slope = 1, size = 0.1, linetype = "dashed") +
+  labs(x = "p-value", y = "ECDF", title = "k-means") +
+  coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
   theme_minimal() +
-  ggtitle("k-means") +
-  coord_cartesian(xlim = c(0, 1),ylim=c(0,1))
+  theme(
+    axis.title = element_text(size = 16),
+    axis.text  = element_text(size = 14),
+    plot.title = element_text(size = 18),
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 16)
+  )
 
 ggsave(filename="kmeans_pvalues.png",plot=kmean_pval,dpi=300,width=6,height=4,units="in")
 
@@ -60,6 +66,15 @@ hac_pval<-ggplot(pval_df, aes(x = pval)) +
   labs(x = "p-value", y = "ECDF") +
   theme_minimal() +
   ggtitle("HAC - average linkage") +
-  coord_cartesian(xlim = c(0, 1),ylim=c(0,1))
+  coord_cartesian(xlim = c(0, 1),ylim=c(0,1)) +
+  theme_minimal() +
+  theme(
+    axis.title = element_text(size = 16),
+    axis.text  = element_text(size = 14),
+    plot.title = element_text(size = 18),
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 16)
+  )
+
 ggsave(filename="hac_pvalues.png",plot=hac_pval,dpi=300,width=6,height=4,units="in")
 
