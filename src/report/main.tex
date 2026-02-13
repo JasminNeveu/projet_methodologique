@@ -355,12 +355,14 @@ H_0^{\{C_1,C_2\}}: \overline{\bm{\mu}}_{C_1} = \overline{\bm{\mu}}_{C_2}
 \end{definition}
 \Javier{The previous equation is not really a definition. Say it rather in the text, also helping the reader understand the flow: `The goal is to test for the equality of cluster means, that is, testing the following null hypothesis:' and then add the equation (with a number).}
 
-\begin{definition}[Type I selective error for clustering]
-  We say that a test controls the type I selective error for clustering at leval $\alpha$ if
+\Javier{Here, say that we are adopting the conditional inference framework described in the previous section which, in the setting of clustering, is equivalent to control the so-called selective type I error for clustering, defined below.}
+
+\begin{definition}[\replaced{Selective type I}{Type I selective} error for clustering]
+  We say that a test controls the \replaced{selective type I}{type I selective} error for clustering at leval $\alpha$ if
   \[
     \mathbb{P}_{H_0^{\{C_1,C_2\}}}(\textup{Reject} ~ H_0^{\{C_1,C_2\}} ~ | ~ C_1,C_2 \in C(\mathbf{X})) \leq \alpha,\quad \alpha \in (0,1).
   \]
-  We say that it controls exactly the type I selective error for clustering at level $\alpha$ if
+  We say that it controls exactly the \replaced{selective type I}{type I selective} error for clustering at level $\alpha$ if
 \[
   \mathbb{P}_{H_0^{\{C_1,C_2\}}}(\textup{Reject} ~ H_0^{\{C_1,C_2\}} ~ | ~ C_1,C_2 \in C(\mathbf{X})) = \alpha, \quad \alpha \in (0,1).
   \]
