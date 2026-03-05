@@ -24,11 +24,14 @@
 
 \usepackage{changes}
 \newcommand{\Javier}[1]{\textcolor{purple}{#1}}
+\newcommand{\Jasmin}[1]{\textcolor{brown}{#1}}
 
 \newcommand{\abs}[1]{\left\lvert#1\right\rvert}
 \newcommand{\norm}[1]{||#1||}
 
 \newcommand{\1}{\mathbf{1}}
+\newcommand{\projnu}{\pi_{\nu}^{\perp}}
+\newcommand{\indep}{\perp \!\!\! \perp}
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{cor}[theorem]{Corollary}
@@ -322,6 +325,9 @@ In the remainder of the article, we employ this method to develop a statistical 
 
 \Javier{As we are focusing on one article, I think it is better if we start right away with their approach. Here we can add a sentence saying that this article was the first to propose a feasible solution to post-clustering inference, and that we focus on the setting and approach introduced by the autorhs. Later in the discussion, we will mention its limitations and speak about other articles.}
 
+The article \cite{Gao} is the first one to propose a feasible solution to post-clustering inference. 
+In this (article,project ?) we will focus on the setting and approach introduced by the authors.
+
 \subsection{Gao \textit{et al.}'s approach}
 
 \Javier{Use bold for matrix notation but not for matrix coefficients: $\mathbf{X}=(X_{ij})_{ij}$. For vectors in $\mathbb{R}^p$ don't use bold either, write $\bar{\mu}_G$ or $\bar{X}_G$, to be consistent with Gao \textit{et al.}'s notation.}
@@ -330,58 +336,157 @@ Let $\mathbf{X} \in \mathbb{R}^{n \times p}$ be the design matrix.
 A cluster is an element of a partition of the samples.
 We note $C$ a clustering algorithm and $C_1 \in C(\mathbf{X})$ a cluster obtained by the algorithm $C$ on $\mathbf{X}$.
 
-We note $\bm{\mu} = (\bm{\mu}_{ij})_{ij}$ such as $\bm{\mu}_{ij} = \mathbb{E}[\mathbf{X}_{ij}]$, with $\mathbf{X}_{ij}$ the element in row i and column j of the matrix $\mathbf{X}$.
-For a subset $G$ of $\{1,\ldots,n\}$, we note $\overline{\bm{\mu}}_G = \frac{1}{|G|} \displaystyle\sum_{i \in G} \mu_i \in \mathbb{R}^p$ and $\overline{\mathbf{X}}_G = \frac{1}{|G|} \displaystyle\sum_{i \in G} X_i \in \mathbb{R}^p$.
+We note $\boldsymbol{\mu} = (\mu_{ij})_{ij}$ such as $\mu_{ij} = \mathbb{E}[X_{ij}]$, with $X_{ij}$ the element in row i and column j of the matrix $\mathbf{X}$.
+For a subset $G$ of $\{1,\ldots,n\}$, we note $\bar{\mu}_G = \dfrac{1}{|G|} \displaystyle\sum_{i \in G} \mu_i \in \mathbb{R}^p$ and $\bar{X}_G = \dfrac{1}{|G|} \displaystyle\sum_{i \in G} X_i \in \mathbb{R}^p$.
 
 \Javier{Here, introduce the vector $\nu$ and the compact notation $\nu^T\mathbf{X}$, $\nu^T\boldsymbol{\mu}$.}
 
-\begin{definition}[Null Hypothesis]
-\begin{equation}\label{h0c1c2}\tag{H0}
-H_0^{\{C_1,C_2\}}: \overline{\bm{\mu}}_{C_1} = \overline{\bm{\mu}}_{C_2}
+The goal is to test for the equality of cluster means, that is, testing the following null hypothesis
+
+\begin{equation}
+  \mathcal{H}_0^{C_1,C_2}: \bar{\mu}_{C_1} = \bar{\mu}_{C_2}
 \end{equation}
-\end{definition}
-\Javier{The previous equation is not really a definition. Say it rather in the text, also helping the reader understand the flow: `The goal is to test for the equality of cluster means, that is, testing the following null hypothesis:' and then add the equation (with a number).}
+For concision and clarity, we introduce the following notations
 
-\Javier{Here, say that we are adopting the conditional inference framework described in the previous section which, in the setting of clustering, is equivalent to control the so-called selective type I error for clustering, defined below.}
-
-\begin{definition}[\replaced{Selective type I}{Type I selective} error for clustering]
-  We say that a test controls the \replaced{selective type I}{type I selective} error for clustering at leval $\alpha$ if
-  \[
-    \mathbb{P}_{H_0^{\{C_1,C_2\}}}(\textup{Reject} ~ H_0^{\{C_1,C_2\}} ~ | ~ C_1,C_2 \in C(\mathbf{X})) \leq \alpha,\quad \alpha \in (0,1).
-  \]
-  We say that it controls exactly the \replaced{selective type I}{type I selective} error for clustering at level $\alpha$ if
 \[
-  \mathbb{P}_{H_0^{\{C_1,C_2\}}}(\textup{Reject} ~ H_0^{\{C_1,C_2\}} ~ | ~ C_1,C_2 \in C(\mathbf{X})) = \alpha, \quad \alpha \in (0,1).
+\nu = (\nu_i)_{i=1}^n, \qquad
+\nu_i =
+\begin{cases}
+\dfrac{1}{|C_1|}, & \text{if } i \in C_1, \\[0.4em]
+\dfrac{1}{|C_2|}, & \text{if } i \in C_2, \\[0.2em]
+0, & \text{otherwise}.
+\end{cases}
+\]
+
+
+\[
+  \left\{
+    \begin{aligned}
+      \bar{\mu}_{C_1} - \bar{\mu}_{C_2} &= \nu^T\boldsymbol{\mu} \\
+    \bar{X}_{C_1} - \bar{X}_{C_2} &= \nu^T\mathbf{X}
+    \end{aligned}
+    \right.
+\]
+
+
+Thus, we can rewrite the null hypothesis as follows
+
+\begin{equation}\label{h0c1c2}
+  H_0: \bar{\mu}_{C_1} = \bar{\mu}_{C_2} \iff \nu^T\boldsymbol{\mu} = 0
+\end{equation}
+
+
+\Javier{The previous equation is not really a definition. Say it rather in the text, also helping the reader understand the flow: `The goal is to test for the equality of cluster means, that is, testing the following null hypothesis:' and then add the equation (with a number).}
+\Javier{Here, say that we are adopting the conditional inference framework described in the previous section which, in the setting of clustering, is equivalent to control the so-called selective type I error for clustering, defined below.}
+\Jasmin{I first introduced the vector $\nu$ then the null hypothesis to after rewrite it in a concise way.}
+
+\begin{definition}[Selective type I error for clustering]
+  We say that a test controls the selective type I error for clustering at leval $\alpha$ if
+  \[
+    \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}(\textup{Reject} ~ \mathcal{H}_0^{\{C_1,C_2\}} ~ | ~ C_1,C_2 \in C(\mathbf{X})) \leq \alpha,\quad \alpha \in (0,1).
+  \]
+  We say that it controls exactly the selective type I error for clustering at level $\alpha$ if
+\[
+  \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}(\textup{Reject} ~ \mathcal{H}_0^{\{C_1,C_2\}} ~ | ~ C_1,C_2 \in C(\mathbf{X})) = \alpha, \quad \alpha \in (0,1).
   \]
 
 \end{definition}
 
-%TODO: Gérer problème d'alinéa
 \Javier{I think we should introduce the model here. The idea should be something like: To define a $p$-value that controls the selective type I error, model assumptions need to be imposed on $\mathbf{X}$. The authors in~\cite{Gao} adopt the following matrix normal model:}
+
+To defined a $p$-value taht controls the selective type I error, model assumptions need to be imposed on $\mathbf{X}$. The authors in \cite{Gao} adopt the following matrix normal model:
 \begin{equation}
 \mathbf{X}\sim\mathcal{MN}_{n\times p}(\boldsymbol{\mu},\mathbb{I}_n,\sigma^2\mathbb{I}_p),
 \end{equation}
+
+
+which means that the lines of $\mathbf{X}$ are independent $p$-dimensional random vectors distributed as $\mathcal{N}_p(\mu_i,\sigma^2\mathbb{I}_p)$, for every line $i\in\lbrace 1,\ldots,n\rbrace$. Note that this model imposes an indepedence assumption between the features (columns) of $\mathbf{X}$.
 \Javier{which means that the lines of $\mathbf{X}$ are independent $p$-dimensional random vectors distributed as $\mathcal{N}_p(\mu_i,\sigma^2\mathbb{I}_p)$, for every line $i\in\lbrace 1,\ldots,n\rbrace$. Note that this model imposes an indepedence assumption between the features (columns) of $\mathbf{X}$.
 Then, we mention the $p$-value as you did below:}
 
 To run a proper test, we need to control this error at level $\alpha$.
-\replaced{Ideally}{In the ideal} \Javier{so french...}, we would like to define a p-value as \replaced{follows}{following}:
+Ideally, we would like to define a p-value as follows: 
 \[
-  p_{ideal}(x) = \mathbb{P}_{H_0^{\{C_1,C_2\}}}(T(\mathbf{X}) \geq T(x) ~ | ~ C_1,C_2 \in C(\mathbf{X})),
+  p_{ideal}(x) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}(T(\mathbf{X}) \geq T(x) ~ | ~ C_1,C_2 \in C(\mathbf{X})),
 \]
 with $T$ being a test statistic.
 
-\Javier{Now we mention the choice of $T$. Say that in~\cite{Gao} they set $T(\mathbf{X})=\norm{\nu^T\mathbf{X}}_2$ because we know its distribution under the null, which is $\mathcal{N}_p(\mathbf{0}_p,\norm{\nu}_2^2\sigma^2\mathbb{I}_p)$, explaining why. Then, continue:}
+\Javier{Now we mention the choice of $T$. Say that in~\cite{Gao} they set $T(\mathbf{X})=\norm{\nu^T\mathbf{X}}_2$ because we know its distribution under the null, which is $\mathcal{N}_p(\mathbf{0}_p,\norm{\nu}_2^2\sigma^2\mathbb{I}_p)$, explaining why. Then, continue:} 
+\Jasmin{isn't a $\chi$ distribution ? }
 
- However, $p_{ideal}$ cannot be evaluated in practice as it depends on parameters that are unknown~\cite{Gao}. \Javier{Whenever you make a statement that you don't really justify, cite the source.} \replaced{To}{Thus, to} address this issue, \replaced{the authors in~\cite{Gao} propose}{we need} to add technical events to the conditioning set\replaced{, considering the following quantity:}{ and consider:
-$
-  p(x) = \mathbb{P}_{H_0^{\{C_1,C_2\}}}(T(\mathbf{X}) \geq T(x) ~ | ~ C_1,C_2 \in C(\mathbf{X}), E[\mathbf{X}])
-$}
+In \cite{Gao}, they defined the test statistic as:
+
+$T(\mathbf{X}) = \norm{\nu^\top\mathbf{X}}_2$
+
+which as a known distribution under the null hypothesis.
+\[
+\begin{aligned}
+\nu^\top \mathbf{X}
+&\sim \mathcal{MN}_{1 \times p}(\nu^\top \mu,\ \nu \nu^\top,\ \sigma^2 I_p) \\
+&= \mathcal{MN}_{1 \times p}(\nu^\top \mu,\ I_1,\ \|\nu\|_2^2 \sigma^2 I_p) \\
+&= \mathcal{N}_p\!\left(\nu^\top \mu,\ \|\nu\|_2^2 \sigma^2 I_p\right).
+\end{aligned}
+\]
+
+ However, $p_{ideal}$ cannot be evaluated in practice as it depends on parameters that are unknown~\cite{Gao}. 
+ \Javier{Whenever you make a statement that you don't really justify, cite the source.} To address this issue, the authors in~\cite{Gao} propose to add technical events to the conditioning set, considering the following quantity: 
 \Javier{Here add the $p$-value defined by Gao, that is, Equation 8 in~\cite{Gao}.}
-\added{as a $p$-value for~\eqref{h0c1c2}.}
+\begin{equation}\label{pvalcondi}
+  p(x) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\bigl(\norm{\nu^T\mathbf{X}}_2 \geq \norm{\nu^Tx}_2 ~ | ~ C_1,C_2 \in \mathcal{C}(\mathbf{X}), E(\mathbf{X})\bigr)
+\end{equation}
+with $E(\mathbf{X})$ being the additional events
+
+
+as a $p$-value for~\eqref{h0c1c2}.
+Now, let's determine the additional events.
+
+\begin{equation}
+  \mathbf{X} = \projnu\mathbf{X} + (\mathbb{I}_n - \projnu)\mathbf{X}
+\end{equation}
+
+where $\projnu$ is the orthogonal projection matrix defined as:
+\begin{equation}
+  \projnu = \mathbb{I}_n - \frac{\nu\nu^\top}{\norm{\nu}_2^2} \in \mathbb{R}^{n\times n}
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+  \mathbf{X} &= \projnu \mathbf{X} + \frac{\nu \nu^T}{\norm{\nu}_2^2}\mathbf{X} \\
+  \mathbf{X} &= \projnu \mathbf{X} + \frac{\nu}{\norm{\nu}_2^2}\frac{\nu^T \mathbf{X}}{\norm{\nu^T \mathbf{X}}_2}\norm{\nu^T \mathbf{X}}_2 \\
+  \mathbf{X} &= \projnu \mathbf{X} + \frac{\nu}{\norm{\nu}_2^2} \text{dir}(\nu^T \mathbf{X})\norm{\nu^T \mathbf{X}}_2
+\end{aligned}
+\end{equation}
+
+where dir is the direction of a vector defined as:
+\begin{equation}
+  \text{dir}(z) = \frac{z}{\norm{z}_2}, z \in \mathbb{R}^p
+\end{equation}
+
+Since $\text{dir}(\nu^T \mathbf{X})$ and $\projnu \mathbf{X}$ are unknown, we define the additional events as:
+
+
+\begin{equation*}
+  E(\mathbf{X}) = \{ \projnu \mathbf{X} = \projnu x, ~ \text{dir}(\nu^T \mathbf{X}) = \text{dir}(\nu^T x)\}
+\end{equation*}
+By injection this result in \eqref{pvalcondi} we obtain the following expression for the $p$-value:
+
+\begin{equation}
+  p(x) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\bigl( \norm{\nu^T \mathbf{X}}_2 \geq \norm{\nu^Tx}_2  ~| ~ C_1,C_2 \in \mathcal{C}(\mathbf{X}), ~ \projnu \mathbf{X} = \projnu x, ~ \text{dir}(\nu^T \mathbf{X}) = \text{dir}(\nu^T x)\bigr)
+\end{equation}
+
 
 \Javier{Now we haved defined the model, the hypothesis to test and the candidate $p$-value. The goal now is to prove that the candidate $p$-value $(i)$ can be computed under an analitically tractable form and $(ii)$ controls the selective type I error for clustering. Now, we say that to prove all that we first need a technical lemma that we state now (the Lemma about the independence that we proved). Add the lemma here and its proof to the appendix.} 
 
+
+\begin{lemma}\label{lemma_indep_add_events}
+Under the null hypothesis, the following independences hold:
+\[
+  \begin{aligned}
+  &\text{(i)} & \|\nu^\top \mathbf{X}\|_2 &\indep \projnu \mathbf{X},\\
+  &\text{(ii)} & \|\nu^\top \mathbf{X}\|_2 &\indep \operatorname{dir}(\nu^\top \mathbf{X}).
+\end{aligned}
+\]
+\end{lemma}
 \appendix
 
 \section{Proofs}
@@ -529,7 +634,43 @@ Thus \(p\) is uniformly distributed on \([0,1]\) under \(\mathcal{H}_0\).
 
 \subsection{Proofs of Section~\ref{sec:post_clustering_inf}}
 
+\begin{proof}[Proof of Lemma \ref{lemma_indep_add_events}]
+  \textit{i)}
+  \begin{equation}
+    \begin{aligned}
+    \mathbb{E}(\nu^\top\mathbf{X} (\projnu \mathbf{X})^T) &= \mathbb{E}(\nu^\top \mathbf{X} \mathbf{X}^\top (\projnu)^\top) \\
+                                                         &= \nu^\top \mathbb{E}(\mathbf{X}\mathbf{X}^\top)(\projnu)^\top \\
+                                                         &= \nu^\top(\mathbb{V}(\mathbf{X})+\mathbb{E}(\mathbf{X})\mathbb{E}(\mathbf{X})^\top)(\projnu)^\top
+    \end{aligned}
+  \end{equation}
+  If $X \sim \mathcal{MN}(\mu, U, \Sigma)$ then $\mathbb{V}(\mathbf{X}) = U \operatorname{Trace}(\Sigma)$ \Jasmin{à montrer}
+  In this case $\mathbb{V}(\mathbf{X}) = \mathbb{I}_n \operatorname{Trace}(\sigma^2\mathbb{I}_p) = \sigma^2 p \mathbb{I}_n$
 
+  So
+  \begin{equation}
+    \begin{aligned}
+      \mathbb{E}(\nu^\top\mathbf{X} (\projnu \mathbf{X})^T) &= \nu^\top(\sigma^2p\mathbb{I}_n + \mathbb{E}(\mathbf{X})\mathbb{E}(\mathbf{X})^\top)(\projnu)^\top \\
+                                                            &= \sigma^2 p \nu^\top(\projnu)^\top + \nu^\top \mathbb{E}(\mathbf{X})\mathbb{E}(\mathbf{X})^\top(\projnu)^\top \\
+                                                            &= \sigma^2 p \nu^\top(\mathbb{I}_n - \frac{\nu \nu^\top}{\norm{\nu}_2^2}) + \mathbb{E}(\nu^\top \mathbf{X})\mathbb{E}(\projnu \mathbf{X})^\top \\
+                                                            &= \sigma^2 p (\nu^\top - \frac{\norm{\nu}_2^2\nu^\top}{\norm{\nu}_2^2}) + \mathbb{E}(\nu^\top \mathbf{X})\mathbb{E}((\projnu \mathbf{X})^\top) \\
+                                                            &= \mathbb{E}(\nu^\top \mathbf{X})\mathbb{E}((\projnu \mathbf{X})^\top)
+    \end{aligned}
+  \end{equation}
+  \textit{ii)}
+% \Jasmin{manipulation sur les matrices normales à revoir}
+  \begin{equation}
+  \begin{aligned}
+    \nu^T \mathbf{X} \sim \mathcal{MN}_{1 \times p}(\nu^\top\mu, \nu \nu^\top, \sigma^2\mathbb{I}_p)  &= \mathcal{MN}_{1 \times p}(\nu^\top\mu, \mathbb{I}_n,\norm{\nu}_2^2\sigma^2\mathbb{I}_p) \\
+                                                                                                      &= \mathcal{N}_p(\nu^\top \mu,\norm{\nu}_2^2\sigma^2 \mathbb{I}_p,)
+  \end{aligned}
+\end{equation}
+So $\nu^T \mathbf{X} \sim \mathcal{N}_p(0,\norm{\nu}_2^2\sigma^2\mathbb{I}_p)$ under $\mathcal{H}_0$.
+Yet, the density of a centered Gaussian random vector depends only on the norm of the parameter due to symmetry. So $\norm{\nu^\top \mathbf{X}}$ and $\text{dir}(\nu^\top\mathbf{X})$ are independent
+
+
+%
+%
+\end{proof}
 
 
 \bibliographystyle{abbrv}
