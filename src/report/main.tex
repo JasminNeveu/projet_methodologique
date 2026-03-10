@@ -412,7 +412,7 @@ Ideally, we would like to define a p-value as follows:
 with $T$ being a test statistic.
 
 \Javier{Now we mention the choice of $T$. Say that in~\cite{Gao} they set $T(\mathbf{X})=\norm{\nu^T\mathbf{X}}_2$ because we know its distribution under the null, which is $\mathcal{N}_p(\mathbf{0}_p,\norm{\nu}_2^2\sigma^2\mathbb{I}_p)$, explaining why. Then, continue:} 
-\Jasmin{isn't a $\chi$ distribution ? }
+\Jasmin{isn't a $\chi^2$ distribution ? }
 
 In \cite{Gao}, they defined the test statistic as:
 
@@ -423,10 +423,19 @@ which as a known distribution under the null hypothesis.
 \begin{aligned}
 \nu^\top \mathbf{X}
 &\sim \mathcal{MN}_{1 \times p}(\nu^\top \mu,\ \nu \nu^\top,\ \sigma^2 I_p) \\
-&= \mathcal{MN}_{1 \times p}(\nu^\top \mu,\ I_1,\ \|\nu\|_2^2 \sigma^2 I_p) \\
 &= \mathcal{N}_p\!\left(\nu^\top \mu,\ \|\nu\|_2^2 \sigma^2 I_p\right).
 \end{aligned}
 \]
+
+Therefore, under $\mathcal{H}_0^{\{C_1,C_2\}}$:
+
+\begin{equation}
+  \begin{aligned}
+  \norm{\nu^\top \mathbf{X}}_2^2 & \sim \norm{\nu}^2_2 \sigma^2 \chi^2_p \\
+  \norm{\nu^\top \mathbf{X}}_2                               & \sim \norm{\nu}_2 \sigma \chi_p
+\end{aligned}
+\end{equation}
+
 
  However, $p_{ideal}$ cannot be evaluated in practice as it depends on parameters that are unknown~\cite{Gao}. 
  \Javier{Whenever you make a statement that you don't really justify, cite the source.} To address this issue, the authors in~\cite{Gao} propose to add technical events to the conditioning set, considering the following quantity: 
@@ -434,17 +443,16 @@ which as a known distribution under the null hypothesis.
 \begin{equation}\label{pvalcondi}
   p(x) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\bigl(\norm{\nu^T\mathbf{X}}_2 \geq \norm{\nu^Tx}_2 ~ | ~ C_1,C_2 \in \mathcal{C}(\mathbf{X}), E(\mathbf{X})\bigr)
 \end{equation}
-with $E(\mathbf{X})$ being the additional events
+as a $p$-value for~\eqref{h0c1c2}, with $E(\mathbf{X})$ being the additional events
 
 
-as a $p$-value for~\eqref{h0c1c2}.
 Now, let's determine the additional events.
 
 \begin{equation}
   \mathbf{X} = \projnu\mathbf{X} + (\mathbb{I}_n - \projnu)\mathbf{X}
 \end{equation}
 
-where $\projnu$ is the orthogonal projection matrix defined as:
+where $\projnu$ is the orthogonal projection matrix onto the subspace orthogonal to $\nu$ defined as:
 \begin{equation}
   \projnu = \mathbb{I}_n - \frac{\nu\nu^\top}{\norm{\nu}_2^2} \in \mathbb{R}^{n\times n}
 \end{equation}
@@ -453,7 +461,7 @@ where $\projnu$ is the orthogonal projection matrix defined as:
 \begin{aligned}
   \mathbf{X} &= \projnu \mathbf{X} + \frac{\nu \nu^T}{\norm{\nu}_2^2}\mathbf{X} \\
   \mathbf{X} &= \projnu \mathbf{X} + \frac{\nu}{\norm{\nu}_2^2}\frac{\nu^T \mathbf{X}}{\norm{\nu^T \mathbf{X}}_2}\norm{\nu^T \mathbf{X}}_2 \\
-  \mathbf{X} &= \projnu \mathbf{X} + \frac{\nu}{\norm{\nu}_2^2} \text{dir}(\nu^T \mathbf{X})\norm{\nu^T \mathbf{X}}_2
+  \mathbf{X} &= \projnu \mathbf{X} + \frac{\nu}{\norm{\nu}_2^2} \operatorname{dir}(\nu^T \mathbf{X})\norm{\nu^T \mathbf{X}}_2
 \end{aligned}
 \end{equation}
 
@@ -644,6 +652,8 @@ Thus \(p\) is uniformly distributed on \([0,1]\) under \(\mathcal{H}_0\).
     \end{aligned}
   \end{equation}
   If $X \sim \mathcal{MN}(\mu, \mathbf{U}, \mathbf{\Sigma})$ then $\mathbb{V}(\mathbf{X}) = \mathbf{U} \operatorname{Trace}(\mathbf{\Sigma})$
+
+  
   \begin{equation}
     \begin{aligned}
       \text{Let} ~ \mathbf{Y} = \mathbf{X} - \mu \\
@@ -687,12 +697,8 @@ Thus \(p\) is uniformly distributed on \([0,1]\) under \(\mathcal{H}_0\).
   \end{equation}
 
   \textit{ii)}
-% \Jasmin{manipulation sur les matrices normales à revoir}
   \begin{equation}
-  \begin{aligned}
-    \nu^T \mathbf{X} \sim \mathcal{MN}_{1 \times p}(\nu^\top\mu, \nu \nu^\top, \sigma^2\mathbb{I}_p)  &= \mathcal{MN}_{1 \times p}(\nu^\top\mu, \mathbb{I}_n,\norm{\nu}_2^2\sigma^2\mathbb{I}_p) \\
-                                                                                                      &= \mathcal{N}_p(\nu^\top \mu,\norm{\nu}_2^2\sigma^2 \mathbb{I}_p,)
-  \end{aligned}
+    \nu^T \mathbf{X} \sim \mathcal{MN}_{1 \times p}(\nu^\top\mu, \nu \nu^\top, \sigma^2\mathbb{I}_p)  = \mathcal{N}_p(\nu^\top \mu,\norm{\nu}_2^2\sigma^2 \mathbb{I}_p,)
 \end{equation}
 So $\nu^T \mathbf{X} \sim \mathcal{N}_p(0,\norm{\nu}_2^2\sigma^2\mathbb{I}_p)$ under $\mathcal{H}_0$.
 Yet, the density of a centered Gaussian random vector depends only on the norm of the parameter due to symmetry. So $\norm{\nu^\top \mathbf{X}}$ and $\text{dir}(\nu^\top\mathbf{X})$ are independent
