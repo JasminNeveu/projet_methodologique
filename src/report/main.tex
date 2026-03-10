@@ -643,8 +643,37 @@ Thus \(p\) is uniformly distributed on \([0,1]\) under \(\mathcal{H}_0\).
                                                          &= \nu^\top(\mathbb{V}(\mathbf{X})+\mathbb{E}(\mathbf{X})\mathbb{E}(\mathbf{X})^\top)(\projnu)^\top
     \end{aligned}
   \end{equation}
-  If $X \sim \mathcal{MN}(\mu, U, \Sigma)$ then $\mathbb{V}(\mathbf{X}) = U \operatorname{Trace}(\Sigma)$ \Jasmin{à montrer}
-  In this case $\mathbb{V}(\mathbf{X}) = \mathbb{I}_n \operatorname{Trace}(\sigma^2\mathbb{I}_p) = \sigma^2 p \mathbb{I}_n$
+  If $X \sim \mathcal{MN}(\mu, \mathbf{U}, \mathbf{\Sigma})$ then $\mathbb{V}(\mathbf{X}) = \mathbf{U} \operatorname{Trace}(\mathbf{\Sigma})$
+  \begin{equation}
+    \begin{aligned}
+      \text{Let} ~ \mathbf{Y} = \mathbf{X} - \mu \\
+      \mathbb{V}(\mathbf{X}) &= \mathbb{E}[(\mathbf{X}-\mu)(\mathbf{X}-\mu)^\top] \\
+                             &= \mathbb{E}(\mathbf{Y}\mathbf{Y}^\top)
+  \end{aligned}
+  \end{equation}
+  And
+  \begin{equation}
+    \begin{aligned}
+      (\mathbf{Y}\mathbf{Y}^T)_{ij} &= \sum_{k=1}^p \mathbf{Y}_{ik} \mathbf{Y}^\top_{kj} \\
+                                    &= \sum_{k=1}^p \mathbf{Y}_{ik} \mathbf{Y}_{jk}
+    \end{aligned}
+  \end{equation}
+  Therefore,
+  \begin{equation}
+    \begin{aligned}
+      \mathbb{E}((\mathbf{Y}\mathbf{Y}^\top)_{ij}) &= \sum_{k=1}^p \mathbb{E}(\mathbf{Y}_{ik} \mathbf{Y}_{jk}) \\
+    \end{aligned}
+  \end{equation}
+  As $\mathbf{Y}$ is centered, by definition of a normal matrix we have:
+  \begin{equation}
+    \begin{aligned}
+      \mathbb{E}((\mathbf{Y}\mathbf{Y}^\top)_{ij})  &= \sum_{k=1}^p \mathbf{U}_{ij}\Sigma_{kk} \\
+                                                    &= \mathbf{U}_{ij} \sum_{k=1}^p \Sigma_{kk} \\
+                                                   &= \mathbf{U}_{ij} \operatorname{Trace}(\Sigma)
+    \end{aligned}
+  \end{equation}
+
+   In this case $\mathbb{V}(\mathbf{X}) = \mathbb{I}_n \operatorname{Trace}(\sigma^2\mathbb{I}_p) = \sigma^2 p \mathbb{I}_n$
 
   So
   \begin{equation}
@@ -656,6 +685,7 @@ Thus \(p\) is uniformly distributed on \([0,1]\) under \(\mathcal{H}_0\).
                                                             &= \mathbb{E}(\nu^\top \mathbf{X})\mathbb{E}((\projnu \mathbf{X})^\top)
     \end{aligned}
   \end{equation}
+
   \textit{ii)}
 % \Jasmin{manipulation sur les matrices normales à revoir}
   \begin{equation}
