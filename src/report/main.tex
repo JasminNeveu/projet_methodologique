@@ -14,6 +14,7 @@
             linkcolor=black,
             citecolor=blue,
             urlcolor=blue]{hyperref}
+\usepackage{bookmark}
 \usepackage{caption}
 \usepackage{etoolbox}
 \usepackage{dsfont} %for \mathds
@@ -83,8 +84,23 @@
 \newpage
 
 \section{Introduction}
+A DIRE:
+\begin{enumerate}
+  \item tester si moyennes egal est tres frequent
+  \item mais on peut pas simplement faire des t-test parce que data sont déjà utilisées par algo clustering
+  \item donc faut trouver d'autres solutions -> selective inference
+  \item c'est le but de l'article qu'on étudie qui propose une solution de selective infenrece post clustering
+\end{enumerate}
 
-Introduction text...
+In general, clustering methods do not provide theoretical guarantees regarding the partitions they generate in standard scenarios.
+To ensure that the results provide guarantees on the actual differences between groups, it is very common to perform tests for equality of means between the different clusters.
+
+However, employing a standard z-test or Wald test results in an inflation of the type I error rate \cite{Gao}. This arises from the fact that the null hypothesis is constructed adaptively, it is defined only after observing the data and is conditioned on the outcome of the clustering algorithm.
+
+This issue is analogous to overfitting in supervised learning frameworks. When the same dataset is utilized for both model training and evaluation, the resulting model often fails to generalize, capturing noise rather than underlying patterns. In the present context, performing statistical inference without accounting for the variability induced by the clustering procedure results in a failure to maintain the type I error rate.
+
+To address this issue, Gao et al. developed a valid test for the difference in means between two clusters estimated via an hierarchical agglomerative clustering algorithm.
+
 
 \section{Classical versus selective testing}\label{sec:testing}
 
@@ -485,13 +501,14 @@ Then it follows that
 \end{equation}
 
 with $\mathbb{F}(t;c;\mathcal{S})$ denotes the cumulative distribution function of a $c.\chi$ random variable truncated to the set $\mathcal{S}$.
+
 So far, we proved the first part of the Theorem 1 in \cite{Gao}, the proof of the second part is in the annexes.
 
 \begin{theorem}[Theorem 1 in \cite{Gao}]\label{thm:1}
   For any realization $\mathbf{x}$ from $\mathbf{X} \sim \mathcal{MN}_{n \times p}(\mathbf{\mu},\mathbb{I}_n,\sigma^2\mathbb{I}_p)$, and for any non-overlapping groups of observations $C_1,C_2 \subseteq \{1,...,n\}$,
 
   \begin{equation}
-  p(\mathbf{x},\{C_1,C_2\}) = 1 - \mathbb{F}\Bigl(\nu^\top \mathbf{x};\norm{\nu}_2 \sigma;\mathcal{S}\bigl(\mathbf{x};\{C_1,C_2\}\bigr)\Bigr)
+  p(\mathbf{x}) = 1 - \mathbb{F}\bigl(\nu^\top \mathbf{x};\norm{\nu}_2 \sigma;\mathcal{S}\bigl(\mathbf{x};\{C_1,C_2\}\bigr)\bigr)
   \end{equation}
 
 
@@ -506,11 +523,11 @@ So far, we proved the first part of the Theorem 1 in \cite{Gao}, the proof of th
 \section{Numerical experiments}
 
 Section \ref{sec:gao} detailed the approach of Gao et al. for testing the equality of cluster means after applying a hierarchical agglomerative clustering (HAC) algorithm. 
-Theorem \ref{thm:1} ensures that the p-value defined in \eqref{pval_final} controls the selective type I error for clustering.
+Theorem \ref{thm:1} ensures that the $p$-value defined in \eqref{pval_final} controls the selective type I error for clustering.
 
 To empirically illustrate this result, we performed numerical simulations in the same setting as in Section \ref{sec:clustering}, changing only the test statistic. 
-For the simulations based on the HAC algorithm, we used the \texttt{clusterpval} library developed by Gao et al., which implements the p-value defined in \eqref{pval_final}.
-For the simulations based on the $k$-means algorithm, we used the \texttt{KmeansInference} library, which relies on a similar p-value adapted to the $k$-means procedure. 
+For the simulations based on the HAC algorithm, we used the \texttt{clusterpval} library developed by Gao et al., which implements the $p$-value defined in \eqref{pval_final}.
+For the simulations based on the $k$-means algorithm, we used the \texttt{KmeansInference} library, which relies on a similar $p$-value adapted to the $k$-means procedure. 
 
 Figure \ref{fig:deux_images_selective} shows that the resulting $p$-values are indeed super-uniform.
 
@@ -790,7 +807,7 @@ Yet, the density of a centered Gaussian random vector depends only on its norm, 
 \begin{proof}[Proof of second part of Theorem \ref{thm:1}]
   From the definition \eqref{pval_final} we have that for all $\mathbf{x} \in \mathbb{R}^{n \times p}$ 
   \begin{equation}
-    \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}(p(\mathbf{x}) \leq \alpha ~|~ C_1,C_2 \in \mathcal{C}(\mathbf{X}), \projnu \mathbf{X} = \projnu \mathbf{x}, \operatorname{dir}(\nu^\top \mathbf{X}) = \operatorname{dir}(\nu^\top \mathbf{x})) = \alpha
+    \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\bigl(p(\mathbf{x}) \leq \alpha ~|~ C_1,C_2 \in \mathcal{C}(\mathbf{X}), \projnu \mathbf{X} = \projnu \mathbf{x}, \operatorname{dir}(\nu^\top \mathbf{X}) = \operatorname{dir}(\nu^\top \mathbf{x})\bigr) = \alpha
   \end{equation}
   Therefore we have
 \begin{equation}
