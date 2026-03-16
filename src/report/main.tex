@@ -111,7 +111,7 @@ Let $(\Omega, \mathcal{F},\mathbb{P})$ be a probability space, $(E,\mathcal{E})$
 
 In what follows, we will adopt the more standard notation:
 \begin{equation*}
-\mathbb{P}\left(\text{Reject } \mathcal{H}_0\right) = \mathbb{P}\left(\lbrace \omega \in \Omega\,:\,\pi_{\mathcal{H}_0}(\omega)=1\rbrace\right),
+\mathbb{P}\left(\text{Reject } \mathcal{H}_0\right) = \mathbb{P}\bigl(\lbrace \omega \in \Omega\,:\,\pi_{\mathcal{H}_0}(\omega)=1\rbrace\bigr),
 \end{equation*}
 making the dependence on $\pi$ implicit.
 
@@ -179,7 +179,7 @@ We often build tests using $p$-values as $\pi = \mathds{1}\{p \leq \alpha \}$.
 From now on, we will consider the case of unilateral tests.
 In this setting, to define a test based on the information given by a real-valued random variable $X$, $p$-values are often built in the form: 
 \begin{equation}\label{unilateral_uniform_pvalue}
-  p(x) = \mathbb{P}_{\mathcal{H_0}}(T(X) \geq T(x))
+  p(x) = \mathbb{P}_{\mathcal{H_0}}\bigl(T(X) \geq T(x)\bigr),
 \end{equation}
 where $T$ is a test statistic and $x$ a realization of $X$.
 
@@ -303,19 +303,19 @@ This strategy proves highly conservative, ensuring that for every possible set o
 \subsubsection{Sample splitting}
 
 This approach consists in splitting the dataset into a training set $X$ and a test set $Y$.  
-The training set $X$ is used to choose the null hypothesis $\mathcal{H_0}(X)$. Then, inference is performed on the test set $Y$.
+The training set $X$ is used to choose the null hypothesis $\mathcal{H}_0(X)$. Then, inference is performed on the test set $Y$.
 
 Although relatively simple to implement, this method raises several issues.  
 First, statistical guarantees on the tests hold only if $X$ and $Y$ are independent, which is rarely the case in practice.  
 In addition, comparing cluster means on the observations in $Y$ requires assigning each test point to one of the clusters obtained from the clustering performed on $X$, a step that compromises validity, as it reuses the dataset $X$ for two separate steps. As discussed in \cite{Gao}, this strategy does not yield valid post-clustering inference in general.
 
 
-\subsubsection{Conditional Inference}
+\subsubsection{Conditional Inference}\label{sec:condi_inf}
 
 This approach constitutes the most extensively studied framework for post-clustering inference.  
 It controls the false positive rate conditional on hypothesis selection:  
 \[
-  \mathbb{P}(\text{Reject } \mathcal{H_0}(X) \mid \mathcal{H_0} \text{ selected}) \leq \alpha.
+\mathbb{P}(\text{Reject } \mathcal{H}_0(X) \mid \mathcal{H}_0 \text{ selected}) \leq \alpha.
 \]
 
 In the remainder of the article, we employ this method to develop a statistical procedure for testing equality of cluster means following a clustering algorithm.
@@ -333,9 +333,9 @@ We note $C$ a clustering algorithm and $C_1 \in C(\mathbf{X})$ a cluster obtaine
 We note $\boldsymbol{\mu} = (\mu_{ij})_{ij}$ where $\mu_{ij} = \mathbb{E}[X_{ij}]$.
 For a subset $G$ of $\{1,\ldots,n\}$, we note $\bar{\mu}_G = \dfrac{1}{|G|} \displaystyle\sum_{i \in G} \mu_i \in \mathbb{R}^p$ and $\bar{X}_G = \dfrac{1}{|G|} \displaystyle\sum_{i \in G} X_i \in \mathbb{R}^p$.
 
-The goal is to test for the equality of cluster means, that is, testing the following null hypothesis\added{:}
+The goal is to test for the equality of cluster means, that is, testing the following null hypothesis:
 \begin{equation}
-  \mathcal{H}_0^{C_1,C_2}: \bar{\mu}_{C_1} = \bar{\mu}_{C_2}
+  \mathcal{H}_0^{C_1,C_2}: \bar{\mu}_{C_1} = \bar{\mu}_{C_2}.
 \end{equation}
 \Javier{Make sure your notation is consistent: here you have $\mathcal{H}_0^{C_1,C_2}$, but below you have $H_0$ and $\mathcal{H}_0^{\lbrace C_1,C_2\rbrace}$.. chose only one.}
 For concision and clarity, we introduce the $n$-dimensional vector
@@ -356,30 +356,29 @@ such that the population (resp. empirical) difference of cluster means can be co
       \bar{\mu}_{C_1} - \bar{\mu}_{C_2} &= \nu^T\boldsymbol{\mu} \\
     \bar{X}_{C_1} - \bar{X}_{C_2} &= \nu^T\mathbf{X}
     \end{aligned}
-    \right.
+    \right..
 \end{equation*}
 
-Thus, we can rewrite the null hypothesis as follows\added{:}
+Thus, we can rewrite the null hypothesis as follows:
 
 \begin{equation}\label{h0c1c2}
-  \mathcal{H_0}: \bar{\mu}_{C_1} = \bar{\mu}_{C_2} \iff \nu^T\boldsymbol{\mu} = 0\added{.}
+\mathcal{H}_0: \bar{\mu}_{C_1} = \bar{\mu}_{C_2} \iff \nu^T\boldsymbol{\mu} = 0.
 \end{equation}
 
 
 \Javier{Here, say that we are adopting the conditional inference framework described in the previous section which, in the setting of clustering, is equivalent to control the so-called selective type I error for clustering, defined below.}
 
+From now, we work within the framework of conditional inference, described in Section \ref{sec:condi_inf}, which is equivalent to control the selective type I error for clustering defined below in the setting of clustering.
 \begin{definition}[Selective type I error for clustering]
   We say that a test controls the selective type I error for clustering at leval $\alpha$ if
-  \[
-    \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}(\textup{Reject} ~ \mathcal{H}_0^{\{C_1,C_2\}} ~ | ~ C_1,C_2 \in C(\mathbf{X})) \leq \alpha,\quad \alpha \in (0,1).
-  \]
+  \begin{equation}
+    \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\bigl(\text{Reject} ~ \mathcal{H}_0^{\{C_1,C_2\}} ~ | ~ C_1,C_2 \in C(\mathbf{X})\bigr) \leq \alpha,\quad \alpha \in (0,1).
+  \end{equation}
   We say that it controls exactly the selective type I error for clustering at level $\alpha$ if
-\[
-  \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}(\textup{Reject} ~ \mathcal{H}_0^{\{C_1,C_2\}} ~ | ~ C_1,C_2 \in C(\mathbf{X})) = \alpha, \quad \alpha \in (0,1).
-  \]
-
+  \begin{equation}
+  \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\bigl(\text{Reject} ~ \mathcal{H}_0^{\{C_1,C_2\}} ~ | ~ C_1,C_2 \in C(\mathbf{X})\bigr) = \alpha, \quad \alpha \in (0,1).
+\end{equation}
 \end{definition}
-
 To defined a $p$-value that controls the selective type I error, model assumptions need to be imposed on $\mathbf{X}$. The authors in \cite{Gao} adopt the following matrix normal model:
 \begin{equation}
 \mathbf{X}\sim\mathcal{MN}_{n\times p}(\boldsymbol{\mu},\mathbb{I}_n,\sigma^2\mathbb{I}_p),
@@ -387,40 +386,39 @@ To defined a $p$-value that controls the selective type I error, model assumptio
 \Javier{Don't indent after equations (unless you start a new paragraph). To avoid this, don't leave blank lines between a equation and the text.}
 which means that the lines of $\mathbf{X}$ are independent $p$-dimensional random vectors distributed as $\mathcal{N}_p(\mu_i,\sigma^2\mathbb{I}_p)$, for every line $i\in\lbrace 1,\ldots,n\rbrace$. Note that this model imposes an independence assumption between the features (columns) of $\mathbf{X}$.
 
-To run a proper test, we need to control this error \Javier{what error?} at level $\alpha$.
+To run a proper test, we need to control the selective type I error \Javier{what error?} at level $\alpha$.
 Ideally, we would like to define a p-value as follows: 
 \[
-  p_{ideal}(x) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}(T(\mathbf{X}) \geq T(x) ~ | ~ C_1,C_2 \in C(\mathbf{X})),
+  p_{ideal}(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\bigl(T(\mathbf{X}) \geq T(\mathbf{x}) ~ | ~ C_1,C_2 \in C(\mathbf{X})\bigr),
 \]
 with $T$ being a test statistic. In \cite{Gao}, they defined the test statistic as $T(\mathbf{X}) = \norm{\nu^\top\mathbf{X}}_2$, because its distribution under the null hypothesis can be straightforwardly derived. Indeed, noting that.
 \begin{equation*}
 \nu^\top \mathbf{X}
-\sim \mathcal{MN}_{1 \times p}(\nu^\top \mu,\ \nu \nu^\top,\ \sigma^2 I_p) = \mathcal{N}_p\!\left(\nu^\top \mu,\ \|\nu\|_2^2 \sigma^2 I_p\right),
+\sim \mathcal{MN}_{1 \times p}\bigl(\nu^\top \mu,\ \nu \nu^\top,\ \sigma^2 I_p\bigr) = \mathcal{N}_p\bigl(\nu^\top \mu,\ \|\nu\|_2^2 \sigma^2 I_p\bigr),
 \end{equation*}
 we have, under $\mathcal{H}_0^{\{C_1,C_2\}}$, that
 \begin{equation}
-  \norm{\nu^\top \mathbf{X}}_2                                \sim \norm{\nu}_2 \sigma \chi_p\added{.}
+  \norm{\nu^\top \mathbf{X}}_2                                \sim \norm{\nu}_2 \sigma \chi_p.
 \end{equation}
 \Javier{Remove the first line of the previous equation: it is important to be more or less homogeneous in the level of intelligence that we assume the reader has.}
-
  However, $p_{ideal}$ cannot be evaluated in practice as it depends on unknown parameters ~\cite{Gao}. To address this issue, the authors in~\cite{Gao} propose to add technical events to the conditioning set, considering the following quantity: 
 \begin{equation}\label{pvalcondi}
-  p(x) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\bigl(\norm{\nu^T\mathbf{X}}_2 \geq \norm{\nu^Tx}_2 ~ | ~ C_1,C_2 \in \mathcal{C}(\mathbf{X}), E(\mathbf{X})\bigr)
+  p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\Bigl(\norm{\nu^T\mathbf{X}}_2 \geq \norm{\nu^T\mathbf{x}}_2 ~ | ~ C_1,C_2 \in \mathcal{C}(\mathbf{X}), E(\mathbf{X})\Bigr),
 \end{equation}
-as a $p$-value for~\eqref{h0c1c2}, with $E(\mathbf{X})$ being the additional events\added{.} To justify the choice of $E(\mathbf{X})$, we follow the steps in~\cite{Gao}. First, we decompose the data matrix as follows:
+as a $p$-value for~\eqref{h0c1c2}, with $E(\mathbf{X})$ being the additional events. To justify the choice of $E(\mathbf{X})$, we follow the steps in~\cite{Gao}. First, we decompose the data matrix as follows:
 \begin{equation}
-  \mathbf{X} = \projnu\mathbf{X} + (\mathbb{I}_n - \projnu)\mathbf{X}
+  \mathbf{X} = \projnu\mathbf{X} + (\mathbb{I}_n - \projnu)\mathbf{X},
 \end{equation}
-where $\projnu$ is the orthogonal projection matrix onto the subspace orthogonal to $\nu$\added{,} defined as:
+where $\projnu$ is the orthogonal projection matrix onto the subspace orthogonal to $\nu$, defined as:
 \begin{equation}
-  \projnu = \mathbb{I}_n - \frac{\nu\nu^\top}{\norm{\nu}_2^2} \in \mathbb{R}^{n\times n}\added{.}
+  \projnu = \mathbb{I}_n - \frac{\nu\nu^\top}{\norm{\nu}_2^2} \in \mathbb{R}^{n\times n}.
 \end{equation}
 Then, we can write
 \begin{equation}
 \begin{aligned}
   \mathbf{X} &= \projnu \mathbf{X} + \frac{\nu \nu^T}{\norm{\nu}_2^2}\mathbf{X} \\
    &= \projnu \mathbf{X} + \frac{\nu}{\norm{\nu}_2^2}\frac{\nu^T \mathbf{X}}{\norm{\nu^T \mathbf{X}}_2}\norm{\nu^T \mathbf{X}}_2 \\
-   &= \projnu \mathbf{X} + \frac{\nu}{\norm{\nu}_2^2} \operatorname{dir}(\nu^T \mathbf{X})\norm{\nu^T \mathbf{X}}_2\added{,}
+   &= \projnu \mathbf{X} + \frac{\nu}{\norm{\nu}_2^2} \operatorname{dir}(\nu^T \mathbf{X})\norm{\nu^T \mathbf{X}}_2,
 \end{aligned}
 \end{equation}
 where dir is the direction of a vector defined as:
@@ -429,18 +427,27 @@ where dir is the direction of a vector defined as:
 \end{equation}
 Since $\text{dir}(\nu^T \mathbf{X})$ and $\projnu \mathbf{X}$ are unknown, we condition on their values for a realization $\mathbf{x}$ of $\mathbf{X}$, defining the additional events as:
 \begin{equation*}
-  E(\mathbf{X}) = \{ \projnu \mathbf{X} = \projnu \mathbf{x}, ~ \text{dir}(\nu^T \mathbf{X}) = \text{dir}(\nu^T \mathbf{x})\}
+  E(\mathbf{X}) = \bigl\{ \projnu \mathbf{X} = \projnu \mathbf{x}, ~ \text{dir}(\nu^T \mathbf{X}) = \text{dir}(\nu^T \mathbf{x})\bigr\}.
 \end{equation*}
 \Javier{Use also bold notation for the realization $\mathbf{x}$ of $\mathbf{X}$.}
 Plugging the previous equation in \eqref{pvalcondi} we obtain the following expression for the $p$-value:
 \begin{equation}\label{pval_final}
-  p(x) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\bigl( \norm{\nu^T \mathbf{X}}_2 \geq \norm{\nu^Tx}_2  ~| ~ C_1,C_2 \in \mathcal{C}(\mathbf{X}), ~ \projnu \mathbf{X} = \projnu x, ~ \text{dir}(\nu^T \mathbf{X}) = \text{dir}(\nu^T x)\bigr)
+  \begin{aligned}
+p(x) &= \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}} \Bigl(
+    \norm{\nu^\top \mathbf{X}}_2 \geq \norm{\nu^\top x}_2 
+    \,\Big|\,
+    C_1,C_2 \in \mathcal{C}(\mathbf{X}), \\ 
+&\qquad\qquad
+    \projnu \mathbf{X} = \projnu \mathbf{x},\,
+    \text{dir}(\nu^\top \mathbf{X}) = \text{dir}(\nu^\top \mathbf{x})
+\Bigr).
+\end{aligned}
 \end{equation}
 \Javier{Separate the previous equation in two lines, with the additional events in the second one.}
 
 \Javier{Now we haved defined the model, the hypothesis to test and the candidate $p$-value. The goal now is to prove that the candidate $p$-value $(i)$ can be computed under an analitically tractable form and $(ii)$ controls the selective type I error for clustering. Now, we say that to prove all that, we first need a technical lemma that we state now (the Lemma about the independence that we proved). Add the lemma here and its proof to the appendix.} 
 
-
+Now that we have defined the model, the hypothesis to be tested, and the corresponding $p$-value, we will show that this $p$-value can be computed under an analitically tractable form and that it properly controls the selective type I error. For this, we rely on a technical lemma.
 \begin{lemma}\label{lemma_indep_add_events}
 Under the null hypothesis, the following statements hold:
 \[
@@ -451,30 +458,58 @@ Under the null hypothesis, the following statements hold:
 \]
 \end{lemma}
 
-Now, we can rewrite the $p$-value \ref{...} as:
+Now, we can rewrite the selective $p$-value as:
 
 \begin{equation}
-  p(x) = ...
+  p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\Bigl(\norm{\nu^\top \mathbf{X}}_2 \geq \norm{\nu^\top \mathbf{x}}_2 ~|~ C_1, C_2 \in \mathcal{C}(\projnu \mathbf{X} + \dfrac{\nu}{\norm{\nu}^2_2} \operatorname{dir}(\nu^\top \mathbf{x}) \norm{\nu^\top \mathbf{x}}_2  )  \Bigr)
 \end{equation}
 
-So far, we proved the first part of the theorem 1 in \cite{Gao}, the proof of the second part is in the annexes.
 
-\begin{theorem}[Theorem 1 in \cite{Gao}]
+Let $\phi = \norm{\nu^\top \mathbf{X}}_2$ and $x'(\phi) = \projnu \mathbf{x} + \dfrac{\nu}{\norm{\nu}_2^2} \operatorname{dir}(\nu^\top \mathbf{x})\phi $
+
+Then,
+\begin{equation}
+  \begin{aligned}
+    p(\mathbf{x} &= \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\Bigl(\phi \geq \norm{\nu^\top \mathbf{x}}_2 ~|~ C_1,C_2 \in \mathcal{C}\bigl(\mathbf{x}'(\phi)\bigr)\Bigr) \\
+         &= \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\Bigl(\phi \geq \norm{\nu^\top \mathbf{x}}_2 ~|~ \phi \in \mathcal{S}\bigr(\mathbf{x}; \{C_1,C_2\}\bigl)\Bigr)
+\end{aligned}
+\end{equation}
+
+where $\mathcal{S}\bigl(\mathbf{x},\{C_1,C_2\}\bigr) = \Bigl\{\phi \geq 0: C_1,C_2 \in \mathcal{C}\bigl(\mathbf{x}'(\phi)\bigr)\Bigr\}$.
+Under $\mathcal{H}_0^{\{C_1,C_2\}}$, $\phi \sim \norm{\nu}_2\sigma\chi_p$.
+
+Then it follows that
+
+\begin{equation}
+  p(\mathbf{x}) = 1 - \mathbb{F}\Bigl(\nu^\top \mathbf{x};\norm{\nu}_2\sigma;\mathcal{S}\bigl(\mathbf{x};\{C_1,C_2\}\bigr)\Bigr),
+\end{equation}
+
+with $\mathbb{F}(t;c;\mathcal{S})$ denotes the cumulative distribution function of a $c.\chi$ random variable truncated to the set $\mathcal{S}$.
+So far, we proved the first part of the Theorem 1 in \cite{Gao}, the proof of the second part is in the annexes.
+
+\begin{theorem}[Theorem 1 in \cite{Gao}]\label{thm:1}
   For any realization $\mathbf{x}$ from $\mathbf{X} \sim \mathcal{MN}_{n \times p}(\mathbf{\mu},\mathbb{I}_n,\sigma^2\mathbb{I}_p)$, and for any non-overlapping groups of observations $C_1,C_2 \subseteq \{1,...,n\}$,
 
   \begin{equation}
-    p(\mathbf{x},\{C_1,C_2\}) = 1 - \mathbb{F}(,,\mathcal{S(\mathbf{x},\{C_1,C_2\})})
+  p(\mathbf{x},\{C_1,C_2\}) = 1 - \mathbb{F}\Bigl(\nu^\top \mathbf{x};\norm{\nu}_2 \sigma;\mathcal{S}\bigl(\mathbf{x};\{C_1,C_2\}\bigr)\Bigr)
   \end{equation}
+
+
+  Furthermore, if $\mathcal{H}_0^{\{C_1,C_2\}}$ is true, then
+  \begin{equation}
+    \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\Bigl(p(\mathbf{x}) \leq \alpha ~|~ C_1,C_2 \in \mathcal{C}(\mathbf{X})\Bigr) = \alpha, \forall 0 \leq \alpha \leq 1.
+  \end{equation}
+
 \end{theorem}
 
 
 \section{Numerical experiments}
 
 Section \ref{sec:gao} detailed the approach of Gao et al. for testing the equality of cluster means after applying a hierarchical agglomerative clustering (HAC) algorithm. 
-Theorem \ref{theorem1} ensures that the p-value defined in \eqref{...} controls the selective type I error.
+Theorem \ref{thm:1} ensures that the p-value defined in \eqref{pval_final} controls the selective type I error for clustering.
 
 To empirically illustrate this result, we performed numerical simulations in the same setting as in Section \ref{sec:clustering}, changing only the test statistic. 
-For the simulations based on the HAC algorithm, we used the \texttt{clusterpval} library developed by Gao et al., which implements the p-value defined in \eqref{...}. 
+For the simulations based on the HAC algorithm, we used the \texttt{clusterpval} library developed by Gao et al., which implements the p-value defined in \eqref{pval_final}.
 For the simulations based on the $k$-means algorithm, we used the \texttt{KmeansInference} library, which relies on a similar p-value adapted to the $k$-means procedure. 
 
 Figure \ref{fig:deux_images_selective} shows that the resulting $p$-values are indeed super-uniform.
@@ -648,7 +683,7 @@ and therefore
 \mathbb{P}_{\mathcal{H}_0}\bigl(p(X) \le u\bigr) \le u.
 \end{equation}
 
-Thus\added{,} \(p\) is super-uniform under \(\mathcal{H}_0\), and hence a $p$-value.
+Thus, \(p\) is super-uniform under \(\mathcal{H}_0\), and hence a $p$-value.
 \end{proof}
 
 
@@ -685,7 +720,7 @@ Thus \(p\) is uniformly distributed on \([0,1]\) under \(\mathcal{H}_0\).
     \begin{aligned}
     \mathbb{E}(\nu^\top\mathbf{X} (\projnu \mathbf{X})^T) &= \mathbb{E}(\nu^\top \mathbf{X} \mathbf{X}^\top (\projnu)^\top) \\
                                                          &= \nu^\top \mathbb{E}(\mathbf{X}\mathbf{X}^\top)(\projnu)^\top \\
-                                                         &= \nu^\top(\mathbb{V}(\mathbf{X})+\mathbb{E}(\mathbf{X})\mathbb{E}(\mathbf{X})^\top)(\projnu)^\top
+                                                         &= \nu^\top(\mathbb{V}(\mathbf{X})+\mathbb{E}(\mathbf{X})\mathbb{E}(\mathbf{X})^\top)(\projnu)^\top.
     \end{aligned}
   \end{equation}
   Let $X \sim \mathcal{MN}(\mu, \mathbf{U}, \mathbf{\Sigma})$. Then, let us state $\mathbb{V}(\mathbf{X}) = \mathbf{U} \operatorname{Trace}(\mathbf{\Sigma})$. We prove the previous equality as a technical lemma after the proof.
@@ -699,13 +734,13 @@ Thus \(p\) is uniformly distributed on \([0,1]\) under \(\mathcal{H}_0\).
                                                             &= \sigma^2 p \nu^\top(\projnu)^\top + \nu^\top \mathbb{E}(\mathbf{X})\mathbb{E}(\mathbf{X})^\top(\projnu)^\top \\
                                                             &= \sigma^2 p \nu^\top(\mathbb{I}_n - \frac{\nu \nu^\top}{\norm{\nu}_2^2}) + \mathbb{E}(\nu^\top \mathbf{X})\mathbb{E}(\projnu \mathbf{X})^\top \\
                                                             &= \sigma^2 p (\nu^\top - \frac{\norm{\nu}_2^2\nu^\top}{\norm{\nu}_2^2}) + \mathbb{E}(\nu^\top \mathbf{X})\mathbb{E}((\projnu \mathbf{X})^\top) \\
-                                                            &= \mathbb{E}(\nu^\top \mathbf{X})\mathbb{E}((\projnu \mathbf{X})^\top)
+                                                            &= \mathbb{E}(\nu^\top \mathbf{X})\mathbb{E}((\projnu \mathbf{X})^\top).
     \end{aligned}
   \end{equation}
 
   \textit{ii)}
   \begin{equation}
-    \nu^T \mathbf{X} \sim \mathcal{MN}_{1 \times p}(\nu^\top\mu, \nu \nu^\top, \sigma^2\mathbb{I}_p)  = \mathcal{N}_p(\nu^\top \mu,\norm{\nu}_2^2\sigma^2 \mathbb{I}_p,)
+    \nu^T \mathbf{X} \sim \mathcal{MN}_{1 \times p}(\nu^\top\mu, \nu \nu^\top, \sigma^2\mathbb{I}_p)  = \mathcal{N}_p(\nu^\top \mu,\norm{\nu}_2^2\sigma^2 \mathbb{I}_p).
 \end{equation}
 So $\nu^T \mathbf{X} \sim \mathcal{N}_p(0,\norm{\nu}_2^2\sigma^2\mathbb{I}_p)$ under $\mathcal{H}_0$.
 Yet, the density of a centered Gaussian random vector depends only on its norm, due to symmetry with respect to the origin. So $\norm{\nu^\top \mathbf{X}}$ and $\text{dir}(\nu^\top\mathbf{X})$ are independent.
@@ -726,33 +761,66 @@ Yet, the density of a centered Gaussian random vector depends only on its norm, 
     \begin{aligned}
       \text{Let} ~ \mathbf{Y} = \mathbf{X} - \mu \\
       \mathbb{V}(\mathbf{X}) &= \mathbb{E}[(\mathbf{X}-\mu)(\mathbf{X}-\mu)^\top] \\
-                             &= \mathbb{E}(\mathbf{Y}\mathbf{Y}^\top)
+                             &= \mathbb{E}(\mathbf{Y}\mathbf{Y}^\top).
   \end{aligned}
   \end{equation}
   And
   \begin{equation}
     \begin{aligned}
       (\mathbf{Y}\mathbf{Y}^T)_{ij} &= \sum_{k=1}^p \mathbf{Y}_{ik} \mathbf{Y}^\top_{kj} \\
-                                    &= \sum_{k=1}^p \mathbf{Y}_{ik} \mathbf{Y}_{jk}
+                                    &= \sum_{k=1}^p \mathbf{Y}_{ik} \mathbf{Y}_{jk}.
     \end{aligned}
   \end{equation}
   Therefore,
   \begin{equation}
-    \begin{aligned}
-      \mathbb{E}((\mathbf{Y}\mathbf{Y}^\top)_{ij}) &= \sum_{k=1}^p \mathbb{E}(\mathbf{Y}_{ik} \mathbf{Y}_{jk}) \\
-    \end{aligned}
+      \mathbb{E}((\mathbf{Y}\mathbf{Y}^\top)_{ij}) = \sum_{k=1}^p \mathbb{E}(\mathbf{Y}_{ik} \mathbf{Y}_{jk}).
   \end{equation}
   As $\mathbf{Y}$ is centered, by definition of a normal matrix we have:
   \begin{equation}
     \begin{aligned}
       \mathbb{E}((\mathbf{Y}\mathbf{Y}^\top)_{ij})  &= \sum_{k=1}^p \mathbf{U}_{ij}\Sigma_{kk} \\
                                                     &= \mathbf{U}_{ij} \sum_{k=1}^p \Sigma_{kk} \\
-                                                   &= \mathbf{U}_{ij} \operatorname{Trace}(\Sigma)
+                                                   &= \mathbf{U}_{ij} \operatorname{Trace}(\Sigma).
     \end{aligned}
   \end{equation}
 
 \end{proof}
 
+
+\begin{proof}[Proof of second part of Theorem \ref{thm:1}]
+  From the definition \eqref{pval_final} we have that for all $\mathbf{x} \in \mathbb{R}^{n \times p}$ 
+  \begin{equation}
+    \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}(p(\mathbf{x}) \leq \alpha ~|~ C_1,C_2 \in \mathcal{C}(\mathbf{X}), \projnu \mathbf{X} = \projnu \mathbf{x}, \operatorname{dir}(\nu^\top \mathbf{X}) = \operatorname{dir}(\nu^\top \mathbf{x})) = \alpha
+  \end{equation}
+  Therefore we have
+\begin{equation}
+\begin{aligned}
+& \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\big(p(\mathbf{x}) \le \alpha 
+    \,\big|\, C_1,C_2 \in \mathcal{C}(\mathbf{X})\big) \\
+&= \mathbb{E}_{\mathcal{H}_0^{\{C_1,C_2\}}}
+    \Big[
+        \mathds{1}\{p(\mathbf{x}) \le \alpha\} 
+        \,\big|\, C_1,C_2 \in \mathcal{C}(\mathbf{X})
+    \Big] \\
+&= \mathbb{E}_{\mathcal{H}_0^{\{C_1,C_2\}}}
+    \Big[
+        \mathbb{E}_{\mathcal{H}_0^{\{C_1,C_2\}}}
+        \Big[
+            \mathds{1}\{p(\mathbf{x}) \le \alpha\} \,\Big|\,
+            C_1,C_2 \in \mathcal{C}(\mathbf{X}),
+            \projnu \mathbf{X} = \projnu \mathbf{x}, \\
+&\qquad\qquad\qquad
+            \operatorname{dir}(\nu^\top \mathbf{X}) = \operatorname{dir}(\nu^\top \mathbf{x})
+        \Big] 
+        \,\Big|\, C_1,C_2 \in \mathcal{C}(\mathbf{X})
+    \Big] \\
+&= \mathbb{E}_{\mathcal{H}_0^{\{C_1,C_2\}}}
+    \big[\alpha \,\big|\, C_1,C_2 \in \mathcal{C}(\mathbf{X})\big] \\
+&= \alpha,
+\end{aligned}
+\end{equation}
+  by using the law of total expectation.
+\end{proof}
 \bibliographystyle{abbrv}
 \bibliography{biblio.bib}
 
