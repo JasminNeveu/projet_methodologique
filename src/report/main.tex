@@ -357,7 +357,7 @@ for a pair of clusters $C_1,C_2$. For concision and clarity, we introduce the $n
 \nu_i =
 \begin{cases}
 \dfrac{1}{|C_1|}, & \text{if } i \in C_1, \\[0.4em]
-\dfrac{1}{|C_2|}, & \text{if } i \in C_2, \\[0.2em]
+-\dfrac{1}{|C_2|}, & \text{if } i \in C_2, \\[0.2em]
 0, & \text{otherwise},
 \end{cases}
 \end{equation*}
@@ -517,7 +517,32 @@ After a few manipulations of the definitions of $\operatorname{dir}$ and $\projn
 $\mathbf{x}'(\phi)$ can be interpreted as a perturbed version of $\mathbf{x}$.  
 Thus, $\mathcal{S}$ corresponds to the set of perturbations that preserve the clustering.  
 
-TODO: phrase sur caractérisation de S pour algo HAC par Gao et al.
+
+TODO: refaire fig sans (a), (b), (c) ...
+\begin{figure}[H]
+ \begin{subfigure}{0.30\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{images/original_data.png}%
+  \caption{}
+\end{subfigure}  
+  \hfill
+  \begin{subfigure}{0.30\textwidth}
+  \includegraphics[width=\textwidth]{images/perturbated_0_data.png}
+	\caption{}  
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.30\textwidth}
+    
+    \includegraphics[width=\textwidth]{images/perturbated_8_data.png}
+    \caption{}
+  \end{subfigure}
+  \caption{(a) Original dataset $\mathbf{x}'(\phi) = \mathbf{x}$ with $\phi \approx 4.4$, (b) perturbated dataset $\mathbf{x}' (\phi)$ with $\phi = 0$ and (c) a perturbated dataset $\mathbf{x}'(\phi)$ with $\phi = 8$.}
+  \label{fig:deux_images_perturbated_data}
+\end{figure}
+
+
+In order to compute the $p$-value \eqref{pval_final} we have to characterize $\mathcal{S}\bigl(\mathbf{x}, \{C_1,C_2\}\bigr)$. Gao et al. propose algorithms for several HAC algorithms.
+
 
 \subsection{Numerical experiments}
 
@@ -554,10 +579,10 @@ The control of the selective type I error for clustering relies on a strong assu
 To determine whether the method is robust to this assumption, we simulated, in the same setting as in Section \ref{sec:unif_selec}, centered Gaussian random vectors:\Javier{Write the model instead, using the matrix-normal formulation and specifying the covariance matrix that you used.}
 
 \begin{equation}
-  \mathbf{X} \sim \mathcal{MN}_{n \times p}\bigl(\boldsymbol{\mu},\mathbb{I}_n,R\bigr)
+  \mathbf{X} \sim \mathcal{MN}_{n \times p}\bigl(\boldsymbol{\mu},\mathbb{I}_n,\Sigma \bigr)
 \end{equation}
 with \begin{equation*}
-  R = 0.5^{|i-j|} ~\text{for}~ 1 \leq i,j \leq p.
+  \Sigma = \rho^{|i-j|} ~\text{for}~ 1 \leq i,j \leq p ~\text{and}~ \rho \in (0,1].
 \end{equation*}
  \Javier{what simulation are you performing? Specify that you are repeating the same simulation as in the previous section.} 
  Figure \ref{fig:deux_images_not_indep} shows that the $p$-values are no longer super-uniform under the null hypothesis, and therefore the selective type I error is no longer controlled when the independence assumption is not satisfied.
@@ -575,7 +600,7 @@ with \begin{equation*}
   \end{subfigure}
   \caption{Empirical cumulative distribution functions of the $p$-values obtained after testing the equality of cluster means 
     for (a) hierarchical agglomerative clustering (HAC) and (b) $k$-means algorithms.
-The distribution functions were computed using $M$ = 2000 simulations from a multivariate centered normal distribution.
+    The distribution functions were computed using $M$ = 2000 simulations from a gaussian random vector with a correlation matrix $\Sigma$ and $\rho = \frac{1}{2}$.
 }
   \label{fig:deux_images_not_indep}
 \end{figure}
@@ -583,17 +608,26 @@ The distribution functions were computed using $M$ = 2000 simulations from a mul
 \Javier{The previous simulation is great. An idea if you want to: if you are simulating vectors with covariance $\rho^{\abs{i-j}}$, simulate for various $\rho\in[0,1)$ to illustrate how the $p$-values deviate from uniformity when $\rho$ increases from $0$ to $1$. Then you can add all the curves for a set of $\rho$ values in the same plot, colouring them with a gradient scale as a function of $\rho$.}
 
 By varying the value of $\rho$, we can observe the tendency of the $p$-values to deviate from uniformity. 
-Figure \ref{fig:image_grad_rho} shows that the stronger the dependence between the features, the less the selective type I error is controlled.
+Figure \ref{fig:images_grad_rho} shows that the stronger the dependence between the features, the less the selective type I error is controlled.
+
 
 \begin{figure}[H]
+ \begin{subfigure}{0.47\textwidth}
   \centering
   \includegraphics[width=\textwidth]{images/hac_pvalues_grad_rho.png}%
-
-  \caption{Empirical cumulative distribution functions of the $p$-values obtained after testing the equality of cluster means 
+  \caption{}
+\end{subfigure}  
+  \hfill
+  \begin{subfigure}{0.47\textwidth}
+  \includegraphics[width=\textwidth]{images/kmeans_pvalues_grad_rho.png}
+	\caption{}  
+  \end{subfigure}
+\caption{Empirical cumulative distribution functions of the $p$-values obtained after testing the equality of cluster means 
     for hierarchical agglomerative clustering (HAC). 
-    The distribution functions were computed using $M$ = 2000 simulations from a gaussian random vector with a correlation matrix $R = \rho^{|i-j|} ~ \text{for}~ 1 \leq i,j \leq p$ for different values of $\rho$.
-}
-  \label{fig:image_grad_rho}
+    The distribution functions were computed using $M$ = 2000 simulations from a gaussian random vector with a correlation matrix $\Sigma$ for different values of $\rho$.
+  }
+  
+  \label{fig:images_grad_rho}
 \end{figure}
 
 \section{Discussion} 

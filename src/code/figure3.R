@@ -1,74 +1,52 @@
-library(ggplot2)
 library(MASS)
-require(clusterpval)
-require(fastcluster)
-library(KmeansInference)
+library(ggplot2)
+library(latex2exp)
 
-set.seed(123)
+n  <- 10
+p  <- 2
+Sigma <- diag(p)/2
+phi <- 8
 
-n <- 100      
-B <- 2000       
-p <- 5
-pvals <- numeric(B)
-Sigma <- diag(p)
+mu1 <- c(0,  2.5)
+mu2 <- c( 4,  0)
+mu3 <- c( 0,  -2.5)
 
+X1 <- mvrnorm(n, mu1, Sigma)
+X2 <- mvrnorm(n, mu2, Sigma)
+X3 <- mvrnorm(n, mu3, Sigma)
+X <- rbind(X1, X2, X3)   
 
+nu <- c(rep(1/n, n), rep(-1/n, n), rep(0, n))
+nu_norm2_sq <- sum(nu^2)
+proj   <- t(nu) %*% X
+proj_norm <- sqrt(sum(proj^2))                  
+dir_proj  <- proj / proj_norm 
+proj_norm
+X_pert <- X + outer(nu, as.vector(dir_proj)) / nu_norm2_sq * (phi - proj_norm)
 
-# HAC
+cluster <- factor(rep(1:3, each = n))
+df <- data.frame(
+  x       = X_pert[, 1],
+  y       = X_pert[, 2],
+  cluster = cluster
+)
 
-pvals <- numeric(B)
-
-for (b in 1:B) {
-  X <- MASS::mvrnorm(n = n,rep(0,p),Sigma)
-  hcl <- hclust(dist(X, method="euclidean")^2, method="average") 
-  clust_pair <- sample(c(1,2,3), 2)
-  pvals[b] <-  test_hier_clusters_exact(X, link="average", K=3, k1=clust_pair[1], k2=clust_pair[2], hcl=hcl,sig=1,iso=TRUE)$pval
-}
-
-pval_df <- data.frame(pval = pvals)  
-hac_pval_selective<-ggplot(pval_df, aes(x = pval)) +
-  stat_ecdf(geom = "step", color = "blue",size=0.8,pad = FALSE) +
-  geom_abline(intercept = 0, slope = 1,size=0.1,linetype="dashed") +
-  labs(x = "p-value", y = "ECDF") +
-  theme_minimal() +
-  ggtitle("HAC - average linkage") +
-  coord_cartesian(xlim = c(0, 1),ylim=c(0,1)) +
-  theme_minimal() +
+perturbated_data_phi <- ggplot(df, aes(x, y, color = cluster)) +
+  geom_point(size = 2) +
+  labs(
+    title = TeX(r"(a) Original data)"),
+    x = "Feature 1",
+    y = "Feature 2"
+  ) +
+  coord_cartesian(xlim = c(-2.5, 7.5), ylim = c(-4.5, 4.5)) +
+  theme_classic() + 
   theme(
     axis.title = element_text(size = 16),
     axis.text  = element_text(size = 14),
     plot.title = element_text(size = 18),
     legend.text = element_text(size = 14),
-    legend.title = element_text(size = 16)
+    legend.title = element_text(size = 16),
   )
-
-ggsave(filename="hac_pvalues_selective.png",plot=hac_pval_selective,dpi=300,width=6,height=4,units="in")
-
-#kmeans
-pvals <- numeric(B)
-
-for (b in 1:B) {
-  X <- MASS::mvrnorm(n = n,rep(0,p),Sigma)
-  clust_pair <- sample(c(1,2,3), 2)
-  cl_1_2_inference_demo <- kmeans_inference(X, k=3, clust_pair[1], clust_pair[2],
-                                            sig=1, iter.max = 20,seed=b)
-  pvals[b] <- cl_1_2_inference_demo$pval
-}
-
-pval_df <- data.frame(pval = pvals)
-kmean_pval_selective <- ggplot(pval_df, aes(x = pval,group=1)) +
-  stat_ecdf(geom = "step", color = "blue", size = 0.8, pad = FALSE) +
-  geom_abline(intercept = 0, slope = 1, size = 0.1, linetype = "dashed") +
-  labs(x = "p-value", y = "ECDF", title = "k-means") +
-  coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
-  theme_minimal() +
-  theme(
-    axis.title = element_text(size = 16),
-    axis.text  = element_text(size = 14),
-    plot.title = element_text(size = 18),
-    legend.text = element_text(size = 14),
-    legend.title = element_text(size = 16)
-  )
-
-ggsave(filename="kmeans_pvalues_selective.png",plot=kmean_pval_selective,dpi=300,width=6,height=4,units="in")
+perturbated_data_phi
+ggsave(filename="original_data.png",plot=perturbated_data_phi,dpi=300,width=6,height=4,units="in")
 
