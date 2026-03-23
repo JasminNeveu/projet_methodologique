@@ -630,6 +630,31 @@ Figure \ref{fig:images_grad_rho} shows that the stronger the dependence between 
   \label{fig:images_grad_rho}
 \end{figure}
 
+\subsection{Curse of dimensionality}
+
+The deviation from super-uniformity also increases with the dimension, as shown in Figure \ref{fig:images_grad_p}.
+
+
+\begin{figure}[H]
+ \begin{subfigure}{0.47\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{images/hac_pvalues_grad_p.png}%
+  \caption{}
+\end{subfigure}  
+  \hfill
+  \begin{subfigure}{0.47\textwidth}
+  \includegraphics[width=\textwidth]{images/kmeans_pvalues_grad_p.png}
+	\caption{}  
+  \end{subfigure}
+\caption{Empirical cumulative distribution functions of the $p$-values obtained after testing the equality of cluster means 
+    for hierarchical agglomerative clustering (HAC). 
+    The distribution functions were computed using $M$ = 2000 simulations from a gaussian random vector with a correlation matrix $\Sigma$ with $\rho = \frac{1}{2}$ for different values of $p$.
+  }
+  
+  \label{fig:images_grad_p}
+\end{figure}
+
+
 \subsection{Data applications}
 In this section, we analyze the \texttt{1KGP\_100PC} dataset from the 1000 Genomes Project. 
 
@@ -675,20 +700,27 @@ The resulting values are shown in Figure \ref{fig:heatmap_pval}.
 
 
 TODO: interpretation ...
-TODO: ECDF pval
+
 
 \begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{images/heatmap_pval.png}
-  \caption{Heatmap of $p$-values obtained using the \texttt{pvalcluster} function applied to the first 10 PCs, with clusters obtained from HAC with Euclidean distance and the Ward.D linkage method on the first 100 PCs.}
-  \label{fig:heatmap_pval}
+  \begin{subfigure}{0.47\textwidth}
+    \centering
+    \includegraphics[width = \textwidth]{images/heatmap_pval.png}%
+    \caption{}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.47\textwidth}
+    \includegraphics[width = \textwidth]{images/ecdf_real_values.png}%
+    \caption{}
+  \end{subfigure}
+  \caption{(a) Heatmap of the $p$-values obtained using the \texttt{pvalcluster} function applied to the first 10 principal components, with clusters obtained from HAC using Euclidean distance and the Ward.D linkage method on the first 100 principal components.  
+(b) Empirical cumulative distribution function of the corresponding $p$-values.}
+  \label{fig:heatmpa_pval}
 \end{figure}
-
 
 
 TODO: remarquer que pval entre 2 clusters de meme superpopulation supérieur à pval entre clusters diff superpopulation
 
-TODO: texte sur curse of dimension. Meme simulation sur 100PC -> pval = 0...
 
 
 

@@ -1,48 +1,170 @@
 library(ggplot2)
-library(dplyr)
-library(ggrepel)
-library(fastcluster)
-source("data/1KGP_colours.R")
+library(MASS)
+require(clusterpval)
+require(fastcluster)
+library(KmeansInference)
 
-data <- readRDS("data/1KGP_100PC.Rda")
+set.seed(123)
 
-named_colors <- setNames(
-  sapply(colour_list, `[`, 2),
-  sapply(colour_list, `[`, 1)
+n <- 100
+B <- 2000
+
+rho <- 0.5
+p_seq <- c(2,5,10,20,50)
+
+colors <- c("#afb9c4", "#778da9", "#415a77", "#1b263b", "#0d1b2a")
+
+# hac
+
+pvals <- matrix(NA_real_, nrow = B, ncol = length(p_seq))
+
+for (k in seq_along(p_seq)) {
+  
+  p <- p_seq[k]
+  i <- 1:p
+  j <- 1:p
+  
+  R <- rho^(abs(outer(i, j, "-")))
+  print(p)
+  
+  for (b in 1:B) {
+    
+    X <- MASS::mvrnorm(n = n, rep(0, p), R)
+    
+    hcl <- hclust(
+      dist(X, method="euclidean")^2,
+      method="average"
+    )
+    
+    clust_pair <- sample(c(1,2,3), 2)
+    
+    pvals[b, k] <-
+      test_hier_clusters_exact(
+        X,
+        link="average",
+        K=3,
+        k1=clust_pair[1],
+        k2=clust_pair[2],
+        hcl=hcl,
+        sig=1,
+        iso=TRUE
+      )$pval
+  }
+}
+
+pval_df <- data.frame(
+  pval = as.vector(pvals),
+  p    = factor(rep(p_seq, each = B))
 )
 
-centroids <- data %>%
-  group_by(pop) %>%
-  summarise(x = mean(PC1) , y = mean(PC2))
-
-# color pop
-ACPplotpop<-ggplot(data,aes(x=PC1,y=PC2,color=pop)) +
-  geom_point(size=0.7) +
+hac_pval_grad_p <-
+  ggplot(pval_df, aes(x = pval, color = p, group = p)) +
+  stat_ecdf(geom = "step", size = 0.8, pad = FALSE) +
+  geom_abline(
+    intercept = 0,
+    slope = 1,
+    linetype = "dashed",
+    size = 0.3
+  ) +
+  labs(
+    x = "p-value",
+    y = "ECDF",
+    color = "p"
+  ) +
+  scale_color_manual(values = colors) +
+  coord_cartesian(xlim = c(0,1), ylim = c(0,1)) +
   theme_minimal() +
-  theme(panel.grid = element_blank(),
-        axis.text.x=element_blank(),
-        axis.text.y = element_blank()) +
-  scale_color_manual(values = named_colors,guide="none") +
-  geom_text_repel(data = centroids, aes(x = x, y = y, label = pop, color = pop),
-             inherit.aes = FALSE,fontface="bold", segment.color= NA,max.overlaps=Inf,point.padding=6,box.padding=0.3)
-ACPplotpop
-ggsave(filename="PCA.png",plot=ACPplotpop,dpi=300,width=6,height=4,units="in")
+  ggtitle("HAC - average linkage") +
+  theme(
+    axis.title = element_text(size = 16),
+    axis.text  = element_text(size = 14),
+    plot.title = element_text(size = 18),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 14)
+  )
 
-#color cluster
-data_hcl <- data %>% select(-pop,-ID)
-len <- length(unique(data$pop))
-hcl <- hclust(dist(data_hcl, method="euclidean"), method="ward.D") 
-clusters <- cutree(hcl,len)
-data <- data %>% mutate(cluster = factor(clusters))
+hac_pval_grad_p
 
-ACPplotcluster<-ggplot(data,aes(x=PC1,y=PC2,color=cluster)) +
-  geom_point(size=0.7) +
+ggsave(
+  filename = "hac_pvalues_grad_p.png",
+  plot = hac_pval_grad_p,
+  dpi = 300,
+  width = 6,
+  height = 4,
+  units = "in"
+)
+
+# kmeans
+
+pvals <- matrix(NA_real_, nrow = B, ncol = length(p_seq))
+
+for (k in seq_along(p_seq)) {
+  
+  p <- p_seq[k]
+  i <- 1:p
+  j <- 1:p
+  
+  R <- rho^(abs(outer(i, j, "-")))
+  print(p)
+  
+  for (b in 1:B) {
+    
+    X <- MASS::mvrnorm(n = n, rep(0, p), R)
+    
+    clust_pair <- sample(c(1,2,3), 2)
+    
+    res <- kmeans_inference(
+      X,
+      k = 3,
+      clust_pair[1],
+      clust_pair[2],
+      sig = 1,
+      iter.max = 20,
+      seed = b
+    )
+    
+    pvals[b, k] <- res$pval
+  }
+}
+
+pval_df <- data.frame(
+  pval = as.vector(pvals),
+  p    = factor(rep(p_seq, each = B))
+)
+
+kmeans_pval_grad_p <-
+  ggplot(pval_df, aes(x = pval, color = p, group = p)) +
+  stat_ecdf(geom = "step", size = 0.8, pad = FALSE) +
+  geom_abline(
+    intercept = 0,
+    slope = 1,
+    linetype = "dashed",
+    size = 0.3
+  ) +
+  labs(
+    x = "p-value",
+    y = "ECDF",
+    color = "p"
+  ) +
+  scale_color_manual(values = colors) +
+  coord_cartesian(xlim = c(0,1), ylim = c(0,1)) +
   theme_minimal() +
-  theme(panel.grid = element_blank(),
-        axis.text.x=element_blank(),
-        axis.text.y = element_blank())
-ACPplotcluster
+  ggtitle("k-means") +
+  theme(
+    axis.title = element_text(size = 16),
+    axis.text  = element_text(size = 14),
+    plot.title = element_text(size = 18),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 14)
+  )
 
-ggsave(filename="PCAcluster.png",plot=ACPplotcluster,dpi=300,width=6,height=4,units="in")
+kmeans_pval_grad_p
 
-
+ggsave(
+  filename = "kmeans_pvalues_grad_p.png",
+  plot = kmeans_pval_grad_p,
+  dpi = 300,
+  width = 6,
+  height = 4,
+  units = "in"
+)
