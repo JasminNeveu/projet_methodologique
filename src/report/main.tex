@@ -630,8 +630,70 @@ Figure \ref{fig:images_grad_rho} shows that the stronger the dependence between 
   \label{fig:images_grad_rho}
 \end{figure}
 
+\subsection{Data applications}
+In this section, we analyze the \texttt{1KGP\_100PC} dataset from the 1000 Genomes Project. 
+
+The DNA sequence contains all the genetic information associated with an individual.
+It is composed of two complementary strands made of nucleotides, denoted A, C, G, and T.
+Although these sequences are very long, the vast majority of the genome is shared among all individuals.
+A reference genome has been defined, and genetic databases are constructed by counting nucleotide differences between each individual and this reference genome.
+From this matrix of genetic variations, a principal component analysis (PCA) can be performed in order to obtain the dataset \texttt{1KGP\_100PC}.
+
+
+Figure \ref{fig:pca} shows the individuals represented on the first two principal components.
+
+
+\begin{figure}[H]
+  \begin{subfigure}{0.47\textwidth}
+    \centering
+    \includegraphics[width = \textwidth]{images/PCA.png}%
+    \caption{}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.47\textwidth}
+    \includegraphics[width = \textwidth]{images/PCAcluster.png}%
+    \caption{}
+  \end{subfigure}
+  \caption{Projection of the individuals onto the first two principal components, colored by population in (a) and by clusters obtained from HAC on the first 100 PCs in (b).}
+  \label{fig:pca}
+\end{figure}
+The clusters obtained with the HAC algorithm in Figure \ref{fig:pca} (b) appear to be largely consistent with the population labels of the individuals.  
+This can also be assessed by computing, for each cluster and each population, the corresponding proportion of individuals, as shown in Figure \ref{fig:heatmap_clust_pop}.  
+Overall, the heatmap exhibits an approximately diagonal structure, indicating that each cluster mostly corresponds to a single population.  
+However, some populations are spread across several clusters (GIH, PJL, ASW), and some clusters contain individuals from multiple populations (16, 1, 3).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width= \textwidth]{images/heatmap_clust_pop.png}
+  \caption{Heatmap showing the proportion of individuals from each population within each cluster obtained using the HAC algorithm with Euclidean distance and the Ward.D linkage method.}
+  \label{fig:heatmap_clust_pop}
+\end{figure}
+
+For each pair of clusters, we tested the equality of means using the $p$-value defined by Gao et al., in order to evaluate its behavior on this dataset.  
+For each pair of clusters, the p-value was computed using the function \texttt{test\_hier\_cluster\_exact} from the \texttt{R} package \texttt{clusterpval} developed by Gao et al.  
+The resulting values are shown in Figure \ref{fig:heatmap_pval}.
+
+
+TODO: interpretation ...
+TODO: ECDF pval
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{images/heatmap_pval.png}
+  \caption{Heatmap of $p$-values obtained using the \texttt{pvalcluster} function applied to the first 10 PCs, with clusters obtained from HAC with Euclidean distance and the Ward.D linkage method on the first 100 PCs.}
+  \label{fig:heatmap_pval}
+\end{figure}
+
+
+
+TODO: remarquer que pval entre 2 clusters de meme superpopulation supérieur à pval entre clusters diff superpopulation
+
+TODO: texte sur curse of dimension. Meme simulation sur 100PC -> pval = 0...
+
+
+
 \section{Discussion} 
- 
+
 
 \appendix
 
