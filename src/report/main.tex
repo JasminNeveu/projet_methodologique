@@ -571,7 +571,7 @@ The distribution functions were computed using $M$ = 2000 simulations from a mul
 \end{figure}
 
 
-\subsection{Robustness to feature independence}
+\subsubsection{Robustness to feature independence}
 
 
 The control of the selective type I error for clustering relies on a strong assumption: the features \Javier{I believe you want to refer to the \textit{features}, not the observations.} must be independent \ref{matrixnormal}. \Javier{You have already added the following equation before in the text: \eqref{matrixnormal}. Don't write it twice and say instead: (recall Equation~\ref{matrixnormal}).}
@@ -630,7 +630,7 @@ Figure \ref{fig:images_grad_rho} shows that the stronger the dependence between 
   \label{fig:images_grad_rho}
 \end{figure}
 
-\subsection{Curse of dimensionality}
+\subsubsection{Curse of dimensionality}\label{sec:curse_dim}
 
 The deviation from super-uniformity also increases with the dimension, as shown in Figure \ref{fig:images_grad_p}.
 
@@ -658,14 +658,18 @@ The deviation from super-uniformity also increases with the dimension, as shown 
 \subsection{Data applications}
 In this section, we analyze the \texttt{1KGP\_100PC} dataset from the 1000 Genomes Project. 
 
+\subsubsection{Data}
+
 The DNA sequence contains all the genetic information associated with an individual.
 It is composed of two complementary strands made of nucleotides, denoted A, C, G, and T.
 Although these sequences are very long, the vast majority of the genome is shared among all individuals.
 A reference genome has been defined, and genetic databases are constructed by counting nucleotide differences between each individual and this reference genome.
 From this matrix of genetic variations, a principal component analysis (PCA) can be performed in order to obtain the dataset \texttt{1KGP\_100PC}.
 
+\subsubsection{Clustering}
 
-Figure \ref{fig:pca} shows the individuals represented on the first two principal components.
+To try to capture the population structure of the indivuduals, we perfomed clustering with the same number of clusters as there are populations.
+Figure \ref{fig:pca} shows the individuals represented on the first two principal components (PCs).
 
 
 \begin{figure}[H]
@@ -679,13 +683,13 @@ Figure \ref{fig:pca} shows the individuals represented on the first two principa
     \includegraphics[width = \textwidth]{images/PCAcluster.png}%
     \caption{}
   \end{subfigure}
-  \caption{Projection of the individuals onto the first two principal components, colored by population in (a) and by clusters obtained from HAC on the first 100 PCs in (b).}
+  \caption{Projection of the individuals onto the first two PCs, colored by population in (a) and by clusters obtained from HAC on the first 100 PCs in (b).}
   \label{fig:pca}
 \end{figure}
 The clusters obtained with the HAC algorithm in Figure \ref{fig:pca} (b) appear to be largely consistent with the population labels of the individuals.  
 This can also be assessed by computing, for each cluster and each population, the corresponding proportion of individuals, as shown in Figure \ref{fig:heatmap_clust_pop}.  
 Overall, the heatmap exhibits an approximately diagonal structure, indicating that each cluster mostly corresponds to a single population.  
-However, some populations are spread across several clusters (GIH, PJL, ASW), and some clusters contain individuals from multiple populations (16, 1, 3).
+However, some populations are spread across several clusters (PJL, ASW, GIH), and some clusters contain individuals from multiple populations (1, 3, 16).
 
 \begin{figure}[H]
   \centering
@@ -694,13 +698,32 @@ However, some populations are spread across several clusters (GIH, PJL, ASW), an
   \label{fig:heatmap_clust_pop}
 \end{figure}
 
-For each pair of clusters, we tested the equality of means using the $p$-value defined by Gao et al., in order to evaluate its behavior on this dataset.  
-For each pair of clusters, the p-value was computed using the function \texttt{test\_hier\_cluster\_exact} from the \texttt{R} package \texttt{clusterpval} developed by Gao et al.  
-The resulting values are shown in Figure \ref{fig:heatmap_pval}.
+\subsubsection{Curse of dimensionality}
 
+In Section \ref{sec:curse_dim}, we showed that the $p$-value is sensitive to dimensionality.
+It is desirable to retain the maximum number of principal components to minimize information loss. However, this comes at a cost to the statistical guarantees of Gao’s method. 
+Indeed, even under $\mathcal{H}_0$, the $p$-value decreases as dimensionality increases. In Figure \ref{fig:curse_dim_real_data}, we perform a test of equality of means between two clusters containing individuals from the same population. 
 
-TODO: interpretation ...
+\begin{figure}[H]
+  \begin{subfigure}{0.47\textwidth}
+    \centering
+    \includegraphics[width = \textwidth]{images/pval_12_26.png}%
+    \caption{}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.47\textwidth}
+    \includegraphics[width = \textwidth]{images/pval_13_8.png}%
+    \caption{}
+  \end{subfigure}
+  \caption{$p$-values obtained from the test of equality between clusters 12 and 26 (a) and between clusters 8 and 13 (b), as a function of the number of PCs used for clustering}
+  \label{fig:curse_dim_real_data}
+\end{figure}
 
+\subsubsection{Intercontinental vs intracontinental}
+Each population belongs to a super-population, corresponding to a larger grouping similar to a continent.  
+For example, Mexican Ancestry in Los Angeles, California (MXL) and Puerto Rican in Puerto Rico (PUR) belong to the AMR super-population, whereas Utah residents with Northern and Western European ancestry (CEU) belongs to the EUR super-population.  
+Intuitively, the $p$-values associated with tests between clusters containing individuals from different continents are expected to be close to 0, while the $p$-values associated with tests between clusters containing individuals from the same continent are expected to be close to 1.  
+To compute the $p$-values, we kept only the first 15 principal components. The resulting $p$-values are shown in Figure \ref{fig:heatmap_pval}.
 
 \begin{figure}[H]
   \begin{subfigure}{0.47\textwidth}
@@ -713,20 +736,30 @@ TODO: interpretation ...
     \includegraphics[width = \textwidth]{images/ecdf_real_values.png}%
     \caption{}
   \end{subfigure}
-  \caption{(a) Heatmap of the $p$-values obtained using the \texttt{pvalcluster} function applied to the first 10 principal components, with clusters obtained from HAC using Euclidean distance and the Ward.D linkage method on the first 100 principal components.  
+  \caption{(a) Heatmap of the $p$-values obtained using the \texttt{test\_hier\_clusters\_exact} function applied to the first 15 PCs, with clusters obtained from HAC using Euclidean distance and the Ward.D linkage method on the first 100 principal components.  
 (b) Empirical cumulative distribution function of the corresponding $p$-values.}
-  \label{fig:heatmpa_pval}
+  \label{fig:heatmap_pval}
 \end{figure}
 
-
-TODO: remarquer que pval entre 2 clusters de meme superpopulation supérieur à pval entre clusters diff superpopulation
-
+\Jasmin{la ECDF montre clairement que la pval n'est pas surper uniform... ie en pratique pval de Gao pas très exploitable ? il faut que je choissise encore moins de PCs ??}
 
 
+The Figure \ref{fig:ecdf_pval_cluster_super} shows that the $p$-values from the tests of equality of cluster means for different super-populations are concentrated near 0, whereas those from tests of clusters within the same superpopulation are mostly equal to 1.
 
-\section{Discussion} 
-
-
+\begin{figure}[H]
+  \begin{subfigure}{0.47\textwidth}
+    \centering
+    \includegraphics[width = \textwidth]{images/ecdf_diff_super.png}%
+    \caption{}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.47\textwidth}
+    \includegraphics[width = \textwidth]{images/ecdf_inner_super.png}%
+    \caption{}
+  \end{subfigure}
+  \caption{ECDF of $p$-values obtained from the test of equality between clusters means for pairs of clusters within the same super-population (a) and for pairs of clusters from different super-population (b)}
+  \label{fig:ecdf_pval_cluster_super}
+\end{figure}
 \appendix
 
 \section{Proofs}\label{app:proofs}
