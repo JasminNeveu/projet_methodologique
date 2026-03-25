@@ -723,7 +723,7 @@ Indeed, even under $\mathcal{H}_0$, the $p$-value decreases as dimensionality in
 Each population belongs to a super-population, corresponding to a larger grouping similar to a continent.  
 For example, Mexican Ancestry in Los Angeles, California (MXL) and Puerto Rican in Puerto Rico (PUR) belong to the AMR super-population, whereas Utah residents with Northern and Western European ancestry (CEU) belongs to the EUR super-population.  
 Intuitively, the $p$-values associated with tests between clusters containing individuals from different continents are expected to be close to 0, while the $p$-values associated with tests between clusters containing individuals from the same continent are expected to be close to 1.  
-To compute the $p$-values, we kept only the first 15 principal components. The resulting $p$-values are shown in Figure \ref{fig:heatmap_pval}.
+To compute the $p$-values, we kept only the first 12 principal components. The resulting $p$-values are shown in Figure \ref{fig:heatmap_pval}.
 
 \begin{figure}[H]
   \begin{subfigure}{0.47\textwidth}
@@ -736,7 +736,7 @@ To compute the $p$-values, we kept only the first 15 principal components. The r
     \includegraphics[width = \textwidth]{images/ecdf_real_values.png}%
     \caption{}
   \end{subfigure}
-  \caption{(a) Heatmap of the $p$-values obtained using the \texttt{test\_hier\_clusters\_exact} function applied to the first 15 PCs, with clusters obtained from HAC using Euclidean distance and the Ward.D linkage method on the first 100 principal components.  
+  \caption{(a) Heatmap of the $p$-values obtained using the \texttt{test\_hier\_clusters\_exact} function applied to the first 12 PCs, with clusters obtained from HAC using Euclidean distance and the Ward.D linkage method on the first 100 principal components.  
 (b) Empirical cumulative distribution function of the corresponding $p$-values.}
   \label{fig:heatmap_pval}
 \end{figure}

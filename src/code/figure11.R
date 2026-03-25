@@ -5,7 +5,7 @@ require(clusterpval)
 library(reshape2)
 devtools::install_github("lucylgao/clusterpval")
 data <- readRDS("data/1KGP_100PC.Rda")
-
+df <- readRDS("data/df.rds")
 
 # HAC
 data_hcl <- data %>% select(-pop,-ID)
@@ -52,7 +52,7 @@ ggsave(filename="heatmap_pval.png",plot=heatmap_pval,dpi=300,width=6,height=4,un
 
 
 
-
+pvec <- readRDS("data/pvec.rds")
 dff <- data.frame(pval = pvec)
 
 plot <- ggplot(dff, aes(x = pval)) +
@@ -76,7 +76,7 @@ plot <- ggplot(dff, aes(x = pval)) +
     legend.text = element_text(size = 12),
     legend.title = element_text(size = 14)
   )
+plot
 ggsave(filename="ecdf_real_values.png",plot=plot,dpi=300,width=6,height=4,units="in")
 
 
-saveRDS(df, file = "data/df.rds")

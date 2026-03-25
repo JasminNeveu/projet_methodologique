@@ -1,3 +1,5 @@
+library(dplyr)
+library(ggplot2)
 df <- readRDS("data/df.rds")
 cluster_map <- data.frame(
   cluster = c(
@@ -50,6 +52,7 @@ ecdfplotdiff <- ggplot(df_between, aes(x = pval)) +
        y = "ECDF"
   ) +
   theme_minimal() +
+  coord_cartesian(xlim = c(0,1), ylim = c(0,1)) +
   theme(
     axis.title = element_text(size = 16),
     axis.text  = element_text(size = 14),
@@ -61,6 +64,7 @@ ecdfplotdiff <- ggplot(df_between, aes(x = pval)) +
 
 ecdfplotinner <- ggplot(df_inner, aes(x = pval)) +
   stat_ecdf(linewidth = 1) +
+  coord_cartesian(xlim = c(0,1), ylim = c(0,1)) +
   geom_abline(
     intercept = 0,
     slope = 1,
@@ -77,5 +81,7 @@ ecdfplotinner <- ggplot(df_inner, aes(x = pval)) +
     legend.text = element_text(size = 12),
     legend.title = element_text(size = 14)
   )
+ecdfplotinner
+ecdfplotdiff
 ggsave(filename="ecdf_diff_super.png",plot=ecdfplotdiff,dpi=300,width=6,height=4,units="in")
 ggsave(filename="ecdf_inner_super.png",plot=ecdfplotinner,dpi=300,width=6,height=4,units="in")
