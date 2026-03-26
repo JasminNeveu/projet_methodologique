@@ -1,3 +1,22 @@
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{,}}{22}{section*.14}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{.}}{22}{section*.15}%
-\contentsline {added}{Added: \truncate {\Changestruncatewidth }{,}}{22}{section*.16}%
+\contentsline {deleted}{Deleted: \truncate {\Changestruncatewidth }{selective}}{10}{section*.4}%
+\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{we can rewrite $\mathbf {x}'(\phi )$ as follows:}}{11}{section*.5}%
+\contentsline {added}{Added: \truncate {\Changestruncatewidth }{,}}{11}{section*.6}%
+\contentsline {added}{Added: \truncate {\Changestruncatewidth }{so that}}{11}{section*.7}%
+\contentsline {added}{Added: \truncate {\Changestruncatewidth }{following from~\textup {\hbox {\mathsurround \z@ \normalfont (\ignorespaces \ref {set_S}\unskip \@@italiccorr )}},}}{12}{section*.9}%
+\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{The efficient computation of such set is required for the computation of~\textup {\hbox {\mathsurround \z@ \normalfont (\ignorespaces \ref {pval_final}\unskip \@@italiccorr )}}. This can be done thanks to the strategies proposed by Gao \textit {et al.} for several HAC algorithms (see~\cite [Section 3]{Gao} for details).}}{12}{section*.10}%
+\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{HAC}}{12}{section*.11}%
+\contentsline {added}{Added: \truncate {\Changestruncatewidth }{In}}{12}{section*.12}%
+\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{, we showed}}{12}{section*.13}%
+\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{simulated}}{12}{section*.14}%
+\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{, following the same strategy as}}{12}{section*.15}%
+\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{but this time using~\textup {\hbox {\mathsurround \z@ \normalfont (\ignorespaces \ref {pval_final}\unskip \@@italiccorr )}} as a $p$-value for~\textup {\hbox {\mathsurround \z@ \normalfont (\ignorespaces \ref {h0c1c2}\unskip \@@italiccorr )}}.}}{12}{section*.16}%
+\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{assess}}{13}{section*.18}%
+\contentsline {added}{Added: \truncate {\Changestruncatewidth }{repeated the strategy in the previous section and }}{13}{section*.19}%
+\contentsline {added}{Added: \truncate {\Changestruncatewidth }{the null distribution of $p$-values}}{13}{section*.20}%
+\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{ for $M=2000$ realizations of }}{13}{section*.21}%
+\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{Besides, we observe that the deviation from uniformity increases with the dependency parameter $\rho $.}}{13}{section*.22}%
+\contentsline {replaced}{Replaced: \truncate {\Changestruncatewidth }{Indeed, }}{13}{section*.23}%
+\contentsline {deleted}{Deleted: \truncate {\Changestruncatewidth }{Curse of dimensionality}}{14}{section*.25}%
+\contentsline {added}{Added: \truncate {\Changestruncatewidth }{,}}{21}{section*.32}%
+\contentsline {added}{Added: \truncate {\Changestruncatewidth }{.}}{21}{section*.33}%
+\contentsline {added}{Added: \truncate {\Changestruncatewidth }{,}}{21}{section*.34}%

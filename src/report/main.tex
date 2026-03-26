@@ -343,11 +343,11 @@ The article under study~\cite{Gao} was the first one to propose a feasible solut
 
 Let $\mathbf{X} =(X_{ij})_{ij} \in \mathbb{R}^{n \times p}$ be the design matrix.
 A cluster is an element of a partition of the samples.
-We note $C$ a clustering algorithm and $C_1 \in C(\mathbf{X})$ a cluster obtained by the algorithm $C$ on $\mathbf{X}$. We note $\boldsymbol{\mu} = (\mu_{ij})_{ij}$ where $\mu_{ij} = \mathbb{E}[X_{ij}]$and, for a subset $G$ of $\{1,\ldots,n\}$, we write
+We note $C$ a clustering algorithm and $C_1 \in C(\mathbf{X})$ a cluster obtained by the algorithm $C$ on $\mathbf{X}$. We note $\boldsymbol{\mu} = (\mu_{ij})_{ij}$ where $\mu_{ij} = \mathbb{E}[X_{ij}]$ and, for a subset $G$ of $\{1,\ldots,n\}$, we write
 \begin{equation*}
 \bar{\mu}_G = \dfrac{1}{|G|} \displaystyle\sum_{i \in G} \mu_i \in \mathbb{R}^p\quad\text{and}\quad\bar{X}_G = \dfrac{1}{|G|} \displaystyle\sum_{i \in G} X_i \in \mathbb{R}^p.
 \end{equation*}
-The goal is to test for the equality of cluster means, that is, testing the following null hypothesis: \Javier{Use the same notation $\mathcal{H}_0^{\lbrace C_1,C_2\rbrace}$ for the null everywhere.}
+The goal is to test for the equality of cluster means, that is, testing the following null hypothesis: 
 \begin{equation}
   \mathcal{H}_0^{\{C_1,C_2\}}: \bar{\mu}_{C_1} = \bar{\mu}_{C_2},
 \end{equation}
@@ -373,7 +373,7 @@ such that the population (resp. empirical) difference of cluster means can be co
 
 Thus, we can rewrite the null hypothesis as follows:
 \begin{equation}\label{h0c1c2}
-\mathcal{H}_0: \bar{\mu}_{C_1} = \bar{\mu}_{C_2} \iff \nu^T\boldsymbol{\mu} = 0.
+ \mathcal{H}_0^{\{C_1,C_2\}}: \bar{\mu}_{C_1} = \bar{\mu}_{C_2} \iff \nu^T\boldsymbol{\mu} = 0.
 \end{equation}
 
 From now on, we adopt the conditional inference framework, described in Section \ref{sec:condi_inf}. In this setting, controlling the risk~\eqref{condinf} is equivalent to controlling the so-called \textit{selective type I error for clustering}, defined below.
@@ -409,9 +409,9 @@ we have, under $\mathcal{H}_0^{\{C_1,C_2\}}$, that
 \end{equation}
 However, $p_{ideal}$ cannot be evaluated in practice as it depends on unknown parameters ~\cite{Gao}. To address this issue, the authors in~\cite{Gao} propose to add technical events to the conditioning set, considering the following quantity: 
 \begin{equation}\label{pvalcondi}
-  p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\Bigl(\norm{\nu^T\mathbf{X}}_2 \geq \norm{\nu^T\mathbf{x}}_2 ~ | ~ C_1,C_2 \in \mathcal{C}(\mathbf{X}), Ev(\mathbf{X})\Bigr),
+  p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\Bigl(\norm{\nu^T\mathbf{X}}_2 \geq \norm{\nu^T\mathbf{x}}_2 ~ | ~ C_1,C_2 \in \mathcal{C}(\mathbf{X}), \xi(\mathbf{X})\Bigr),
 \end{equation}
-as a $p$-value for~\eqref{h0c1c2}, with $Ev(\mathbf{X})$ being the additional events. \Javier{Maybe it is better to change the notation $E(\mathbf{X})$ to something else to avoid the confusion with the expectation of $\mathbf{X}$. You can choose another notation for that quantity.} To justify the choice of $Ev(\mathbf{X})$, we follow the steps in~\cite{Gao}. First, we decompose the data matrix as follows:
+as a $p$-value for~\eqref{h0c1c2}, with $\xi(\mathbf{X})$ being the additional events. To justify the choice of $\xi(\mathbf{X})$, we follow the steps in~\cite{Gao}. First, we decompose the data matrix as follows:
 \begin{equation}
   \mathbf{X} = \projnu\mathbf{X} + (\mathbb{I}_n - \projnu)\mathbf{X},
 \end{equation}
@@ -433,7 +433,7 @@ where dir denotes the direction of a vector, that is,
 \end{equation}
 Since $\text{dir}(\nu^T \mathbf{X})$ and $\projnu \mathbf{X}$ are unknown, we condition on their values for a realization $\mathbf{x}$ of $\mathbf{X}$, defining the additional events as:
 \begin{equation*}
-  Ev(\mathbf{X}) = \bigl\{ \projnu \mathbf{X} = \projnu \mathbf{x}, ~ \text{dir}(\nu^T \mathbf{X}) = \text{dir}(\nu^T \mathbf{x})\bigr\}.
+  \xi(\mathbf{X}) = \bigl\{ \projnu \mathbf{X} = \projnu \mathbf{x}, ~ \text{dir}(\nu^T \mathbf{X}) = \text{dir}(\nu^T \mathbf{x})\bigr\}.
 \end{equation*}
 Plugging the previous equation in \eqref{pvalcondi} we obtain the following expression for the $p$-value:
 \begin{equation}\label{pval_final}
@@ -459,17 +459,14 @@ Under the null hypothesis, the following statements hold:
 \]
 \end{lemma}
 
-Following from the previous result, we can rewrite the selective $p$-value as:
-
+Following from the previous result, we can rewrite the \deleted{selective} $p$-value as:
 \begin{equation}
   \begin{aligned}
     p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\Bigl(\norm{\nu^\top & \mathbf{X}}_2  \geq \norm{\nu^\top \mathbf{x}}_2 ~|~ \\
-  & C_1, C_2 \in \mathcal{C}(\projnu \mathbf{X} + \dfrac{\nu}{\norm{\nu}^2_2} \operatorname{dir}(\nu^\top \mathbf{x}) \norm{\nu^\top \mathbf{x}}_2  )  \Bigr)
+  & C_1, C_2 \in \mathcal{C}(\projnu \mathbf{X} + \dfrac{\nu}{\norm{\nu}^2_2} \operatorname{dir}(\nu^\top \mathbf{x}) \norm{\nu^\top \mathbf{x}}_2  )  \Bigr).
 \end{aligned}
 \end{equation}
-\Javier{Rewrite the previous equation in two lines.}
-
-Letting $\phi = \norm{\nu^\top \mathbf{X}}_2$ and $x'(\phi) = \projnu \mathbf{x} + \dfrac{\nu}{\norm{\nu}_2^2} \operatorname{dir}(\nu^\top \mathbf{x})\phi $ we can write
+Letting $\phi = \norm{\nu^\top \mathbf{X}}_2$ and $\mathbf{x}'(\phi) = \projnu \mathbf{x} + \dfrac{\nu}{\norm{\nu}_2^2} \operatorname{dir}(\nu^\top \mathbf{x})\phi $, we can write
 \begin{equation}
   \begin{aligned}
     p(\mathbf{x} &= \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\Bigl(\phi \geq \norm{\nu^\top \mathbf{x}}_2 ~|~ C_1,C_2 \in \mathcal{C}\bigl(\mathbf{x}'(\phi)\bigr)\Bigr) \\
@@ -477,7 +474,7 @@ Letting $\phi = \norm{\nu^\top \mathbf{X}}_2$ and $x'(\phi) = \projnu \mathbf{x}
 \end{aligned}
 \end{equation}
 where
-\begin{equation}
+\begin{equation}\label{set_S}
 \mathcal{S}\bigl(\mathbf{x},\{C_1,C_2\}\bigr) = \Bigl\{\phi \geq 0: C_1,C_2 \in \mathcal{C}\bigl(\mathbf{x}'(\phi)\bigr)\Bigr\}.
 \end{equation}
 As, under the null, we have that $\phi \sim \norm{\nu}_2\sigma\chi_p$, we can finally write:
@@ -501,24 +498,20 @@ where $\mathbb{F}_p(t;c;\mathcal{S})$ denotes the cumulative distribution functi
   \end{equation}
 
 \end{theorem}
-\Javier{Note that I have added spacing $\,$ and $\quad$ in the previous equations.}
-The control of the selective type I error is proved in Appendix~\ref{app:proofs}. \Javier{Here, you should add a paragraph describing what does the set $\mathcal{S}$ represent (explaining that it correspond to the set of perturbations that preserve the clustering, indicating how that perturbation is defined. You can refer to Section 2.2 in~\cite{Gao}. Then you should mention that the authors characterize $\mathcal{S}$ for several HAC algorithms so that it can be efficiently computed.}
-
-After a few manipulations of the definitions of $\operatorname{dir}$ and $\projnu$, we obtain the following expression for $\mathbf{x}'(\phi)$:
+The control of the selective type I error is proved in Appendix~\ref{app:proofs}. After a few manipulations \replaced{we can rewrite $\mathbf{x}'(\phi)$ as follows:}{of the definitions of $\operatorname{dir}$ and $\projnu$, we obtain the following expression for $\mathbf{x}'(\phi)$:}
 \begin{equation}
   \begin{aligned}
     \mathbf{x}'(\phi) &= \projnu \mathbf{x} + \frac{\nu}{\norm{\nu}_2} \operatorname{dir}(\nu^\top \mathbf{x}) \phi \\
                       &= \mathbf{x} - \frac{\nu \nu^\top}{\norm{\nu}_2^2}\mathbf{x} + \frac{\nu}{\norm{\nu}_2}\operatorname{dir}(\nu^\top \mathbf{x})\phi \\
                       &= \mathbf{x} + \frac{\nu}{\norm{\nu}_2^2}(\phi \operatorname{dir}(\nu^\top \mathbf{x}) - \nu^\top \mathbf{x}) \\
                       &= \mathbf{x} + \frac{\nu}{\norm{\nu}_2^2}(\phi \operatorname{dir}(\nu^\top \mathbf{x}) - \norm{\nu^\top \mathbf{x}}_2 \operatorname{dir}(\nu^\top \mathbf{x}) ) \\
-                      &= \mathbf{x} + \frac{\nu}{\norm{\nu}_2^2}\operatorname{dir}(\nu^\top \mathbf{x})(\phi - \norm{\nu^\top \mathbf{x}}_2)
+                      &= \mathbf{x} + \frac{\nu}{\norm{\nu}_2^2}\operatorname{dir}(\nu^\top \mathbf{x})(\phi - \norm{\nu^\top \mathbf{x}}_2)\added{,}
   \end{aligned}
 \end{equation}
-$\mathbf{x}'(\phi)$ can be interpreted as a perturbed version of $\mathbf{x}$.  
-Thus, $\mathcal{S}$ corresponds to the set of perturbations that preserve the clustering.  
+\added{so that} $\mathbf{x}'(\phi)$ can be interpreted as a perturbed version of $\mathbf{x}$. \Javier{Explain with words what the perturbation does according to the value of $\phi$ (pushing the clusters appart or pulling them together), and say that this is illustrated in Figure~\ref{fig:deux_images_perturbated_data}. You should also mention Section 2.2 in~\cite{Gao}, saying e.g. ``see Section 2.2 in~\cite{Gao} for details''.} 
 
 
-TODO: refaire fig sans (a), (b), (c) ...
+TODO: refaire fig sans (a), (b), (c) ... \Javier{Also increase text size (labels, title) in the figure for the sake of readibility.}
 \begin{figure}[H]
  \begin{subfigure}{0.30\textwidth}
   \centering
@@ -540,17 +533,15 @@ TODO: refaire fig sans (a), (b), (c) ...
   \label{fig:deux_images_perturbated_data}
 \end{figure}
 
-
-In order to compute the $p$-value \eqref{pval_final} we have to characterize $\mathcal{S}\bigl(\mathbf{x}, \{C_1,C_2\}\bigr)$. Gao et al. propose algorithms for several HAC algorithms.
-
+Thus, \added{following from~\eqref{set_S},} $\mathcal{S}$ corresponds to the set of perturbations that preserve the clustering. \replaced{The efficient computation of such set is required for the computation of~\eqref{pval_final}. This can be done thanks to the strategies proposed by Gao \textit{et al.} for several HAC algorithms (see~\cite[Section 3]{Gao} for details).}{In order to compute the $p$-value \eqref{pval_final} we have to characterize $\mathcal{S}\bigl(\mathbf{x}, \{C_1,C_2\}\bigr)$. Gao et al. propose algorithms for several HAC algorithms.}
 
 \subsection{Numerical experiments}
 
 \subsubsection{Uniformly distributed $p$-values under the null hypothesis}\label{sec:unif_selec}
 
-Section \ref{sec:gao} detailed the approach of Gao \textit{et al.} for testing the equality of cluster means after implementing a hierarchical agglomerative clustering (HAC) algorithm. Theorem~\ref{thm:1} ensures that the $p$-value defined in \eqref{pval_final} controls the selective type I error for clustering.
+Section \ref{sec:gao} detailed the approach of Gao \textit{et al.} for testing the equality of cluster means after implementing a \replaced{HAC}{hierarchical agglomerative clustering (HAC)} algorithm. \Javier{If you already introduced the abbreviation the first time, use the abbreviation always.} \added{In} Theorem~\ref{thm:1}\replaced{, we showed}{ ensures} that the $p$-value defined in \eqref{pval_final} controls the selective type I error for clustering.
 
-To empirically illustrate this result, we performed numerical simulations of the null distribution of $p$-values in the same setting as in Section \ref{sec:clustering}, changing only the $p$-value. \Javier{Only the test statistic? I believe you changed the entire $p$-value, given its form~\eqref{pvalue_tractable}. Also, maybe you should recall here that we are simulating the null distribution of $p$-values, so that the reader doesn't have to go back to Section~\ref{sec:clustering} if they don't want to know the details but just understand what you are doing here.} For the simulations based on the HAC algorithm, we used the \texttt{clusterpval} library developed by Gao \textit{et al.}, which implements the $p$-value \eqref{pvalue_tractable}. For the simulations based on the $k$-means algorithm, we used the \texttt{KmeansInference} library \cite{JMLR:v24:22-0371} \Javier{Here, cite the corresponding paper: \href{https://www.jmlr.org/papers/v24/22-0371.html}{https://www.jmlr.org/papers/v24/22-0371.html}}, which relies on a similar $p$-value adapted to the $k$-means procedure. The corresponding results are presented in Figure \ref{fig:deux_images_selective}, which shows that the resulting $p$-values are indeed super-uniform under the null hypothesis.
+To empirically illustrate this result, we \replaced{simulated}{performed numerical simulations of} the null distribution of $p$-values\replaced{, following the same strategy as}{ in the same setting as} in Section \ref{sec:clustering} \replaced{but this time using~\eqref{pval_final} as a $p$-value for~\eqref{h0c1c2}.}{, changing only the $p$-value}. For the simulations based on the HAC algorithm, we used the \texttt{clusterpval} library developed by Gao \textit{et al.}, which implements the $p$-value \eqref{pvalue_tractable}. For the simulations based on the $k$-means algorithm, we used the \texttt{KmeansInference} library \cite{JMLR:v24:22-0371}, which relies on a similar $p$-value adapted to the $k$-means procedure. The corresponding results are presented in Figure \ref{fig:deux_images_selective}, which shows that the resulting $p$-values are indeed super-uniform under the null hypothesis.
 
 \begin{figure}[H]
  \begin{subfigure}{0.47\textwidth}
@@ -571,45 +562,37 @@ The distribution functions were computed using $M$ = 2000 simulations from a mul
 \end{figure}
 
 
-\subsubsection{Robustness to feature independence}
+\subsubsection{Robustness to feature \deleted{in}dependence}
 
+\Javier{We study if the method is robust (i.e. still keeps the statistical guarantees) when the model assumptions don't hold, that is, when features are dependent. So we say robustness to feature \textit{dependence}.}
 
-The control of the selective type I error for clustering relies on a strong assumption: the features \Javier{I believe you want to refer to the \textit{features}, not the observations.} must be independent \ref{matrixnormal}. \Javier{You have already added the following equation before in the text: \eqref{matrixnormal}. Don't write it twice and say instead: (recall Equation~\ref{matrixnormal}).}
-
-To determine whether the method is robust to this assumption, we simulated, in the same setting as in Section \ref{sec:unif_selec}, centered Gaussian random vectors:\Javier{Write the model instead, using the matrix-normal formulation and specifying the covariance matrix that you used.}
-
+The control of the selective type I error for clustering relies on a strong assumption: the features must be independent \eqref{matrixnormal}. To \replaced{assess}{determine} whether the method is robust to this assumption, we \added{repeated the strategy in the previous section and }simulated \added{the null distribution of $p$-values}\replaced{ for $M=2000$ realizations of }{, in the same setting as in Section \ref{sec:unif_selec}, centered Gaussian random vectors:}
 \begin{equation}
-  \mathbf{X} \sim \mathcal{MN}_{n \times p}\bigl(\boldsymbol{\mu},\mathbb{I}_n,\Sigma \bigr)
+  \mathbf{X} \sim \mathcal{MN}_{n \times p}\bigl(\boldsymbol{\mu},\mathbb{I}_n,\boldsymbol{\Sigma} \bigr),
 \end{equation}
 with \begin{equation*}
-  \Sigma = \rho^{|i-j|} ~\text{for}~ 1 \leq i,j \leq p ~\text{and}~ \rho \in (0,1].
+  \boldsymbol{\Sigma} = \rho^{|i-j|} ~\text{for}~ 1 \leq i,j \leq p ~\text{and}~ \rho \in (0,1].
 \end{equation*}
- \Javier{what simulation are you performing? Specify that you are repeating the same simulation as in the previous section.} 
- Figure \ref{fig:deux_images_not_indep} shows that the $p$-values are no longer super-uniform under the null hypothesis, and therefore the selective type I error is no longer controlled when the independence assumption is not satisfied.
+Figure \ref{fig:images_grad_rho} shows that the $p$-values are no longer super-uniform under the null hypothesis, and therefore the selective type I error is no longer controlled when the independence assumption is not satisfied. \Javier{I have commented the first figure cause it is no longer necessary as it is included in the second one.} \replaced{Besides, we observe that the deviation from uniformity increases with the dependency parameter $\rho$.}{by varying the value of $\rho$, we can observe the tendency of the $p$-values to deviate from uniformity.} \replaced{Indeed, }{ 
+Figure \ref{fig:images_grad_rho} shows that}{the stronger the dependence between the features, the less the selective type I error is controlled.}
 
-\begin{figure}[H]
- \begin{subfigure}{0.47\textwidth}
-  \centering
-  \includegraphics[width=\textwidth]{images/hac_pvalues_not_indep.png}%
-  \caption{}
-\end{subfigure}  
-  \hfill
-  \begin{subfigure}{0.47\textwidth}
-  \includegraphics[width=\textwidth]{images/kmeans_pvalues_not_indep.png}
-	\caption{}  
-  \end{subfigure}
-  \caption{Empirical cumulative distribution functions of the $p$-values obtained after testing the equality of cluster means 
-    for (a) hierarchical agglomerative clustering (HAC) and (b) $k$-means algorithms.
-    The distribution functions were computed using $M$ = 2000 simulations from a gaussian random vector with a correlation matrix $\Sigma$ and $\rho = \frac{1}{2}$.
-}
-  \label{fig:deux_images_not_indep}
-\end{figure}
- 
-\Javier{The previous simulation is great. An idea if you want to: if you are simulating vectors with covariance $\rho^{\abs{i-j}}$, simulate for various $\rho\in[0,1)$ to illustrate how the $p$-values deviate from uniformity when $\rho$ increases from $0$ to $1$. Then you can add all the curves for a set of $\rho$ values in the same plot, colouring them with a gradient scale as a function of $\rho$.}
-
-By varying the value of $\rho$, we can observe the tendency of the $p$-values to deviate from uniformity. 
-Figure \ref{fig:images_grad_rho} shows that the stronger the dependence between the features, the less the selective type I error is controlled.
-
+%\begin{figure}[H]
+% \begin{subfigure}{0.47\textwidth}
+%  \centering
+%  \includegraphics[width=\textwidth]{images/hac_pvalues_not_indep.png}%
+%  \caption{}
+%\end{subfigure}  
+%  \hfill
+%  \begin{subfigure}{0.47\textwidth}
+%  \includegraphics[width=\textwidth]{images/kmeans_pvalues_not_indep.png}
+%	\caption{}  
+%  \end{subfigure}
+%  \caption{Empirical cumulative distribution functions of the $p$-values obtained after testing the equality of cluster means 
+%    for (a) hierarchical agglomerative clustering (HAC) and (b) $k$-means algorithms.
+%    The distribution functions were computed using $M$ = 2000 simulations from a gaussian random vector with a correlation matrix $\Sigma$ and $\rho = \frac{1}{2}$.
+%}
+% \label{fig:deux_images_not_indep}
+%\end{figure}
 
 \begin{figure}[H]
  \begin{subfigure}{0.47\textwidth}
@@ -630,7 +613,9 @@ Figure \ref{fig:images_grad_rho} shows that the stronger the dependence between 
   \label{fig:images_grad_rho}
 \end{figure}
 
-\subsubsection{Curse of dimensionality}\label{sec:curse_dim}
+\subsubsection{\deleted{Curse of dimensionality}}\label{sec:curse_dim}
+
+\Javier{I would include this analysis as part of the previous section, as it corresponds to the same study (robustness to feature dependence) with a different varying parameter. I will make a single figure with four panels, and add the sentence below at the end of the last paragraph of section 3.2.2.}
 
 The deviation from super-uniformity also increases with the dimension, as shown in Figure \ref{fig:images_grad_p}.
 
@@ -799,7 +784,7 @@ F_X\bigl(G_X(u)^-\bigr) \le u.
 
 Combining these inequalities yields
 \begin{equation}
-\mathbb{P}\bigl(F_X(Y)\le u\bigr) \le u,
+\mathbb{P}\bigl(F_X(Y)\le u\bigr) \leq u,
 \quad \forall\, u\in[0,1],
 \end{equation}
 which proves that \(F_X(Y)\) is super-uniform.
