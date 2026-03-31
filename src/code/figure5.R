@@ -7,72 +7,293 @@ library(KmeansInference)
 set.seed(123)
 
 n <- 100      
-B <- 2000       
+B <- 2000    
 p <- 5
-pvals <- numeric(B)
-Sigma <- diag(p)
+
+rho <- seq(0.1, 1, by = 0.2)
 i <- 1:p
 j <- 1:p
-R <- 0.5^(abs(outer(i, j, "-")))
 
 # HAC
+pvals <- matrix(NA_real_, nrow = B, ncol = length(rho))
 
-pvals <- numeric(B)
-
-for (b in 1:B) {
-  X <- MASS::mvrnorm(n = n,rep(0,p),R)
-  hcl <- hclust(dist(X, method="euclidean")^2, method="average") 
-  clust_pair <- sample(c(1,2,3), 2)
-  pvals[b] <-  test_hier_clusters_exact(X, link="average", K=3, k1=clust_pair[1], k2=clust_pair[2], hcl=hcl,sig=1,iso=TRUE)$pval
+for (k in seq_along(rho)) {
+  
+  r <- rho[k]
+  R <- r^(abs(outer(i, j, "-")))
+  
+  for (b in 1:B) {
+    X <- MASS::mvrnorm(n = n, rep(0, p), R)
+    hcl <- hclust(dist(X, method="euclidean")^2,
+                  method="average")
+    clust_pair <- sample(c(1,2,3), 2)
+    pvals[b, k] <-
+      test_hier_clusters_exact(
+        X,
+        link="average",
+        K=3,
+        k1=clust_pair[1],
+        k2=clust_pair[2],
+        hcl=hcl,
+        sig=1,
+        iso=TRUE
+      )$pval
+  }
 }
 
-pval_df <- data.frame(pval = pvals)  
-hac_pval_not_indep<-ggplot(pval_df, aes(x = pval)) +
-  stat_ecdf(geom = "step", color = "blue",size=0.8,pad = FALSE) +
-  geom_abline(intercept = 0, slope = 1,size=0.1,linetype="dashed") +
-  labs(x = "p-value", y = "ECDF") +
+
+pval_df <- data.frame(
+  pval = as.vector(pvals),
+  rho  = factor(rep(rho, each = B))
+)
+
+colors <- c("#afb9c4", "#778da9", "#415a77", "#1b263b", "#0d1b2a")
+
+hac_pval_grad_rho <-
+  ggplot(pval_df, aes(x = pval, color = rho, group = rho)) + 
+  stat_ecdf(geom = "step", size = 0.8, pad = FALSE) +
+  geom_abline(intercept = 0, slope = 1,
+              linetype = "dashed",
+              size = 0.3) +
+  labs(x = "p-value",
+       y = "ECDF",
+       color = expression(rho)) +
+  scale_color_manual(values = colors) +   
+  coord_cartesian(xlim = c(0,1), ylim = c(0,1)) +
   theme_minimal() +
   ggtitle("HAC - average linkage") +
-  coord_cartesian(xlim = c(0, 1),ylim=c(0,1)) +
-  theme_minimal() +
   theme(
     axis.title = element_text(size = 16),
     axis.text  = element_text(size = 14),
     plot.title = element_text(size = 18),
-    legend.text = element_text(size = 14),
-    legend.title = element_text(size = 16)
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 14)
   )
-
-ggsave(filename="hac_pvalues_not_indep.png",plot=hac_pval_not_indep,dpi=300,width=6,height=4,units="in")
-
-
+hac_pval_grad_rho
+ggsave(filename="hac_pvalues_grad_rho.png",plot=hac_pval_grad_rho,dpi=300,width=6,height=4,units="in")
 
 
-#kmeans
-pvals <- numeric(B)
+# kmeans
 
-for (b in 1:B) {
-  X <- MASS::mvrnorm(n = n,rep(0,p),R)
-  clust_pair <- sample(c(1,2,3), 2)
-  cl_1_2_inference_demo <- kmeans_inference(X, k=3, clust_pair[1], clust_pair[2],
-                                            sig=1, iter.max = 20,seed=b)
-  pvals[b] <- cl_1_2_inference_demo$pval
+pvals <- matrix(NA_real_, nrow = B, ncol = length(rho))
+
+for (k in seq_along(rho)) {
+  r <- rho[k]
+  R <- r^(abs(outer(i, j, "-")))
+  for (b in 1:B) {
+    X <- MASS::mvrnorm(n = n, rep(0, p), R)
+    hcl <- hclust(dist(X, method="euclidean")^2,
+                  method="average")
+    clust_pair <- sample(c(1,2,3), 2)
+    cl_1_2_inference_demo <- kmeans_inference(X, k=3, clust_pair[1], clust_pair[2],
+                                              sig=1, iter.max = 20,seed=b)
+    pvals[b,k] <- cl_1_2_inference_demo$pval
+    
+  }
 }
 
-pval_df <- data.frame(pval = pvals)
-kmean_pval_not_indep <- ggplot(pval_df, aes(x = pval,group=1)) +
-  stat_ecdf(geom = "step", color = "blue", size = 0.8, pad = FALSE) +
-  geom_abline(intercept = 0, slope = 1, size = 0.1, linetype = "dashed") +
-  labs(x = "p-value", y = "ECDF", title = "k-means") +
-  coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
+
+pval_df <- data.frame(
+  pval = as.vector(pvals),
+  rho  = factor(rep(rho, each = B))
+)
+
+colors <- c("#afb9c4", "#778da9", "#415a77", "#1b263b", "#0d1b2a")
+
+kmeans_pval_grad_rho <-
+  ggplot(pval_df, aes(x = pval, color = rho, group = rho)) + 
+  stat_ecdf(geom = "step", size = 0.8, pad = FALSE) +
+  geom_abline(intercept = 0, slope = 1,
+              linetype = "dashed",
+              size = 0.3) +
+  labs(x = "p-value",
+       y = "ECDF",
+       color = expression(rho)) +
+  scale_color_manual(values = colors) +   
+  coord_cartesian(xlim = c(0,1), ylim = c(0,1)) +
   theme_minimal() +
+  ggtitle("k-means") +
   theme(
     axis.title = element_text(size = 16),
     axis.text  = element_text(size = 14),
     plot.title = element_text(size = 18),
-    legend.text = element_text(size = 14),
-    legend.title = element_text(size = 16)
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 14)
+  )
+kmeans_pval_grad_rho
+ggsave(filename="kmeans_pvalues_grad_rho.png",plot=kmeans_pval_grad_rho,dpi=300,width=6,height=4,units="in")
+
+
+
+
+library(ggplot2)
+library(MASS)
+require(clusterpval)
+require(fastcluster)
+library(KmeansInference)
+
+set.seed(123)
+
+n <- 100
+B <- 2000
+
+rho <- 0.5
+p_seq <- c(2,5,10,20,50)
+
+colors <- c("#afb9c4", "#778da9", "#415a77", "#1b263b", "#0d1b2a")
+
+# hac
+
+pvals <- matrix(NA_real_, nrow = B, ncol = length(p_seq))
+
+for (k in seq_along(p_seq)) {
+  
+  p <- p_seq[k]
+  i <- 1:p
+  j <- 1:p
+  
+  R <- rho^(abs(outer(i, j, "-")))
+  print(p)
+  
+  for (b in 1:B) {
+    
+    X <- MASS::mvrnorm(n = n, rep(0, p), R)
+    
+    hcl <- hclust(
+      dist(X, method="euclidean")^2,
+      method="average"
+    )
+    
+    clust_pair <- sample(c(1,2,3), 2)
+    
+    pvals[b, k] <-
+      test_hier_clusters_exact(
+        X,
+        link="average",
+        K=3,
+        k1=clust_pair[1],
+        k2=clust_pair[2],
+        hcl=hcl,
+        sig=1,
+        iso=TRUE
+      )$pval
+  }
+}
+
+pval_df <- data.frame(
+  pval = as.vector(pvals),
+  p    = factor(rep(p_seq, each = B))
+)
+
+hac_pval_grad_p <-
+  ggplot(pval_df, aes(x = pval, color = p, group = p)) +
+  stat_ecdf(geom = "step", size = 0.8, pad = FALSE) +
+  geom_abline(
+    intercept = 0,
+    slope = 1,
+    linetype = "dashed",
+    size = 0.3
+  ) +
+  labs(
+    x = "p-value",
+    y = "ECDF",
+    color = "p"
+  ) +
+  scale_color_manual(values = colors) +
+  coord_cartesian(xlim = c(0,1), ylim = c(0,1)) +
+  theme_minimal() +
+  ggtitle("HAC - average linkage") +
+  theme(
+    axis.title = element_text(size = 16),
+    axis.text  = element_text(size = 14),
+    plot.title = element_text(size = 18),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 14)
   )
 
-ggsave(filename="kmeans_pvalues_not_indep.png",plot=kmean_pval_not_indep,dpi=300,width=6,height=4,units="in")
+hac_pval_grad_p
+
+ggsave(
+  filename = "hac_pvalues_grad_p.png",
+  plot = hac_pval_grad_p,
+  dpi = 300,
+  width = 6,
+  height = 4,
+  units = "in"
+)
+
+# kmeans
+
+pvals <- matrix(NA_real_, nrow = B, ncol = length(p_seq))
+
+for (k in seq_along(p_seq)) {
+  
+  p <- p_seq[k]
+  i <- 1:p
+  j <- 1:p
+  
+  R <- rho^(abs(outer(i, j, "-")))
+  print(p)
+  
+  for (b in 1:B) {
+    
+    X <- MASS::mvrnorm(n = n, rep(0, p), R)
+    
+    clust_pair <- sample(c(1,2,3), 2)
+    
+    res <- kmeans_inference(
+      X,
+      k = 3,
+      clust_pair[1],
+      clust_pair[2],
+      sig = 1,
+      iter.max = 20,
+      seed = b
+    )
+    
+    pvals[b, k] <- res$pval
+  }
+}
+
+pval_df <- data.frame(
+  pval = as.vector(pvals),
+  p    = factor(rep(p_seq, each = B))
+)
+
+kmeans_pval_grad_p <-
+  ggplot(pval_df, aes(x = pval, color = p, group = p)) +
+  stat_ecdf(geom = "step", size = 0.8, pad = FALSE) +
+  geom_abline(
+    intercept = 0,
+    slope = 1,
+    linetype = "dashed",
+    size = 0.3
+  ) +
+  labs(
+    x = "p-value",
+    y = "ECDF",
+    color = "p"
+  ) +
+  scale_color_manual(values = colors) +
+  coord_cartesian(xlim = c(0,1), ylim = c(0,1)) +
+  theme_minimal() +
+  ggtitle("k-means") +
+  theme(
+    axis.title = element_text(size = 16),
+    axis.text  = element_text(size = 14),
+    plot.title = element_text(size = 18),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 14)
+  )
+
+kmeans_pval_grad_p
+
+ggsave(
+  filename = "kmeans_pvalues_grad_p.png",
+  plot = kmeans_pval_grad_p,
+  dpi = 300,
+  width = 6,
+  height = 4,
+  units = "in"
+)
 

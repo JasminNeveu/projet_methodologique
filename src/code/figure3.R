@@ -5,7 +5,7 @@ library(latex2exp)
 n  <- 10
 p  <- 2
 Sigma <- diag(p)/2
-phi <- 8
+phi <- 4.5
 
 mu1 <- c(0,  2.5)
 mu2 <- c( 4,  0)
@@ -34,18 +34,18 @@ df <- data.frame(
 perturbated_data_phi <- ggplot(df, aes(x, y, color = cluster)) +
   geom_point(size = 2) +
   labs(
-    title = TeX(r"(a) Original data)"),
+    title = TeX(r"(Perturbated data ($\varphi \approx 4.5$))"),
     x = "Feature 1",
     y = "Feature 2"
   ) +
   coord_cartesian(xlim = c(-2.5, 7.5), ylim = c(-4.5, 4.5)) +
   theme_classic() + 
   theme(
-    axis.title = element_text(size = 16),
-    axis.text  = element_text(size = 14),
-    plot.title = element_text(size = 18),
-    legend.text = element_text(size = 14),
-    legend.title = element_text(size = 16),
+    axis.title = element_text(size = 20),
+    axis.text  = element_text(size = 16),
+    plot.title = element_text(size = 20),
+    legend.text = element_text(size = 16),
+    legend.title = element_text(size = 18),
   )
 perturbated_data_phi
 ggsave(filename="original_data.png",plot=perturbated_data_phi,dpi=300,width=6,height=4,units="in")

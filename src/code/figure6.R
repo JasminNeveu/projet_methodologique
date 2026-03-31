@@ -1,126 +1,57 @@
 library(ggplot2)
-library(MASS)
-require(clusterpval)
-require(fastcluster)
-library(KmeansInference)
+library(dplyr)
+library(ggrepel)
+library(fastcluster)
+source("data/1KGP_colours.R")
 
-set.seed(123)
+data <- readRDS("data/1KGP_100PC.Rda")
 
-n <- 100      
-B <- 2000    
-p <- 5
-
-rho <- seq(0.1, 1, by = 0.2)
-i <- 1:p
-j <- 1:p
-
-# HAC
-pvals <- matrix(NA_real_, nrow = B, ncol = length(rho))
-
-for (k in seq_along(rho)) {
-  
-  r <- rho[k]
-  R <- r^(abs(outer(i, j, "-")))
-  
-  for (b in 1:B) {
-    X <- MASS::mvrnorm(n = n, rep(0, p), R)
-    hcl <- hclust(dist(X, method="euclidean")^2,
-                  method="average")
-    clust_pair <- sample(c(1,2,3), 2)
-    pvals[b, k] <-
-      test_hier_clusters_exact(
-        X,
-        link="average",
-        K=3,
-        k1=clust_pair[1],
-        k2=clust_pair[2],
-        hcl=hcl,
-        sig=1,
-        iso=TRUE
-      )$pval
-  }
-}
-
-
-pval_df <- data.frame(
-  pval = as.vector(pvals),
-  rho  = factor(rep(rho, each = B))
+named_colors <- setNames(
+  sapply(colour_list, `[`, 2),
+  sapply(colour_list, `[`, 1)
 )
 
-colors <- c("#afb9c4", "#778da9", "#415a77", "#1b263b", "#0d1b2a")
+centroids <- data %>%
+  group_by(pop) %>%
+  summarise(x = mean(PC1) , y = mean(PC2))
 
-hac_pval_grad_rho <-
-  ggplot(pval_df, aes(x = pval, color = rho, group = rho)) + 
-  stat_ecdf(geom = "step", size = 0.8, pad = FALSE) +
-  geom_abline(intercept = 0, slope = 1,
-              linetype = "dashed",
-              size = 0.3) +
-  labs(x = "p-value",
-       y = "ECDF",
-       color = expression(rho)) +
-  scale_color_manual(values = colors) +   
-  coord_cartesian(xlim = c(0,1), ylim = c(0,1)) +
+# color pop
+ACPplotpop<-ggplot(data,aes(x=PC1,y=PC2,color=pop)) +
+  geom_point(size=0.7) +
   theme_minimal() +
-  ggtitle("HAC - average linkage") +
   theme(
-    axis.title = element_text(size = 16),
-    axis.text  = element_text(size = 14),
-    plot.title = element_text(size = 18),
-    legend.text = element_text(size = 12),
-    legend.title = element_text(size = 14)
-  )
-hac_pval_grad_rho
-ggsave(filename="hac_pvalues_grad_rho.png",plot=hac_pval_grad_rho,dpi=300,width=6,height=4,units="in")
+    axis.text.x=element_blank(),
+    axis.text.y = element_blank()) +
+  scale_color_manual(values = named_colors,guide="none") +
+  geom_text_repel(data = centroids, aes(x = x, y = y, label = pop, color = pop),
+                  inherit.aes = FALSE,fontface="bold", segment.color= NA,max.overlaps=Inf,point.padding=6,box.padding=0.3)
+ACPplotpop
+ggsave(filename="PCA.png",plot=ACPplotpop,dpi=300,width=6,height=4,units="in")
 
+#color cluster
+data_hcl <- data %>% select(-pop,-ID)
+len <- length(unique(data$pop))
+hcl <- hclust(dist(data_hcl, method="euclidean"), method="ward.D") 
+clusters <- cutree(hcl,len)
+data <- data %>% mutate(cluster = factor(clusters))
+centroids <- data %>%
+  group_by(cluster) %>%
+  summarise(PC1 = mean(PC1), PC2 = mean(PC2))
 
-# kmeans
+offset <- 0.9
+ACPplotcluster<-ggplot(data,aes(x=PC1,y=PC2,color=cluster)) +
+  geom_point(size=0.7) +
+  geom_text(
+    data = centroids,
+    aes(x = PC1 + offset, y = PC2 + offset, label = cluster),
+    color = "black",
+    size = 4
+  ) +  theme_minimal() +
+  theme(legend.position = "none",
+        axis.text.x=element_blank(),
+        axis.text.y = element_blank())
+ACPplotcluster
 
-pvals <- matrix(NA_real_, nrow = B, ncol = length(rho))
-
-for (k in seq_along(rho)) {
-  r <- rho[k]
-  R <- r^(abs(outer(i, j, "-")))
-  for (b in 1:B) {
-    X <- MASS::mvrnorm(n = n, rep(0, p), R)
-    hcl <- hclust(dist(X, method="euclidean")^2,
-                  method="average")
-    clust_pair <- sample(c(1,2,3), 2)
-    cl_1_2_inference_demo <- kmeans_inference(X, k=3, clust_pair[1], clust_pair[2],
-                                              sig=1, iter.max = 20,seed=b)
-    pvals[b,k] <- cl_1_2_inference_demo$pval
-    
-  }
-}
-
-
-pval_df <- data.frame(
-  pval = as.vector(pvals),
-  rho  = factor(rep(rho, each = B))
-)
-
-colors <- c("#afb9c4", "#778da9", "#415a77", "#1b263b", "#0d1b2a")
-
-kmeans_pval_grad_rho <-
-  ggplot(pval_df, aes(x = pval, color = rho, group = rho)) + 
-  stat_ecdf(geom = "step", size = 0.8, pad = FALSE) +
-  geom_abline(intercept = 0, slope = 1,
-              linetype = "dashed",
-              size = 0.3) +
-  labs(x = "p-value",
-       y = "ECDF",
-       color = expression(rho)) +
-  scale_color_manual(values = colors) +   
-  coord_cartesian(xlim = c(0,1), ylim = c(0,1)) +
-  theme_minimal() +
-  ggtitle("k-means") +
-  theme(
-    axis.title = element_text(size = 16),
-    axis.text  = element_text(size = 14),
-    plot.title = element_text(size = 18),
-    legend.text = element_text(size = 12),
-    legend.title = element_text(size = 14)
-  )
-kmeans_pval_grad_rho
-ggsave(filename="kmeans_pvalues_grad_rho.png",plot=kmeans_pval_grad_rho,dpi=300,width=6,height=4,units="in")
+ggsave(filename="PCAcluster.png",plot=ACPplotcluster,dpi=300,width=6,height=4,units="in")
 
 

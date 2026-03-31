@@ -1,170 +1,100 @@
 library(ggplot2)
-library(MASS)
-require(clusterpval)
-require(fastcluster)
-library(KmeansInference)
+library(fastcluster)
+library(dplyr)
 
-set.seed(123)
+data <- readRDS("data/1KGP_100PC.Rda")
+super_pop <- read.table(
+  "data/20131219.populations.tsv",
+  sep = "\t",
+  header = TRUE
+)
+super_pop <- head(super_pop, -3)
+meta <- super_pop %>% 
+  select(
+    pop = Population.Code,
+    superpop = Super.Population
+  ) %>% 
+  distinct()
 
-n <- 100
-B <- 2000
+data_hcl <- data %>% 
+  select(-pop, -ID)
+data_hcl <- as.matrix(data_hcl)
 
-rho <- 0.5
-p_seq <- c(2,5,10,20,50)
+len <- length(unique(data$pop))
+hcl <- hclust(
+  dist(data_hcl, method = "euclidean"),
+  method = "ward.D"
+)
+clusters <- cutree(hcl, k = len)
 
-colors <- c("#afb9c4", "#778da9", "#415a77", "#1b263b", "#0d1b2a")
+tab <- table(data$pop, clusters)
+tab_prop <- prop.table(tab, margin = 1)
+best_cluster <- apply(tab_prop, 1, which.max)
+pop_order <- names(sort(best_cluster))
 
-# hac
+df <- as.data.frame(tab_prop)
+colnames(df) <- c("Population", "cluster", "perc")
 
-pvals <- matrix(NA_real_, nrow = B, ncol = length(p_seq))
+label_df <- data.frame(Population = pop_order) %>%
+  left_join(meta, by = c("Population" = "pop")) %>%
+  mutate(pop_label = Population)
 
-for (k in seq_along(p_seq)) {
-  
-  p <- p_seq[k]
-  i <- 1:p
-  j <- 1:p
-  
-  R <- rho^(abs(outer(i, j, "-")))
-  print(p)
-  
-  for (b in 1:B) {
-    
-    X <- MASS::mvrnorm(n = n, rep(0, p), R)
-    
-    hcl <- hclust(
-      dist(X, method="euclidean")^2,
-      method="average"
-    )
-    
-    clust_pair <- sample(c(1,2,3), 2)
-    
-    pvals[b, k] <-
-      test_hier_clusters_exact(
-        X,
-        link="average",
-        K=3,
-        k1=clust_pair[1],
-        k2=clust_pair[2],
-        hcl=hcl,
-        sig=1,
-        iso=TRUE
-      )$pval
-  }
-}
+df <- df %>%
+  left_join(label_df, by = "Population")
 
-pval_df <- data.frame(
-  pval = as.vector(pvals),
-  p    = factor(rep(p_seq, each = B))
+df$pop_label <- factor(df$pop_label, levels = label_df$pop_label)
+df$cluster <- factor(df$cluster, levels = sort(unique(clusters)))
+
+superpop_colors <- c(
+  "AFR" = "#ff9f1c",
+  "AMR" = "#e71d36",
+  "EAS" = "#2ec4b6",
+  "EUR" = "#011627",
+  "SAS" = "#984EA3"
 )
 
-hac_pval_grad_p <-
-  ggplot(pval_df, aes(x = pval, color = p, group = p)) +
-  stat_ecdf(geom = "step", size = 0.8, pad = FALSE) +
-  geom_abline(
-    intercept = 0,
-    slope = 1,
-    linetype = "dashed",
-    size = 0.3
+label_colors <- label_df %>%
+  mutate(color = superpop_colors[superpop]) %>%
+  pull(color)
+
+heatmap <- ggplot(
+  df,
+  aes(x = pop_label, y = cluster, fill = perc)
+) +
+  geom_tile(color = "black", linewidth = 0.3) +
+  geom_point(aes(color = superpop), alpha = 0, size = 0) +
+  labs(x = "Population", y = "HAC cluster") +
+  scale_fill_gradient(
+    low = "white",
+    high = "#1b263b",
+    name = "Proportion \nof 1KGP \npopulation"
   ) +
-  labs(
-    x = "p-value",
-    y = "ECDF",
-    color = "p"
+  scale_color_manual(
+    name = "Super-population",
+    values = superpop_colors,
+    guide = guide_legend(override.aes = list(alpha = 1, size = 3))
   ) +
-  scale_color_manual(values = colors) +
-  coord_cartesian(xlim = c(0,1), ylim = c(0,1)) +
+  coord_fixed() +
   theme_minimal() +
-  ggtitle("HAC - average linkage") +
   theme(
-    axis.title = element_text(size = 16),
-    axis.text  = element_text(size = 14),
-    plot.title = element_text(size = 18),
-    legend.text = element_text(size = 12),
-    legend.title = element_text(size = 14)
+    panel.grid = element_blank(),
+    axis.text.x = element_text(
+      angle = 90,
+      vjust = 0.5,
+      hjust = 1,
+      size = 7,
+      colour = label_colors
+    )
   )
 
-hac_pval_grad_p
+heatmap
 
 ggsave(
-  filename = "hac_pvalues_grad_p.png",
-  plot = hac_pval_grad_p,
+  filename = "heatmap_clust_pop.png",
+  plot = heatmap,
   dpi = 300,
-  width = 6,
-  height = 4,
+  width = 8,
+  height = 5,
   units = "in"
 )
 
-# kmeans
-
-pvals <- matrix(NA_real_, nrow = B, ncol = length(p_seq))
-
-for (k in seq_along(p_seq)) {
-  
-  p <- p_seq[k]
-  i <- 1:p
-  j <- 1:p
-  
-  R <- rho^(abs(outer(i, j, "-")))
-  print(p)
-  
-  for (b in 1:B) {
-    
-    X <- MASS::mvrnorm(n = n, rep(0, p), R)
-    
-    clust_pair <- sample(c(1,2,3), 2)
-    
-    res <- kmeans_inference(
-      X,
-      k = 3,
-      clust_pair[1],
-      clust_pair[2],
-      sig = 1,
-      iter.max = 20,
-      seed = b
-    )
-    
-    pvals[b, k] <- res$pval
-  }
-}
-
-pval_df <- data.frame(
-  pval = as.vector(pvals),
-  p    = factor(rep(p_seq, each = B))
-)
-
-kmeans_pval_grad_p <-
-  ggplot(pval_df, aes(x = pval, color = p, group = p)) +
-  stat_ecdf(geom = "step", size = 0.8, pad = FALSE) +
-  geom_abline(
-    intercept = 0,
-    slope = 1,
-    linetype = "dashed",
-    size = 0.3
-  ) +
-  labs(
-    x = "p-value",
-    y = "ECDF",
-    color = "p"
-  ) +
-  scale_color_manual(values = colors) +
-  coord_cartesian(xlim = c(0,1), ylim = c(0,1)) +
-  theme_minimal() +
-  ggtitle("k-means") +
-  theme(
-    axis.title = element_text(size = 16),
-    axis.text  = element_text(size = 14),
-    plot.title = element_text(size = 18),
-    legend.text = element_text(size = 12),
-    legend.title = element_text(size = 14)
-  )
-
-kmeans_pval_grad_p
-
-ggsave(
-  filename = "kmeans_pvalues_grad_p.png",
-  plot = kmeans_pval_grad_p,
-  dpi = 300,
-  width = 6,
-  height = 4,
-  units = "in"
-)
