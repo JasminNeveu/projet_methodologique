@@ -126,11 +126,11 @@ ggsave(filename="kmeans_pvalues_grad_rho.png",plot=kmeans_pval_grad_rho,dpi=300,
 
 
 
-library(ggplot2)
-library(MASS)
-require(clusterpval)
-require(fastcluster)
-library(KmeansInference)
+
+
+
+
+
 
 set.seed(123)
 
