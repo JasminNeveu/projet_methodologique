@@ -356,15 +356,15 @@ The goal is to test for the equality of cluster means, that is, testing the foll
   \mathcal{H}_0^{\{C_1,C_2\}}: \bar{\mu}_{C_1} = \bar{\mu}_{C_2},
 \end{equation}
 for a pair of clusters $C_1,C_2$. For concision and clarity, we introduce the $n$-dimensional vector
-\begin{equation*}
-\nu = (\nu_i)_{i=1}^n, \qquad
+\begin{equation}\label{nu}
+\added{\nu(C_1,C_2)=}\nu = (\nu_i)_{i=1}^n, \qquad
 \nu_i =
 \begin{cases}
 \dfrac{1}{|C_1|}, & \text{if } i \in C_1, \\[0.4em]
 -\dfrac{1}{|C_2|}, & \text{if } i \in C_2, \\[0.2em]
 0, & \text{otherwise},
 \end{cases}
-\end{equation*}
+\end{equation}
 such that the population (resp. empirical) difference of cluster means can be compactely rewritten as:
 \begin{equation*}
   \left\{
@@ -490,7 +490,6 @@ where $\mathbb{F}_p(t;c;\mathcal{S})$ denotes the cumulative distribution functi
 
 \begin{theorem}[Theorem 1 in \cite{Gao}]\label{thm:1}
   For any non-overlapping groups of observations $C_1,C_2 \subseteq \{1,...,n\}$ and any realization $\mathbf{x}$ of $\mathbf{X} \sim \mathcal{MN}_{n \times p}(\mathbf{\mu},\mathbb{I}_n,\sigma^2\mathbb{I}_p)$
-\Javier{Maybe try to rephrase so that the equation doesn't fall outside the text limits.}
 
   \begin{equation}
   p(\mathbf{x}) = 1 - \mathbb{F}\bigl(\nu^\top \mathbf{x};\,\norm{\nu}_2 \sigma;\,\mathcal{S}\bigl(\mathbf{x};\{C_1,C_2\}\bigr)\bigr)
@@ -513,14 +512,8 @@ The control of the selective type I error is proved in Appendix~\ref{app:proofs}
                       &= \mathbf{x} + \frac{\nu}{\norm{\nu}_2^2}\operatorname{dir}(\nu^\top \mathbf{x})(\phi - \norm{\nu^\top \mathbf{x}}_2)\added{,}
   \end{aligned}
 \end{equation}
-so that $\mathbf{x}'(\phi)$ can be interpreted as a perturbed version of $\mathbf{x}$.
-The compared clusters are either pushed appart or pulled together depending on the value of $\phi$.
-The smaller $\phi$ is, the more the clusters are pulled together. The larger $\phi$ is, the more separate they are.
-More details are provided in Section 2.2 in \cite{Gao}.
-These perturbations are illustrated in Figure \ref{fig:deux_images_perturbated_data}.
-
-\Javier{Explain with words what the perturbation does according to the value of $\phi$ (pushing the clusters appart or pulling them together), and say that this is illustrated in Figure~\ref{fig:deux_images_perturbated_data}. You should also mention Section 2.2 in~\cite{Gao}, saying e.g. ``see Section 2.2 in~\cite{Gao} for details''.} 
-
+so that $\mathbf{x}'(\phi)$ can be interpreted as a perturbed version of $\mathbf{x}$. \replaced{In $\mathbf{x}'(\phi)$, the}{The} compared clusters are either pushed appart or pulled together depending on the value of $\phi$. \replaced{When $\phi\leq\norm{\nu^T\mathbf{x}}$, the}{
+The} smaller $\phi$ is, the more the clusters are pulled together. \replaced{If $\phi>\norm{\nu^T\mathbf{x}}$, the}{The} larger $\phi$ is, the more separate they are. More details are provided in Section 2.2 in \cite{Gao}. \replaced{Here, we illustrate these perturbations in }{These perturbations are illustrated in} Figure \ref{fig:deux_images_perturbated_data}.
 
 \begin{figure}[H]
  \begin{subfigure}{0.30\textwidth}
@@ -539,17 +532,17 @@ These perturbations are illustrated in Figure \ref{fig:deux_images_perturbated_d
     \includegraphics[width=\textwidth]{images/perturbated_8_data.png}
     \caption{}
   \end{subfigure}
-  \caption{(a) Original dataset $\mathbf{x}'(\phi) = \mathbf{x}$ with $\phi \approx 4.5$, (b) perturbated dataset $\mathbf{x}' (\phi)$ with $\phi = 0$ and (c) a perturbated dataset $\mathbf{x}'(\phi)$ with $\phi = 8$.}
+  \caption{(a) Original dataset $\mathbf{x}'(\phi) = \mathbf{x}$ with $\phi \added{ =\norm{\nu^T\mathbf{x}}}\approx 4.5$, (b) perturbated dataset $\mathbf{x}' (\phi)$ with $\phi = 0$ and (c) a perturbated dataset $\mathbf{x}'(\phi)$ with $\phi = 8$. \added{In all cases, $C_1$ and $C_2$ in $\nu(C_1,C_2)$ correspond to the red (1) and green (2) clusters.}}
   \label{fig:deux_images_perturbated_data}
 \end{figure}
 
-Thus, following from~\eqref{set_S}, $\mathcal{S}$ corresponds to the set of perturbations that preserve the clustering. The efficient computation of such set is required for the computation of~\eqref{pval_final}. This can be done thanks to the strategies proposed by Gao \textit{et al.} for several HAC algorithms (see~\cite[Section 3]{Gao} for details).
+Thus, following from~\eqref{set_S}, $\mathcal{S}$ corresponds to the set of perturbations that preserve the \replaced{clusters to be compared}{clustering}. \Javier{Note that we don't ask all the clusters in $\mathcal{C}(\mathbf{x})$ to be preserved, but only $C_1$ and $C_2$.} The efficient \replaced{determination}{computation} \Javier{To avoid saying \textit{computation} twice.} of such set is required for the computation of~\eqref{pval_final}. This can be \replaced{carried out}{done} thanks to the strategies proposed by Gao \textit{et al.} for several HAC algorithms (see~\cite[Section 3]{Gao} for details).
 
 \subsection{Numerical experiments}
 
 \subsubsection{Uniformly distributed $p$-values under the null hypothesis}\label{sec:unif_selec}
 
-Section \ref{sec:gao} detailed the approach of Gao \textit{et al.} for testing the equality of cluster means after implementing a HAC algorithm. \Javier{If you already introduced the abbreviation the first time, use the abbreviation always.} In Theorem~\ref{thm:1}, we showed that the $p$-value defined in \eqref{pval_final} controls the selective type I error for clustering.
+Section \ref{sec:gao} detailed the approach of Gao \textit{et al.} for testing the equality of cluster means after implementing \replaced{an}{a} HAC algorithm. \Javier{As `HAC' is pronounced `aitch-A-C', starting with a vowel sound, we write \textit{an} before.} In Theorem~\ref{thm:1}, we showed that the $p$-value defined in \eqref{pval_final} controls the selective type I error for clustering.
 
 To empirically illustrate this result, we simulated the null distribution of $p$-values, following the same strategy as in Section \ref{sec:clustering} but this time using~\eqref{pval_final} as a $p$-value for~\eqref{h0c1c2}. For the simulations based on the HAC algorithm, we used the \texttt{clusterpval} library developed by Gao \textit{et al.}, which implements the $p$-value \eqref{pvalue_tractable}. For the simulations based on the $k$-means algorithm, we used the \texttt{KmeansInference} library \cite{JMLR:v24:22-0371}, which relies on a similar $p$-value adapted to the $k$-means procedure. The corresponding results are presented in Figure \ref{fig:deux_images_selective}, which shows that the resulting $p$-values are indeed super-uniform under the null hypothesis.
 
@@ -566,7 +559,7 @@ To empirically illustrate this result, we simulated the null distribution of $p$
   \end{subfigure}
   \caption{Empirical cumulative distribution functions of the $p$-values obtained after testing the equality of cluster means 
     for (a) hierarchical agglomerative clustering (HAC) and (b) $k$-means algorithms.
-The distribution functions were computed using $M$ = 2000 simulations from a multivariate centered normal distribution, as detailed in Section~\ref{sec:clustering}.
+The \added{empirical cumulative} distribution functions \added{(ECDF)} were computed using $M$ = 2000 \replaced{samples}{simulations} \added{drawn} from a multivariate centered normal distribution, as detailed in Section~\ref{sec:clustering}.
 }
   \label{fig:deux_images_selective}
 \end{figure}
@@ -574,17 +567,16 @@ The distribution functions were computed using $M$ = 2000 simulations from a mul
 
 \subsubsection{Robustness to feature dependence}\label{sec:rob_data}
 
-\Javier{We study if the method is robust (i.e. still keeps the statistical guarantees) when the model assumptions don't hold, that is, when features are dependent. So we say robustness to feature \textit{dependence}.}
-
 The control of the selective type I error for clustering relies on a strong assumption: the features must be independent \eqref{matrixnormal}. To assess whether the method is robust to this assumption, we repeated the strategy in the previous section and simulated the null distribution of $p$-values  for $M=2000$ realizations of:
-\begin{equation}
+\begin{equation}\label{big_sigma_model}
   \mathbf{X} \sim \mathcal{MN}_{n \times p}\bigl(\boldsymbol{\mu},\mathbb{I}_n,\boldsymbol{\Sigma} \bigr),
 \end{equation}
-with \begin{equation*}
+with \begin{equation}\label{big_sigma}
   \boldsymbol{\Sigma} = \rho^{|i-j|} ~\text{for}~ 1 \leq i,j \leq p ~\text{and}~ \rho \in (0,1].
-\end{equation*}
-Figure \ref{fig:images_grad_rho} shows that the $p$-values are no longer super-uniform under the null hypothesis, and therefore the selective type I error is no longer controlled when the independence assumption is not satisfied. \Javier{I have commented the first figure cause it is no longer necessary as it is included in the second one.} Besides, we observe that the deviation from uniformity increases with the dependency parameter $\rho$. Indeed, the stronger the dependence between the features, the less the selective type I error is controlled.
+\end{equation}
+Figure \ref{fig:images_grad_rho} shows that the $p$-values are no longer super-uniform under the null hypothesis, and therefore the selective type I error is no longer controlled when the independence assumption is not satisfied. Besides, we observe that the deviation from uniformity increases with the dependency parameter $\rho$. Indeed, the stronger the dependence between the features, the less the selective type I error is controlled.
 The deviation from super-uniformity also increases with the dimension, as illustrated in Figure \ref{fig:images_grad_rho} (c-d).
+
 \begin{figure}[H]
   \centering
 
@@ -614,34 +606,25 @@ The deviation from super-uniformity also increases with the dimension, as illust
     \caption{}
   \end{subfigure}
 
-  \caption{Empirical cumulative distribution functions of the $p$-values obtained after testing the equality of cluster means 
+  \caption{Empirical cumulative distribution functions \added{(ECDF)} of the $p$-values obtained after testing the equality of cluster means 
     for hierarchical agglomerative clustering (HAC). 
-    The distribution functions were computed using $M$ = 2000 simulations from a gaussian random vector with a correlation matrix $\Sigma$ for different values of $\rho$ for (a) and (b) and a matrix $\Sigma$ with $\rho = \frac{1}{2}$ for different values of $p$ for (c) and (d).}
+    The distribution functions were computed using $M$ = 2000 \replaced{samples}{simulations} \added{drawn} from\replaced{~\eqref{big_sigma_model}}{a gaussian random vector} with \deleted{a} correlation matrix\replaced{~\eqref{big_sigma}}{$\Sigma$} for \added{(a-b)} different values of $\rho$\added{, with fixed $p=?$,} \replaced{and (c-d)}{for (a) and (b) and a matrix $\Sigma$ with $\rho = \frac{1}{2}$ for} different values of $p$\replaced{, \added{for fixed $\rho=0.5$}}{for (c) and (d)}.\Javier{Complete with the fixed value of $p$ that you set for (a-b).}}
   \label{fig:images_grad_rho}
 \end{figure}
 
 
-
-\Javier{I would include this analysis as part of the previous section, as it corresponds to the same study (robustness to feature dependence) with a different varying parameter. I will make a single figure with four panels, and add the sentence below at the end of the last paragraph of section 3.2.2.}
-
-
 \subsection{Data applications}
 
-To evaluate the emirical performance of the method of Gao \textit{et al.}, we analyzed the $p$-value behavior using data from the \textit{1000 Genomes Project}.
+To evaluate the empirical performance of the method of Gao \textit{et al.}, we analyzed the $p$-value behavior using data from the \textit{1000 Genomes Project} \added{(1KGP)~\cite{1kgp}}. \Javier{I wouldn't speak of \textit{empirical performance}, because we don't need \textit{real} data to evaluate that. I would directly say that we want to assess the suitability of the method in real cases of application, where data does not necessarily fit model~\eqref{matrixnormal}.} \Javier{Also, you should add here a brief summary of what you are doing in this section: first, you introduce genetic data (is not something that everyone knows), then you describe the clustering output when applying HAC to the 1KGP cohort, and then we analyze the performance of Gao \textit{et al.}'s $p$-value when used to provide statistical guarantees on that clustering.}
 
-\subsubsection{Data}
+\subsubsection{\replaced{Genotype data}{Data}}
 
-The DNA sequence contains all the genetic information associated with an individual.
-It is composed of two complementary strands made of nucleotides, denoted A, C, G, and T.
-Although these sequences are very long, the vast majority of the genome is shared among all individuals.
-A reference genome has been defined, and genetic databases are constructed by counting nucleotide differences between each individual and this reference genome.
-From this matrix of genetic variations, a principal component analysis (PCA) can be performed in order to obtain the dataset \texttt{1KGP\_100PC}. 
-Each individual is associated with a population which description is provided in the Appendix \ref{table:indiv}.
+The DNA sequence contains all the genetic information associated with an individual. It is composed of two complementary strands made of nucleotides, denoted \added{by} A, C, G, and T. Although these sequences are very long, the vast majority of the genome is shared among all individuals. \replaced{Instead of relatively comparing DNA sequences,}{A reference genome has been defined, and} genetic databases are constructed by \replaced{comparing every individual's genome to the so-called \textit{reference genome}}{counting nucleotide differences between each individual and this reference genome}. \added{This yields a matrix of genetic variation, often referred to as \textit{SNP matrix}, that serves as quantitative descriptor of the genetic variability of a human population.} From this \added{SNP} matrix \deleted{of genetic variations}, a principal component analysis (PCA) can be performed in order to obtain the dataset \texttt{1KGP\_100PC}. \replaced{Besides containing the genetic information of every individual, the 1KGP dataset also provides their ancestral population, that we describe in}{
+Each individual is associated with a population which description is provided in the} Appendix~\ref{app:data}.
 
 \subsubsection{Clustering}
 
-To try to capture the population structure of the indivuduals, we perfomed clustering with the same number of clusters as there are populations.
-Figure \ref{fig:pca} shows the individuals represented on the first two principal components (PCs).
+To try to capture the population structure of the \added{1KGP} indivuduals, we perfomed \added{HAC} clustering \replaced{and set the algorithm to choose $K$ clusters, with $K$ being the number of ancestral populations.}{with the same number of clusters as there are populations.} \added{Indeed, we consider the set of populations as an underlying true partition to which the clustering output will be compared.} Figure \ref{fig:pca} shows the \added{1KGP} individuals represented on the first two principal components (PCs).
 
 \begin{figure}[H]
   \begin{subfigure}{0.47\textwidth}
@@ -654,28 +637,29 @@ Figure \ref{fig:pca} shows the individuals represented on the first two principa
     \includegraphics[width = \textwidth]{images/PCAcluster.png}%
     \caption{}
   \end{subfigure}
-  \caption{Projection of the individuals onto the first two PCs, colored by population in (a) and by clusters obtained from HAC on the first 100 PCs in (b).}
+  \caption{Projection of the individuals onto the first two PCs, colored by population in (a) and by clusters obtained from HAC \added{with Ward linkage} on the first 100 PCs in (b).}
   \label{fig:pca}
 \end{figure}
-The clusters obtained with the HAC algorithm in Figure \ref{fig:pca} (b) appear to be largely consistent with the population labels of the individuals.  
-This can also be assessed by computing, for each cluster and each population, the corresponding proportion of individuals, as shown in Figure \ref{fig:heatmap_clust_pop}.  
+The clusters obtained with the HAC algorithm in Figure \ref{fig:pca}(b) appear to be largely consistent with the population labels of the individuals.  
+This can also be assessed by computing \replaced{the confusion matrix comparing the clustering output and the population classification}{, for each cluster and each population, the corresponding proportion of individuals}, as shown in Figure \ref{fig:heatmap_clust_pop}.  
 Overall, the heatmap exhibits an approximately diagonal structure, indicating that each cluster mostly corresponds to a single population.  
 However, some populations are spread across several clusters (PJL, ASW, GIH), and some clusters contain individuals from multiple populations (1, 3, 16).
 \begin{figure}[H]
   \centering
   \includegraphics[width= \textwidth]{images/heatmap_clust_pop.png}
-  \caption{Heatmap showing the proportion of individuals from each population within each cluster obtained using the HAC algorithm with Euclidean distance and the Ward.D linkage method.}
+  \caption{\added{Confusion matrix comparing the clustering output and the population labels for the 1KGP individuals.}\deleted{Heatmap showing the proportion of individuals from each population within each cluster obtained using} \added{Clusters were obtained using} the HAC algorithm with Euclidean distance and the \replaced{Ward linkage}{Ward.D linkage method}.}
   \label{fig:heatmap_clust_pop}
 \end{figure}
 
-\subsubsection{Limitation of the method}
+\subsubsection{\replaced{Suitability of Gao \textit{et al.}'s approach}{Limitation of the method}}
+
+\Javier{Up to here, we have just introduced the data and performed a clustering algorithm. To introduce this section, say that now we want to apply a post-clustering inference procedure to the previously performed clustering, and explore whether Gao \textit{et al.}'s $p$-value yields results that are consistent with the confusion matrix in Figure~\ref{fig:heatmap_clust_pop}, that is, if clusters corresponding to different populations are detected as different, and clusters corresponding to a single population are not. The paragraph below starts to harsh. Try to give some context and explain that we are evaluating the control of selective type I error and the performance in terms of power.}
+
+\Javier{Importantly! The variance parameter $\sigma$ is unknown here. We must specify how are we dealing with it. For that, we can mention Theorem 4 in~\cite{Gao} (go and see it). It says that we can plug in an over-estimator $\hat{\sigma}$ of $\sigma$ and the selective type I error remains controlled. You have to mention this result here and say that we are plugging an over-estimator provided by Gao \textit{et al.} (their Equation (C.1). I don't think we should write a theoretical part in the previous section because I don't have enough time and the proof is long (not difficult, but long). So I would just write a couple of sentences here about it, mentioning the results of Gao's paper. It is important that you know this for the defense too.}
 
 In Section \ref{sec:rob_data}, we showed that the $p$-value is sensitive to dimensionality.
-It is desirable to retain the maximum number of principal components to minimize information loss. However, this comes at a cost to the statistical guarantees of Gao’s method. 
-To be statistically valid, it must both control the selective type I error and maintain adequate test power. However, (a--b) of Figure \ref{fig:curse_dim_real_data} show that, for two clusters composed of individuals from the same super-population, the $p$-value falls below 0.05 (the conventional significance level) when $p$ > 12. This implies that the cluster means are considered significantly different, despite originating from the same super-population.
-Furthermore, (c--d) show that, for two clusters containing individuals from different but closely super-populations in the first two PCs, $p$ must be greater than 6 for the $p$-value to drop below 0.05.
-
-The $p$-value is valid only for a small range of $p$, and is therefore not practically usable.
+\replaced{In practice, it is convenient}{It is desirable} to retain the maximum number of principal components to minimize information loss. However, this comes at a cost to the statistical guarantees of Gao \added{\textit{et al.}}’s method. To be statistically valid, it must both control the selective type I error\replaced{. However, a useful testing procedure should also be \textit{powerful}}{ and maintain adequate test power}. However, \added{panels} (a--b) \replaced{in}{of} Figure \ref{fig:curse_dim_real_data} show that, for two clusters composed of individuals from the same super-population, the $p$-value falls below 0.05 (the conventional significance level) when $p$ > 12. This implies that the cluster means are considered significantly different, despite originating from the same super-population.
+Furthermore, \added{panels} (c--d) show that, for two clusters containing individuals from different but closely super-populations in the first two PCs, \replaced{the $p$-value}{$p$} must be greater than 6 for the $p$-value to drop below 0.05. \replaced{Consequently, the}{The} $p$-value is valid \added{and powerful} only for a small range of $p$, \replaced{which substantially limits its practical applicability}{and is therefore not practically usable}.
 
 \begin{figure}[H]
   \centering
@@ -706,14 +690,16 @@ The $p$-value is valid only for a small range of $p$, and is therefore not pract
     \caption{}
   \end{subfigure}
 
-  \caption{$p$-values obtained from the test of equality between clusters 12 and 26 (a), 8 and 13 (b), 5 and 7 (c), 9 and 13 (d) as a function of the number of PCs used for clustering.}
+  \caption{$p$-values\added{~\eqref{pval_final}} obtained from \replaced{testing the equality of cluster means for}{the test of equality between} clusters \replaced{(a) $\lbrace 12,26\rbrace$, (b) $\lbrace 8,13\rbrace$, (c) $\lbrace 5,7\rbrace$ and (d) $\lbrace 9,13\rbrace$,}{12 and 26 (a), 8 and 13 (b), 5 and 7 (c), 9 and 13 (d)} as a function of the number of PCs used for clustering\added{, that is, the dimension $p$ of the feature space}.}
   \label{fig:curse_dim_real_data}
 \end{figure}
-\subsubsection{Intercontinental vs intracontinental}
-Each population belongs to a super-population, corresponding to a larger grouping similar to a continent.  
-For example, Mexican Ancestry in Los Angeles, California (MXL) and Puerto Rican in Puerto Rico (PUR) belong to the AMR super-population, whereas Utah residents with Northern and Western European ancestry (CEU) belongs to the EUR super-population.  
-Intuitively, the $p$-values associated with tests between clusters containing individuals from different continents are expected to be close to 0, while the $p$-values associated with tests between clusters containing individuals from the same continent are expected to be close to 1.  
-To compute the $p$-values, we kept only the first 12 principal components. The resulting $p$-values are shown in Figure \ref{fig:heatmap_pval}.
+
+\subsubsection{\added{Assessing} intercontinental vs intracontinental \added{differences}}
+
+\Javier{In the caption of Table~\ref{table:indiv}, you should write the complete name of super-populations to understand what abbreviations mean.}
+
+Each population belongs to a super-population, corresponding to a larger grouping similar to a continent \added{(see Table~\ref{table:indiv} in Appendix~\ref{app:data})}. For example, Mexican Ancestry in Los Angeles, California (MXL) and Puerto Rican in Puerto Rico (PUR) belong to the \replaced{Africa-American (AMR)}{AMR} super-population, whereas Utah residents with Northern and Western European ancestry (CEU) belongs to the \replaced{European (EUR)}{EUR} super-population.  
+Intuitively, the $p$-values associated with tests between clusters containing individuals from different \replaced{super-populations}{continents} are expected to be close to 0, while the $p$-values associated with tests between clusters containing individuals from the same continent are expected to be \replaced{larger}{close to 1}. \Javier{We would like the test to also reject in these cases, but with larger $p$-values.} To compute the $p$-values, we kept only the first 12 principal components \added{following from the analyses presented in the previous section}. The resulting $p$-values are shown in Figure \ref{fig:heatmap_pval}. \Javier{Add a few words commenting the Figure. What do we observe? Does the test perform well regarding this analysis?}
 
 \begin{figure}[H]
   \centering
@@ -721,8 +707,6 @@ To compute the $p$-values, we kept only the first 12 principal components. The r
   \caption{ Heatmap of the $p$-values obtained using the \texttt{test\_hier\_clusters\_exact} function applied to the first 12 PCs, with clusters obtained from HAC using Euclidean distance and the Ward.D linkage method on the first 100 principal components.}
   \label{fig:heatmap_pval}
 \end{figure}
-
-
 
 
 \section{Discussion}
@@ -736,6 +720,7 @@ For the $p$-value to be valid, the features must be independent and the data dim
 To address these limitations, other approaches have been proposed \Jasmin{... cf ?}
 
 \appendix
+
 \section{Proofs}\label{app:proofs}
 
 
@@ -917,7 +902,7 @@ Yet, the density of a centered Gaussian random vector depends only on its norm, 
 \end{proof}
 
 
-\begin{lemma}\label{lemma_trace}
+\begin{lemma}\label{lemma_trace} \Javier{Lemma missing!}
 
 \end{lemma}
 
@@ -989,7 +974,7 @@ Yet, the density of a centered Gaussian random vector depends only on its norm, 
 \end{proof}
 
 
-\section{Data Description}
+\section{Data Description}\label{app:data}
 
 
 \begin{table}[H]
@@ -1040,6 +1025,7 @@ Puerto Rican in Puerto Rico & PUR & AMR \\
 \end{tabular}
 \end{table}
 
+\newpage
 
 
 
