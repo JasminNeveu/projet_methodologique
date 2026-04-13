@@ -58,7 +58,7 @@
     {\Large ENSAI \par}
     \vspace{2cm}
     {\large ATPA Track \par}
-    {\large Academic Year 2024--2025 \par}
+    {\large Academic Year 2025--2026 \par}
     \vspace{2cm}
     {\Huge\bfseries Methodological Project Report \par}
     \vspace{0.4cm}
@@ -83,37 +83,36 @@
 \tableofcontents
 \newpage
 
-\section{\added{Introduction}}
+\section{Introduction}
 
 
 Clustering algorithms enable unsupervised partitioning of data. By identifying hidden structures without requiring strong prior assumptions, they have found widespread application across diverse domains.
 However, in general, clustering methods do not provide theoretical guarantees regarding the partitions they generate in standard scenarios.
-To ensure that the results provide guarantees on the actual differences between groups, \replaced{a pertinent strategy would be}{it is very common} to perform tests for equality of means between the different clusters. 
+To ensure that the results provide guarantees on the actual differences between groups, a pertinent strategy would be to perform tests for equality of means between the different clusters. 
 
-However, \replaced{implementing}{employing} a standard z-test or Wald test results in an inflation of the type I error rate~\cite{Gao}. This arises from the fact that the null hypothesis is constructed adaptively, \added{that is}, it is defined only after observing the data\deleted{ and is conditioned on the outcome of the clustering algorithm}. This issue is analogous to overfitting in supervised learning frameworks. When the same data set is \replaced{used}{utilized} for both model training and evaluation, the resulting model often fails to generalize, capturing noise rather than underlying patterns. In the context of inference, the use of the same data for \added{model} selection and inference is referred as \textit{double-dipping}. \replaced{In post-clustering inference, the null hypothesis is data-driven and classical inference prevents type I error control.}{Performing statistical inference without accounting for the variability induced by the clustering procedure results in a failure to maintain the type I error rate.} Note that simply splitting the dataset into a training set and a test set does not resolve the issue. Indeed, even if clusters are estimated using the training data and mean equality tests are performed on the \replaced{testing}{test} data, one must first assign each test point to a cluster. \replaced{Consequently, this}{This} assignment necessarily \replaced{reuses the testing data for both predicting a clustering and testing the null hypothesis}{relies on the training dataset. As a result, the data are still used to define the null hypothesis}. 
+However, implementing a standard z-test or Wald test results in an inflation of the type I error rate~\cite{Gao}. This arises from the fact that the null hypothesis is constructed adaptively, that is, it is defined only after observing the data. This issue is analogous to overfitting in supervised learning frameworks. When the same data set is used for both model training and evaluation, the resulting model often fails to generalize, capturing noise rather than underlying patterns. In the context of inference, the use of the same data for model selection and inference is referred as \textit{double-dipping}. In post-clustering inference, the null hypothesis is data-driven and classical inference prevents type I error control. Note that simply splitting the dataset into a training set and a test set does not resolve the issue. Indeed, even if clusters are estimated using the training data and mean equality tests are performed on the testing data, one must first assign each test point to a cluster. Consequently, this assignment necessarily reuses the testing data for both predicting a clustering and testing the null hypothesis. 
 
-To address \replaced{double-dipping}{this issue}, Gao \textit{et al}. developed a valid test for the difference in means between two clusters estimated via an hierarchical agglomerative clustering algorithm. Their method assumes that the observations are independent and identically distributed \replaced{as $p$-dimensinal Gaussians with spherical covariance}{according to a Gaussian distribution}. This corresponds to considering the following \added{matrix normal} model:
+To address double-dipping, Gao \textit{et al}. developed a valid test for the difference in means between two clusters estimated via an hierarchical agglomerative clustering algorithm. Their method assumes that the observations are independent and identically distributed as $p$-dimensional Gaussians with spherical covariance. This corresponds to considering the following matrix normal model:
 \begin{equation*}
   \mathbf{X}\sim\mathcal{MN}_{n\times p}(\boldsymbol{\mu},\mathbb{I}_n,\sigma^2\mathbb{I}_p)
 \end{equation*}
-\replaced{where}{white} $\boldsymbol{\mu} \in\mathbb{R}^{n\times p} ~\text{and} ~\sigma > 0$.
-\replaced{The authors in~\cite{Gao}}{They} defined a $p$-value that controls the \added{so-called} selective type I error\replaced{, and that}{. This $p$-value} can be \added{efficiently} computed \deleted{numerically} for hierarchical agglomerative clustering algorithms. \deleted{Moreover, they are able to estimate $\sigma$ while still maintaining control over the selective type I error.} \Javier{I wouldn't mention that here as we are not really addressing that part in this report.}
+where $\boldsymbol{\mu} \in\mathbb{R}^{n\times p} ~\text{and} ~\sigma > 0$.
+The authors in~\cite{Gao} defined a $p$-value that controls the so-called selective type I error, and that can be efficiently computed numerically for hierarchical agglomerative clustering algorithms.
 
-\added{Here, we introduce the post-clustering inference framework presented in~\cite{Gao}.} This \replaced{work}{report} is organized as follows:
+Here, we introduce the post-clustering inference framework presented in~\cite{Gao}. This work is organized as follows:
 \begin{itemize}
-    \item In Section \ref{sec:testing}, we \replaced{revisit}{establish} the \replaced{hypothesis testing framework from a more general perspective. Then, we}{framework for hypothesis testing, then} explore examples that motivate selective inference.
-    \item In Section \ref{sec:gao}, we \replaced{present}{develop} the approach of Gao \textit{et al.} to address selective inference \added{in the context of clustering}. Then, \added{in Section~\ref{sec:numerical_experiments}, we} \added{illustrate the validity of the method and }evaluate \replaced{its}{the} robustness \deleted{of the method} to feature dependence\deleted{ and high dimensionality}. Finally, \added{in Section~\ref{sec:real_data}} we assess the \added{suitability of the} method \replaced{when applied to}{on} real genotype data.
+    \item In Section \ref{sec:testing}, we revisit the hypothesis testing framework from a more general perspective. Then, we explore examples that motivate selective inference.
+    \item In Section \ref{sec:gao}, we present the approach of Gao \textit{et al.} to address selective inference in the context of clustering. Then, in Section~\ref{sec:numerical_experiments}, we illustrate the validity of the method and evaluate its robustness  to feature dependence. Finally, in Section~\ref{sec:real_data} we assess the suitability of the method when applied to real genotype data.
 \end{itemize}
 
-\added{For clarity and readability, all technical proofs have been relegated to Appendix Appendix~\ref{app:proofs}.}
-
+For clarity and readability, all technical proofs have been relegated to Appendix Appendix~\ref{app:proofs}.
 
 \section{Classical versus selective testing}\label{sec:testing}
 
 \subsection{Hypothesis testing and \textit{p-values}}
 
 
-In this section, we rigorously establish the framework for hypothsis testing. \added{Let us first recall some basic concepts of probability theory.} Let $(\Omega, \mathcal{F},\mathbb{P})$ be a probability space, $(E,\mathcal{E})$ a topological space and $\mathcal{T}$ the $\sigma$-algebra generated by $\mathcal{E}$. A \textit{random variable} is a measurable function $X:(\Omega,\mathcal{F})\rightarrow(E,\mathcal{T})$. The \textit{(probability) distribution} of $X$ is the mapping $P:\mathcal{T}\rightarrow[0,1]$ such that  $P(O) = (\mathbb{P}\circ X^{-1})(O)$ for all $O\in\mathcal{T}$. We say that $P$ is \textit{supported} on $E$ and denote by $\mathcal{M}_1(E)$ the set of all probability distributions supported on $\mathcal{E}$. From now on, we will set $E=\mathbb{R}$ and simply write $\mathcal{M}(\mathbb{R})=\mathcal{M}$.
+In this section, we rigorously establish the framework for hypothsis testing. Let us first recall some basic concepts of probability theory. Let $(\Omega, \mathcal{F},\mathbb{P})$ be a probability space, $(E,\mathcal{E})$ a topological space and $\mathcal{T}$ the $\sigma$-algebra generated by $\mathcal{E}$. A \textit{random variable} is a measurable function $X:(\Omega,\mathcal{F})\rightarrow(E,\mathcal{T})$. The \textit{(probability) distribution} of $X$ is the mapping $P:\mathcal{T}\rightarrow[0,1]$ such that  $P(O) = (\mathbb{P}\circ X^{-1})(O)$ for all $O\in\mathcal{T}$. We say that $P$ is \textit{supported} on $E$ and denote by $\mathcal{M}_1(E)$ the set of all probability distributions supported on $\mathcal{E}$. From now on, we will set $E=\mathbb{R}$ and simply write $\mathcal{M}(\mathbb{R})=\mathcal{M}$.
 
 \begin{definition}[Hypothesis, Definition 1.1 in~\cite{Ramdas}]\label{def_dominate_sto}
   A \textit{hypothesis} $\mathcal{H}_0$ is a set of probability distributions in $\mathcal{M}$.
@@ -137,7 +136,7 @@ In what follows, we will adopt the more standard notation:
 \begin{equation*}
 \mathbb{P}\left(\text{Reject } \mathcal{H}_0\right) = \mathbb{P}\bigl(\lbrace \omega \in \Omega\,:\,\pi_{\mathcal{H}_0}(\omega)=1\rbrace\bigr),
 \end{equation*}
-making the dependence on \replaced{$\pi_{\mathcal{H}_0}$}{$\pi$} implicit. \added{In order to make informative and meaningful decisions, a test must ensure that rejection is stated \textit{with stastical guarantees}. More precisely, } we say that a test is valid if it controls the type I error, defined as follows.
+making the dependence on $\pi_{\mathcal{H}_0}$ implicit. In order to make informative and meaningful decisions, a test must ensure that rejection is stated \textit{with stastical guarantees}. More precisely,  we say that a test is valid if it controls the type I error, defined as follows.
 
 \begin{definition}[Type I error]\label{def_type_error}
   We say that a test controls the type I error at level $\alpha$ if
@@ -150,7 +149,7 @@ making the dependence on \replaced{$\pi_{\mathcal{H}_0}$}{$\pi$} implicit. \adde
   \end{equation*}
 \end{definition}
 
-\added{Type-I error control can be characterized through a specific family of random variables, known as \textit{p-values}. To properly define this quantity, let us first} \deleted{We can} equip the space of random variables with \replaced{the following}{an} \Jasmin{il s'agit ici bien d'un ordre partiel ? on peut imiaginer des CDF de 2 variables aléatoires qui se croisent et donc que la domination ne tienne pas pour tout u.} \Javier{Tout à fait.} partial order relation\deleted{ defined as follows}.
+Type I error control can be characterized through a specific family of random variables, known as \textit{p-values}. To properly define this quantity, let us first  equip the space of random variables with the following  partial order relation.
 
 \begin{definition}[Stochastic dominance]\label{def_sto_def}
   Let $X$ and $Y$ be real-valued random variables.
@@ -164,7 +163,7 @@ making the dependence on \replaced{$\pi_{\mathcal{H}_0}$}{$\pi$} implicit. \adde
   \end{equation}
 \end{definition}
 
-\replaced{A case of particular interest is the stochastic dominance of uniform random variables, which leads to the definition of the \textit{super-uniform} family of distributions.}{In the particular case where a random variable stochastically dominates a uniform random variable on $[0,1]$, we introduce the following definition.}
+A case of particular interest is the stochastic dominance of uniform random variables, which leads to the definition of the \textit{super-uniform} family of distributions.
 
 \begin{definition}[Super-uniform random variable]\label{def_super_unif}
   Let $X$ be a real-valued random variable. We say that $X$ is super-uniform on [0,1], and write
@@ -175,7 +174,7 @@ making the dependence on \replaced{$\pi_{\mathcal{H}_0}$}{$\pi$} implicit. \adde
   \end{equation}
 \end{definition}
 
-\replaced{A super-uniform random variable can be recovered from any pair of ordered random variables.}{From two ordered random variables, one can construct a super-uniform random variable.}
+A super-uniform random variable can be recovered from any pair of ordered random variables.
 
 \begin{proposition}\label{prop_repartition}
   Let $X$ and $Y$ be real-valued random variables, with cumulative distribution functions $F_X$ and $F_Y$, respectively.
@@ -191,19 +190,20 @@ F_X(X) \sim \mathcal{U}(0,1).
 \end{equation}
 \end{remark}
 
-The notion of super-uniformity \replaced{motivates a natural definition of}{allows one to define a} $p$-value.
+The notion of super-uniformity motivates a natural definition of $p$-value.
 
 \begin{definition}[$p$-value, Definition 1.1 in~\cite{Ramdas}]\label{def_pvalue}
   Let $\mathcal{H}_0$ be a hypothesis. A $p$-value for $\mathcal{H}_0$ is a super-uniform random variable under $\mathcal{H}_0$. 
 \end{definition}
 
-\replaced{Indeed, a $p$-value can be defined as a random variable supported on $[0,1]$ that is super-uniform under the null. This justifies the usual construction of tests of the form}{We often build tests using $p$-values as} $\pi_{\mathcal{H}_0} = \mathds{1}\{p \leq \alpha \}$.
+Indeed, a $p$-value can be defined as a random variable supported on $[0,1]$ that is super-uniform under the null hypothesis. This justifies the usual construction of tests of the form $\pi_{\mathcal{H}_0} = \mathds{1}\{p \leq \alpha \}$.
 
 \begin{proposition}\label{prop_rejection_rule}
   Let $\mathcal{H}_0$ be a hypothesis and $p$ a $p$-value for $\mathcal{H}_0$. Then, the test $\pi_{\mathcal{H}_0} = \mathds{1}{\{p \leq \alpha\}}$ controls the type I error at level $\alpha$, for $\alpha\in(0,1)$. 
 \end{proposition}
 
-\Javier{There is no link between the previous paragraph and the introduction of the test statistic. Say that $p$-values are often defined as transformation of the so-called \textit{test statistics}, defined below.}
+
+We usually define $p$-values as transformations of \textit{test statistics}, defined below.
 
 \begin{definition}[Test statistic]
   A test statistic is a measurable function $T : \Omega \to \mathbb{R}$.
@@ -215,30 +215,29 @@ From now on, we will consider the case of unilateral tests. In this setting, to 
 \end{equation}
 where $T$ is a test statistic and $x$ a realization of $X$.
 
-\replaced{It is straightforward to derive that the}{The} $p$-value \eqref{unilateral_uniform_pvalue} follows a uniform distribution under $\mathcal{H}_0$. However, we have defined $p$-values as being super-uniform random variables under the null hypothesis, which corresponds to a more general family of distributions. To adapt the classical form \eqref{unilateral_uniform_pvalue} to that setting, we introduce the following proposition.
+It is straightforward to derive that the $p$-value \eqref{unilateral_uniform_pvalue} follows a uniform distribution under $\mathcal{H}_0$. However, we have defined $p$-values as being super-uniform random variables under the null hypothesis, which corresponds to a more general family of distributions. To adapt the classical form \eqref{unilateral_uniform_pvalue} to that setting, we introduce the following proposition.
 
 \begin{proposition}\label{prop_test_stat_pvalue}
-Let \(T\) and \(T'\) be two test statistics. Let \(X\) be a random variable and \(x\) a realization of \(X\)\replaced{and consider}{.
-Define}
+Let \(T\) and \(T'\) be two test statistics. Let \(X\) be a random variable and \(x\) a realization of \(X\)and consider
 \begin{equation}
 p(x) = \mathbb{P}_{\mathcal{H}_0}\!\bigl(T'(X) \ge T(x)\bigr).
 \end{equation}
-\replaced{Then, if}{If}
+Then, if
 \begin{equation}
 T'(X) \preceq_{\mathrm{st}} T(X)
 \quad \text{under } \mathcal{H}_0,
 \end{equation}
-\replaced{the quantity}{then} \(p\) is a $p$-value for \(\mathcal{H}_0\).
+the quantity \(p\) is a $p$-value for \(\mathcal{H}_0\).
 \end{proposition}
 \begin{remark}\label{remark_equal_statistics}
 If \(T' = T\) and the cumulative distribution function \(F_T\) of \(T(X)\) is continuous
-under \(\mathcal{H}_0\), \replaced{we have}{then}
+under \(\mathcal{H}_0\), we have
 \[
 p \;\overset{\mathcal{H}_0}{\sim}\; \mathcal{U}(0,1).
 \]
 \end{remark}
 
-\added{The proof of all the results presented in this section are presented in Appendix~\ref{app:proofs_testing}.} In the classical setting, the null hypothesis is independent of the data. However, in many practical applications  $\mathcal{H}_0$ is chosen \textit{after seeing the data}. In this framework, the classical testing approaches built for type I error control are unsuitable. Instead, statistical guarantees need to be provided via \textit{selective inference}. In particular, the theory of statistical testing of data-driven null hypotheses is known as \textit{selective testing}~\cite{fithian}. The next section provides some examples that motivate this framework. 
+The proof of all the results presented in this section are presented in Appendix~\ref{app:proofs_testing}. In the classical setting, the null hypothesis is independent of the data. However, in many practical applications  $\mathcal{H}_0$ is chosen \textit{after seeing the data}. In this framework, the classical testing approaches built for type I error control are unsuitable. Instead, statistical guarantees need to be provided via \textit{selective inference}. In particular, the theory of statistical testing of data-driven null hypotheses is known as \textit{selective testing}~\cite{fithian}. The next section provides some examples that motivate this framework. 
 
 \subsection{Examples motivating selective testing}
 
@@ -255,7 +254,7 @@ Y = X \beta +  \varepsilon, \quad \varepsilon \sim \mathcal{N}(0,1), \quad \beta
 We generated $n=100$ independent realizations of $(X,Y)$ and implemented the Lasso algorithm, obtaining the regularization path presented in Figure~\ref{fig:lasso_path}(a).
 Then, we tested whether a randomly chosen coefficient selected by Lasso regression and among the trully null coefficients, equals 0.
 After repeating this pipeline $M=2000$ times, we obtained the empirical $p$-value distribution depicted in Figure \ref{fig:lasso_path}(b).
-We clearly see that the $p$-values are not super-uniform \added{(recall Definition~\ref{def_super_unif})}, motivating the use of a selective testing approach instead of naive testing after selection. 
+We clearly see that the $p$-values are not super-uniform (recall Definition~\ref{def_super_unif}), motivating the use of a selective testing approach instead of naive testing after selection. 
 
 \begin{figure}[H]
   \centering
@@ -334,17 +333,17 @@ This strategy proves highly conservative, ensuring that for every possible set o
 \subsubsection{Sample splitting}
 
 This approach consists in splitting the dataset into a training set $X$ and a test set $Y$.  
-The training set $X$ is used to choose the null hypothesis $\mathcal{H}_0(X)$. Then, inference is performed on the test set $Y$. Although relatively simple to implement, this method raises several issues. First, statistical guarantees on the tests hold only if $X$ and $Y$ are independent, which is \replaced{not straightforward}{rarely the case} in practice. In addition, comparing cluster means on the observations in $Y$ requires assigning each test point to one of the clusters obtained from the clustering performed on $X$, a step that compromises validity, as it reuses the dataset \replaced{$Y$}{$X$} for two separate steps \added{(predicting a clustering and performing the inference)}. As discussed in \cite{Gao}, this strategy does not yield valid post-clustering inference in general.
+The training set $X$ is used to choose the null hypothesis $\mathcal{H}_0(X)$. Then, inference is performed on the test set $Y$. Although relatively simple to implement, this method raises several issues. First, statistical guarantees on the tests hold only if $X$ and $Y$ are independent, which is not straightforward in practice. In addition, comparing cluster means on the observations in $Y$ requires assigning each test point to one of the clusters obtained from the clustering performed on $X$, a step that compromises validity, as it reuses the dataset $Y$ for two separate steps (predicting a clustering and performing the inference). As discussed in \cite{Gao}, this strategy does not yield valid post-clustering inference in general.
 
 \subsubsection{Conditional Inference}\label{sec:condi_inf}
 
 This approach constitutes the most extensively studied framework for post-clustering inference.  
-It controls the false positive \replaced{probability}{rate} conditional on hypothesis selection:  
+It controls the false positive probability conditional on hypothesis selection:  
 \begin{equation}\label{condinf}
-\mathbb{P}(\text{Reject } \mathcal{H}_0(X) \added{\text{ being true}} \mid \mathcal{H}_0 \text{ selected}) \leq \alpha.
+\mathbb{P}(\text{Reject } \mathcal{H}_0(X) \text{ being true} \mid \mathcal{H}_0 \text{ selected}) \leq \alpha.
 \end{equation}
 
-\added{Conditional inference largely dominates the state-of-the-art, being the basis of the approach proposed in~\cite{Gao}}. In the remainder of the article, we employ this method to develop a statistical procedure for testing equality of cluster means following a clustering algorithm.
+Conditional inference largely dominates the state-of-the-art, being the basis of the approach proposed in~\cite{Gao}. In the remainder of the article, we employ this method to develop a statistical procedure for testing equality of cluster means following a clustering algorithm.
 
 \section{Post-clustering inference}\label{sec:post_clustering_inf}
 
@@ -354,7 +353,7 @@ The article under study~\cite{Gao} was the first one to propose a feasible solut
 
 Let $\mathbf{X} =(X_{ij})_{ij} \in \mathbb{R}^{n \times p}$ be the design matrix.
 A cluster is an element of a partition of the samples.
-We note $C$ a clustering algorithm and $C_1 \in C(\mathbf{X})$ a cluster obtained by the algorithm $C$ on $\mathbf{X}$. \replaced{Let}{We note} $\boldsymbol{\mu} = (\mu_{ij})_{ij}$ \replaced{be the mean matrix of $\mathbf{X}$, that is,}{where} $\mu_{ij} = \mathbb{E}[X_{ij}]$ and, for a subset $G$ of $\{1,\ldots,n\}$, we write
+We note $C$ a clustering algorithm and $C_1 \in C(\mathbf{X})$ a cluster obtained by the algorithm $C$ on $\mathbf{X}$. Let $\boldsymbol{\mu} = (\mu_{ij})_{ij}$ be the mean matrix of $\mathbf{X}$, that is, $\mu_{ij} = \mathbb{E}[X_{ij}]$ and, for a subset $G$ of $\{1,\ldots,n\}$, we write
 \begin{equation*}
 \bar{\mu}_G = \dfrac{1}{|G|} \displaystyle\sum_{i \in G} \mu_i \in \mathbb{R}^p\quad\text{and}\quad\bar{X}_G = \dfrac{1}{|G|} \displaystyle\sum_{i \in G} X_i \in \mathbb{R}^p.
 \end{equation*}
@@ -362,7 +361,7 @@ The goal is to test for the equality of cluster means, that is, testing the foll
 \begin{equation}
   \mathcal{H}_0^{\{C_1,C_2\}}: \bar{\mu}_{C_1} = \bar{\mu}_{C_2},
 \end{equation}
-for a pair of clusters $C_1,C_2\added{\in C(\mathbf{X})}$. For concision and clarity, we introduce the $n$-dimensional vector
+for a pair of clusters $C_1,C_2\in C(\mathbf{X})$. For concision and clarity, we introduce the $n$-dimensional vector
 \begin{equation}\label{nu}
 \nu(C_1,C_2)=\nu = (\nu_i)_{i=1}^n, \qquad
 \nu_i =
@@ -408,7 +407,7 @@ Ideally, we would like to define a p-value as follows:
 \[
   p_{ideal}(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\bigl(T(\mathbf{X}) \geq T(\mathbf{x}) ~ | ~ C_1,C_2 \in C(\mathbf{X})\bigr),
 \]
-with $T$ being a test statistic. In \cite{Gao}, Gao \textit{et al.} \replaced{chose}{defined the test statistic as} $T(\mathbf{X}) = \norm{\nu^\top\mathbf{X}}_2$, because its distribution under the null hypothesis can be straightforwardly derived. Indeed, noting that:
+with $T$ being a test statistic. In \cite{Gao}, Gao \textit{et al.} chose $T(\mathbf{X}) = \norm{\nu^\top\mathbf{X}}_2$, because its distribution under the null hypothesis can be straightforwardly derived. Indeed, noting that:
 \begin{equation*}
 \nu^\top \mathbf{X}
 \sim \mathcal{MN}_{1 \times p}\bigl(\nu^\top \mu,\ \nu \nu^\top,\ \sigma^2 \mathbb{I}_p\bigr) = \mathcal{N}_p\bigl(\nu^\top \mu,\ \|\nu\|_2^2 \sigma^2 \mathbb{I}_p\bigr),
@@ -419,9 +418,9 @@ we have, under $\mathcal{H}_0^{\{C_1,C_2\}}$, that
 \end{equation}
 However, $p_{ideal}$ cannot be evaluated in practice as it depends on unknown parameters ~\cite{Gao}. To address this issue, the authors in~\cite{Gao} propose to add technical events to the conditioning set, considering the following quantity: 
 \begin{equation}\label{pvalcondi}
-  p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\Bigl(\norm{\nu^T\mathbf{X}}_2 \geq \norm{\nu^T\mathbf{x}}_2 ~ | ~ C_1,C_2 \in \mathcal{C}(\mathbf{X}), \replaced{\xi(\mathbf{X},\mathbf{x})}{\xi(\mathbf{X})}\Bigr),
+  p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\Bigl(\norm{\nu^T\mathbf{X}}_2 \geq \norm{\nu^T\mathbf{x}}_2 ~ | ~ C_1,C_2 \in \mathcal{C}(\mathbf{X}), \xi(\mathbf{X},\mathbf{x})\Bigr),
 \end{equation}
-as a $p$-value for~\eqref{h0c1c2}, with \replaced{$\xi(\mathbf{X},\mathbf{x})$}{$\xi(\mathbf{X})$} \replaced{denoting}{being} the additional events. To justify the choice of \replaced{$\xi(\mathbf{X},\mathbf{x})$}{$\xi(\mathbf{X})$}, we follow the steps in~\cite{Gao}. First, we decompose the data matrix as follows:
+as a $p$-value for~\eqref{h0c1c2}, with $\xi(\mathbf{X},\mathbf{x})$ denoting the additional events. To justify the choice of $\xi(\mathbf{X},\mathbf{x})$, we follow the steps in~\cite{Gao}. First, we decompose the data matrix as follows:
 \begin{equation}
   \mathbf{X} = \projnu\mathbf{X} + (\mathbb{I}_n - \projnu)\mathbf{X},
 \end{equation}
@@ -443,7 +442,7 @@ where dir denotes the direction of a vector, that is,
 \end{equation}
 Since $\text{dir}(\nu^T \mathbf{X})$ and $\projnu \mathbf{X}$ are unknown, we condition on their values for a realization $\mathbf{x}$ of $\mathbf{X}$, defining the additional events as:
 \begin{equation*}
-  \replaced{\xi(\mathbf{X},\mathbf{x})}{\xi(\mathbf{X})} = \bigl\{ \projnu \mathbf{X} = \projnu \mathbf{x}, ~ \text{dir}(\nu^T \mathbf{X}) = \text{dir}(\nu^T \mathbf{x})\bigr\}.
+  \xi(\mathbf{X},\mathbf{x}) = \bigl\{ \projnu \mathbf{X} = \projnu \mathbf{x}, ~ \text{dir}(\nu^T \mathbf{X}) = \text{dir}(\nu^T \mathbf{x})\bigr\}.
 \end{equation*}
 Plugging the previous equation in \eqref{pvalcondi} we obtain the following expression for the $p$-value:
 \begin{equation}\label{pval_final}
@@ -487,7 +486,7 @@ where
 \begin{equation}\label{set_S}
 \mathcal{S}\bigl(\mathbf{x},\{C_1,C_2\}\bigr) = \Bigl\{\phi \geq 0: C_1,C_2 \in \mathcal{C}\bigl(\mathbf{x}'(\phi)\bigr)\Bigr\}.
 \end{equation}
-As, under the null, we have that $\phi \sim \norm{\nu}_2\sigma\chi_p$, we \replaced{finally have}{can finally write}:
+As, under the null, we have that $\phi \sim \norm{\nu}_2\sigma\chi_p$, we finally have:
 
 \begin{equation}\label{pvalue_tractable}
   p(\mathbf{x}) = 1 - \mathbb{F}_p\Bigl(\nu^\top \mathbf{x};\norm{\nu}_2\sigma;\mathcal{S}\bigl(\mathbf{x};\{C_1,C_2\}\bigr)\Bigr),
@@ -508,7 +507,7 @@ where $\mathbb{F}_p(t;c;\mathcal{S})$ denotes the cumulative distribution functi
   \end{equation}
 
 \end{theorem}
-The control of the selective type I error is proved in Appendix~\ref{app:proofs}. \added{To shed some light on the truncation set $\mathcal{S}$, let us}{After a few manipulations we can} rewrite $\mathbf{x}'(\phi)$ as follows:
+The control of the selective type I error is proved in Appendix~\ref{app:proofs}. To shed some light on the truncation set $\mathcal{S}$, let us rewrite $\mathbf{x}'(\phi)$ as follows:
 \begin{equation}
   \begin{aligned}
     \mathbf{x}'(\phi) &= \projnu \mathbf{x} + \frac{\nu}{\norm{\nu}_2} \operatorname{dir}(\nu^\top \mathbf{x}) \phi \\
@@ -518,7 +517,7 @@ The control of the selective type I error is proved in Appendix~\ref{app:proofs}
                       &= \mathbf{x} + \frac{\nu}{\norm{\nu}_2^2}\operatorname{dir}(\nu^\top \mathbf{x})(\phi - \norm{\nu^\top \mathbf{x}}_2).
   \end{aligned}
 \end{equation}
-\replaced{Consequently,}{so that} $\mathbf{x}'(\phi)$ can be interpreted as a perturbed version of $\mathbf{x}$\replaced{, where}{. In $\mathbf{x}'(\phi)$,} the compared clusters are either pushed appart or pulled together depending on the value of $\phi$. When $\phi\leq\norm{\nu^T\mathbf{x}}$, the smaller $\phi$ is, the more the clusters are pulled together. If $\phi>\norm{\nu^T\mathbf{x}}$, the larger $\phi$ is, the more separate they are. More details are provided in Section 2.2 in \cite{Gao}. Here, we illustrate these perturbations in Figure \ref{fig:deux_images_perturbated_data}.
+Consequently, $\mathbf{x}'(\phi)$ can be interpreted as a perturbed version of $\mathbf{x}$, where the compared clusters are either pushed appart or pulled together depending on the value of $\phi$. When $\phi\leq\norm{\nu^T\mathbf{x}}$, the smaller $\phi$ is, the more the clusters are pulled together. If $\phi>\norm{\nu^T\mathbf{x}}$, the larger $\phi$ is, the more separate they are. More details are provided in Section 2.2 in \cite{Gao}. Here, we illustrate these perturbations in Figure \ref{fig:deux_images_perturbated_data}.
 
 \begin{figure}[H]
  \begin{subfigure}{0.30\textwidth}
@@ -621,12 +620,11 @@ The deviation from super-uniformity also increases with the dimension, as illust
 \subsection{Data applications}\label{sec:real_data}
 
 
-In this section, we assess the suitability of the method with real cases of application, where the data does not necessarily fit the model~\eqref{matrixnormal}. \replaced{In what follows, we}{
-We} first introduce the genotype dataset (1KGP cohort). We then analyze the output of the HAC clustering algorithm applied to this dataset. Finally, we assess whether the $p$-value proposed by Gao \textit{et al.} provides statistical guarantees for this clustering.
+In this section, we assess the suitability of the method with real cases of application, where the data does not necessarily fit the model~\eqref{matrixnormal}. In what follows, we first introduce the genotype dataset (1KGP cohort). We then analyze the output of the HAC clustering algorithm applied to this dataset. Finally, we assess whether the $p$-value proposed by Gao \textit{et al.} provides statistical guarantees for this clustering.
 
-\subsubsection{\replaced{The 1KGP data set}{Genotype data}}
+\subsubsection{The 1KGP data set}
 
-The DNA sequence contains all the genetic information associated with an individual. It is composed of two complementary strands made of nucleotides, denoted by A, C, G, and T. Although these sequences are very long, the vast majority of the genome is shared among all individuals. Instead of relatively comparing DNA sequences, genetic databases are constructed by comparing every individual's genome to the so-called \textit{reference genome}. This yields a matrix of genetic variation, often referred to as \textit{SNP matrix}, that serves as quantitative descriptor of the genetic variability of a human population. \added{Here, we consider the SNP matrix of the 1000 Genomes Project (1KGP) data set, which contains genotype information of 3200 individuals from 26 human populations~\cite{1kgp}.} From this SNP matrix, a principal component analysis (PCA) can be performed in order to obtain the dataset \texttt{1KGP\_100PC}\added{, which we will use as a starting point for this analysis}. Besides containing the genetic information of every individual, the 1KGP dataset also provides their ancestral population, that we \replaced{detail}{describe} in Appendix~\ref{app:data}.
+The DNA sequence contains all the genetic information associated with an individual. It is composed of two complementary strands made of nucleotides, denoted by A, C, G, and T. Although these sequences are very long, the vast majority of the genome is shared among all individuals. Instead of relatively comparing DNA sequences, genetic databases are constructed by comparing every individual's genome to the so-called \textit{reference genome}. This yields a matrix of genetic variation, often referred to as \textit{SNP matrix}, that serves as quantitative descriptor of the genetic variability of a human population. Here, we consider the SNP matrix of the 1000 Genomes Project (1KGP) data set, which contains genotype information of 3450 individuals from 26 human populations~\cite{1kgp}. From this SNP matrix, a principal component analysis (PCA) can be performed in order to obtain the dataset \texttt{1KGP\_100PC}, which we will use as a starting point for this analysis. Besides containing the genetic information of every individual, the 1KGP dataset also provides their ancestral population, that we detail in Appendix~\ref{app:data}.
 
 \subsubsection{Clustering}
 
@@ -662,15 +660,15 @@ However, some populations are spread across several clusters (PJL, ASW, GIH), an
 To assess whether the $p$-values of Gao \textit{et al.} are consistent with the confusion matrix in Figure \ref{fig:heatmap_clust_pop}, we apply a post-clustering inference procedure to the clusters obtained via HAC. 
 The $p$-values associated with comparisons between clusters containing individuals from the same super-population are expected to exceed a given significance threshold (typically 0.05), whereas those associated with clusters containing individuals from different super-populations should fall below this threshold.
 
-So far, we have assumed that the data set \replaced{fits}{follows the} model \eqref{matrixnormal}. However, with real data, the variance parameter $\sigma$ is unknown. Gao \textit{et al.} showed that  \cite[Theorem 4]{Gao} by using an estimator that asymptotically overestimates the variance, \added{such as:}
+So far, we have assumed that the data set fits model \eqref{matrixnormal}. However, with real data, the variance parameter $\sigma$ is unknown. Gao \textit{et al.} showed that  \cite[Theorem 4]{Gao} by using an estimator that asymptotically overestimates the variance, such as:
 \begin{equation}\label{sigma-est}
   \hat{\sigma}(\mathbf{x}) = \sqrt{\frac{1}{np - p}\sum_{i=1}^{n}\sum_{j=1}^{p}(x_{ij} - \bar{x}_j)^2},
 \end{equation}
-the selective type I error remains asymptotically controlled. \added{Therefore, in this section we will be plugging~\eqref{sigma-est} into~\eqref{pval_final}, mantaining the statistical guarantees.}
+the selective type I error remains asymptotically controlled. Therefore, in this section we will be plugging~\eqref{sigma-est} into~\eqref{pval_final}, mantaining the statistical guarantees.
 
 In Section \ref{sec:rob_data}, we showed that the $p$-value is sensitive to dimensionality.
 In practice, it is convenient to retain the maximum number of principal components to minimize information loss. However, this comes at a cost to the statistical guarantees of Gao \textit{et al.}’s method. To be statistically valid, it must control the selective type I error. However, a useful testing procedure should also be \textit{powerful}. Panels (a--b) in Figure \ref{fig:curse_dim_real_data} show that, for two clusters composed of individuals from the same super-population, the $p$-value falls below 0.05 (the conventional significance level) when $p$ > 12. This implies that the cluster means are considered significantly different, despite originating from the same super-population.
-Furthermore, panels (c--d) show that, for two clusters containing individuals from different but closely super-populations in the first two PCs, the dimension $p$ must be greater than 6 for the $p$-value to drop below 0.05. Consequently, the $p$-value is \added{both} valid and powerful only for a small range of $p$, which substantially limits its practical applicability.
+Furthermore, panels (c--d) show that, for two clusters containing individuals from different but closely super-populations in the first two PCs, the dimension $p$ must be greater than 6 for the $p$-value to drop below 0.05. Consequently, the $p$-value is both valid and powerful only for a small range of $p$, which substantially limits its practical applicability.
 
 \begin{figure}[H]
   \centering
@@ -707,8 +705,11 @@ Furthermore, panels (c--d) show that, for two clusters containing individuals fr
 
 \subsubsection{Assessing intercontinental vs intracontinental differences}
 
-Each population belongs to a super-population, corresponding to a larger grouping similar to a continent (see Table~\ref{table:indiv} in Appendix~\ref{app:data}). For example, Mexican Ancestry in Los Angeles, California (MXL) and Puerto Rican in Puerto Rico (PUR) belong to the African-American \Jasmin{ce n'est pas admixed-American ? cf \href{https://link.springer.com/article/10.1186/s13059-020-02229-3/tables/1?utm_source=chatgpt.com}{site}} \Javier{Yes! Sorry. Tu peux remplacer.} (AMR) super-population, whereas Utah residents with Northern and Western European ancestry (CEU) belongs to the European (EUR) super-population.  
-Intuitively, the $p$-values associated with tests between clusters containing individuals from different super-populations are expected to be close to 0, while the $p$-values associated with tests between clusters containing individuals from the same super-population are expected to be larger. To compute the $p$-values, we kept only the first 12 principal components following from the analyses presented in the previous section. The resulting $p$-values are shown in Figure \ref{fig:heatmap_pval}. We observe that within each super-population, the $p$-values indicate that the clusters have equal means, as expected. Although a few $p$-values suggest that clusters containing individuals from different super-populations also have statistically equal means, the test appears to successfully recover the super-population structure of the data. \Javier{Add something like: consequently, the method of Gao \textit{et al.}'s seems to correctly detect broad population structure in this particular setting.}
+Each population belongs to a super-population, corresponding to a larger grouping similar to a continent (see Table~\ref{table:indiv} in Appendix~\ref{app:data}). For example, Mexican Ancestry in Los Angeles, California (MXL) and Puerto Rican in Puerto Rico (PUR) belong to the admixed-American (AMR) super-population, whereas Utah residents with Northern and Western European ancestry (CEU) belongs to the European (EUR) super-population.  
+Intuitively, the $p$-values associated with tests between clusters containing individuals from different super-populations are expected to be close to 0, while the $p$-values associated with tests between clusters containing individuals from the same super-population are expected to be larger. To compute the $p$-values, we kept only the first 12 principal components following from the analyses presented in the previous section. The resulting $p$-values are shown in Figure \ref{fig:heatmap_pval}. We observe that within each super-population, the $p$-values indicate that the clusters have equal means, as expected. Although a few $p$-values suggest that clusters containing individuals from different super-populations also have statistically equal means, the test appears to successfully recover the super-population structure of the data. 
+Consequently, the method of Gao \textit{et al.}'s seems to correctly detect broad population structure in this particular setting.
+
+
 
 \begin{figure}[H]
   \centering
@@ -719,13 +720,12 @@ Intuitively, the $p$-values associated with tests between clusters containing in
 
 \section{Discussion}
 
-Research on post-clustering inference is relatively recent, and the method of Gao \textit{et al.} represents \replaced{a seminal contribution}{the current state of the art} within the conditional inference framework. \replaced{For the first time, they proposed}{They propose} a procedure to test whether there is a significant difference between the means of clusters estimated via HAC under the model~\eqref{matrixnormal}. \deleted{The model assumes that the variance is known.} \added{Importantly, their approach}{They also develop an approach that} maintains asymptotic control of the selective type I error \replaced{when the unknown parameter $\sigma$ is over-estimated}{while allowing for an overestimation of the variance}. Another key assumption of the model is that the features are independent, which is unlikely to hold in practice. In fact, we \replaced{have shown}{observe} that as \replaced{features}{the data} become more dependent, the $p$-value deviate further from super-uniformity. We also show that the \added{robustness of the} $p$-value \added{in that setting} \replaced{decreases with}{is sensitive to} the dimension $p$.
+Research on post-clustering inference is relatively recent, and the method of Gao \textit{et al.} represents a seminal contribution within the conditional inference framework. For the first time, they proposed a procedure to test whether there is a significant difference between the means of clusters estimated via HAC under the model~\eqref{matrixnormal}. Importantly, their approach maintains asymptotic control of the selective type I error when the unknown parameter $\sigma$ is over-estimated. Another key assumption of the model is that the features are independent, which is unlikely to hold in practice. In fact, we have shown that as features become more dependent, the $p$-value deviate further from super-uniformity. We also show that the robustness of the $p$-value in that setting decreases with the dimension $p$.
 
-\replaced{All of these limitations also appear}{Finally,} when applying the method of Gao \textit{et al.} to real data\replaced{.}{,} \added{Indeed,} we \replaced{have illustrated}{find} that it is not possible to simultaneously control the selective type I error and maintain high statistical power \added{in practical applications}. Nevertheless, the resulting $p$-values \replaced{are able to detect broad class structures in some settings}{remain consistent with the expected outcomes}. To address this limitations, \deleted{Javier} González-Delgado \textit{et al.}~\cite{Gonzales}
- \replaced{proposed}{propose} a method that remains valid under arbitrary dependence structures between observations and features. 
+All of these limitations also appear when applying the method of Gao \textit{et al.} to real data. Indeed, we have illustrated that it is not possible to simultaneously control the selective type I error and maintain high statistical power in practical applications. Nevertheless, the resulting $p$-values are able to detect broad class structures in some settings. To address this limitations, González-Delgado \textit{et al.}~\cite{Gonzales} proposed a method that remains valid under arbitrary dependence structures between observations and features. 
 
 \section*{Code Availibility}
-\replaced{The code to reproduce the simulations}{Simulations} and \replaced{the real data analyses presented in this work}{real data analysis} can be found at \href{https://github.com/JasminNeveu/projet_methodologique}{https://github.com\\/JasminNeveu/projet\_methodologique}.
+The code to reproduce the simulations and the real data analyses presented in this work can be found at \href{https://github.com/JasminNeveu/projet_methodologique}{https://github.com\\/JasminNeveu/projet\_methodologique}.
 
 \appendix
 
@@ -908,7 +908,8 @@ Yet, the density of a centered Gaussian random vector depends only on its norm, 
 \end{proof}
 
 
-\begin{lemma}\label{lemma_trace} \Javier{Lemma missing!} \Jasmin{on prouve un reslutat qui est énoncé dans la preuve du lemme précédent Lemma \ref{lemma_indep_add_events}} \Javier{Yes, but such lemma must be formally stated here. Let $\mathbf{X}$ blabla, then $\mathbb{V}(\mathbf{X})=\mathbf{U}\text{Trace}(\boldsymbol{\Sigma})$.}
+\begin{lemma}\label{lemma_trace} 
+ Let $X \sim \mathcal{MN}(\mu, \mathbf{U}, \mathbf{\Sigma})$, then $\mathbb{V}(\mathbf{X}) = \mathbf{U} \operatorname{Trace}(\mathbf{\Sigma})$.
 
 \end{lemma}
 
@@ -945,11 +946,11 @@ Yet, the density of a centered Gaussian random vector depends only on its norm, 
 
 
 \begin{proof}[Proof of Equation~\ref{riskcontrol} in Theorem \ref{thm:1}]
-  From the definition \eqref{pval_final}\added{,} we have that for all $\mathbf{x} \in \mathbb{R}^{n \times p}$ 
+  From the definition \eqref{pval_final}, we have that for all $\mathbf{x} \in \mathbb{R}^{n \times p}$ 
   \begin{equation}
-    \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\bigl(p(\mathbf{x}) \leq \alpha ~|~ C_1,C_2 \in \mathcal{C}(\mathbf{X}), \projnu \mathbf{X} = \projnu \mathbf{x}, \operatorname{dir}(\nu^\top \mathbf{X}) = \operatorname{dir}(\nu^\top \mathbf{x})\bigr) = \alpha\added{.}
+    \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\bigl(p(\mathbf{x}) \leq \alpha ~|~ C_1,C_2 \in \mathcal{C}(\mathbf{X}), \projnu \mathbf{X} = \projnu \mathbf{x}, \operatorname{dir}(\nu^\top \mathbf{X}) = \operatorname{dir}(\nu^\top \mathbf{x})\bigr) = \alpha.
   \end{equation}
-  Therefore\added{,} we have
+  Therefore, we have
 \begin{equation}
 \begin{aligned}
 & \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\big(p(\mathbf{x}) \le \alpha 
