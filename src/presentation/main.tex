@@ -9,6 +9,21 @@
 \setbeamercolor{frametitle}{fg=darkviolet}
 \setbeamercolor{structure}{fg=navblue}
 
+\usepackage{dsfont} %for \mathds
+\newcommand{\blue}[1]{\textcolor{navblue}{#1}}
+\newcommand{\violet}[1]{\textcolor{darkviolet}{#1}}
+\newcommand{\norm}[1]{||#1||}
+\newcommand{\projnu}{\pi_{\nu}^{\perp}}
+\newcommand{\indep}{\perp \!\!\! \perp}
+\newcommand{\sectionslide}[1]{
+    \begin{frame}{}
+        \centering
+        \vfill
+        {\LARGE \violet{\textbf{#1}}}
+        \vfill
+    \end{frame}
+}
+\usepackage{amsthm}
 \setbeamertemplate{navigation symbols}{}
 
 \makeatletter
@@ -59,40 +74,462 @@ Lucy L. Gao, Jacob Bien, Daniela Witten\\
 
 \section{Introduction}
 
+\begin{frame}{Introduction}
+  \blue{Clustering :} unsupervised partitioning of data, widely used, 
+  but provides \textbf{no theoretical guarantees} on the partitions it generates
+  
+  \vspace{0.5em}
+  
+  \blue{Natural question :} Are the differences between clusters significant?
+  \begin{center}
+    Cluster $\mathbf{X}$ $\longrightarrow$ Test equality of cluster means
+  \end{center}
+  \vspace{0.4em}
+  \blue{Standard approach :} apply a classical $t$-test or Wald test
+  
+  \vspace{0.4em}
+  \begin{alertblock}{}
+    \centering
+    Does this actually work?
+  \end{alertblock}
+\end{frame}
 
-\begin{frame}{Motivation}
-  motivation ...
+\begin{frame}{Hypothesis testing}
+  \blue{Type I error :}a valid test satisfies:
+  \begin{equation*}
+    \mathbb{P}(\text{Reject } \mathcal{H}_0) \leq \alpha
+  \end{equation*}
+  \blue{$p$-value :} characterized type I error control. 
+  $p$ is a $p$-value for $\mathcal{H}_0$ if:
+  \begin{equation*}
+    \mathbb{P}_{\mathcal{H}_0}(p \leq u) \leq u, \quad \forall\, u \in [0,1]
+    \qquad \text{(\textit{super-uniformity})}
+  \end{equation*}
+
+  \blue{Rejection rule :} $\mathds{1}\{p \leq \alpha\}$ controls type I error at level $\alpha$
+
+  \blue{Reading a $p$-value ECDF}
+    If $p$ is valid, its ECDF lies \textit{below} the diagonal. 
+    Deviation above $\Rightarrow$ type I error inflation.
+\end{frame}
+
+
+\begin{frame}{Motivating examples}
+  \blue{Clustering}
+\begin{itemize}
+    \item Simulate $n = 100$ i.i.d. observations from $\mathcal{N}_5(0, \mathbb{I}_5)$
+    \item Partition into $K = 3$ clusters using HAC and $k$-means
+    \item Test $\mathcal{H}_0^{\{C_1, C_2\}}: \bar{\mu}_{C_1} = \bar{\mu}_{C_2}$ 
+    with a classical $t$-test for two randomly selected clusters $C_1, C_2$
+    \item Repeat $M = 2000$ times and plot the ECDF of the resulting $p$-values
+\end{itemize}
+
+  \vspace{0.3cm}
+ \begin{columns}[c]
+    \begin{column}{0.48\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{images/hac_pvalues.png}\\[0.3em]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{images/kmeans_pvalues.png}\\[0.3em]
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Motivating examples}
+  \blue{Lasso regression}
+
+\begin{itemize}
+    \item Consider $Y = X\beta + \varepsilon$, $\varepsilon \sim \mathcal{N}(0,1)$, 
+    $\beta = (3, 1.5, 0, 0, 2, 0, 0, 0)^\top$ with $n = 100$ i.i.d. observations
+    \item Select variables using Lasso regression
+    \item Test $\mathcal{H}_0: \beta_j = 0$ for a randomly chosen truly null coefficient $\beta_j$ selected by Lasso
+    \item Repeat $M = 2000$ times and plot the ECDF of the resulting $p$-values
+\end{itemize}
+  \centering
+  \includegraphics[width=0.60\textwidth]{images/lasso_pvalues.png}\\[0.4em]
+\end{frame}
+
+
+\begin{frame}{Selective inference}
+\blue{Classical inference :}
+  \begin{center}
+    Fix $\mathcal{H}_0$ \textit{a priori} $\longrightarrow$ Test $\mathcal{H}_0$ on $\mathbf{X}$
+  \end{center}
+
+  \vspace{0.5em}
+
+  \blue{Post-clustering inference :}
+  \begin{center}
+    Cluster $\mathbf{X}$ $\longrightarrow$ $\mathcal{H}_0$ defined from $\mathbf{X}$ $\longrightarrow$ Test $\mathcal{H}_0$ on $\mathbf{X}$
+  \end{center}
+
+  \vspace{0.5em}
+
+  $\Rightarrow$ \textbf{Double-dipping :} $\mathbf{X}$ is used both to \textit{select} and to \textit{test} $\mathcal{H}_0$
+
+  \vspace{0.5em}
+
+  \blue{Analogy with supervised learning :} using the same data for training and evaluation leads to overfitting : the model captures noise rather than signal
+
+  \vspace{0.4em}
+
+  \begin{alertblock}{}
+    \centering
+    This is \textbf{selective inference :} a different framework is needed
+  \end{alertblock}
+
+\end{frame}
+
+
+\begin{frame}{Addressing Selective Inference}
+
+\blue{Sample Splitting}
+\begin{itemize}
+    \item Train on $X$, infer on $Y$, but assigning test points to clusters reuses $Y$
+    \item Does not yield valid post-clustering inference in general
+\end{itemize}
+
+
+\vspace{0.4em}
+
+
+\blue{Simultaneous Inference}
+\begin{itemize}
+    \item Controls the family-wise error rate:
+    $\mathbb{P}(\text{at least 1 false positive amoung all hypothesis}) \leq \alpha$
+    \item Too conservative, no post-clustering method proposed to date
+\end{itemize}
+
+\vspace{0.4em}
+
+\blue{Conditional Inference} \hfill $\leftarrow$ \textit{this work}
+\begin{itemize}
+    \item Controls the selective type I error:
+      $\mathbb{P}\!\left(\text{Reject } \mathcal{H}_0(X) ~\text{being true} \mid \mathcal{H}_0 \text{ selected}\right) \leq \alpha$
+    \item State-of-the-art framework, basis of Gao et al.'s approach
+\end{itemize}
+
 \end{frame}
 
 \section{Gao \textit{et al.}'s approach}
 
+\sectionslide{Gao \textit{et al.}'s approach}
+
+\begin{frame}{Notations}
+  \begin{itemize}
+  \item Let $\mathbf{X} = (X_{ij})_{ij} \in \mathbb{R}^{n \times p}$ be the design matrix
+  \item Let $C$ a clustering algorithm and $C_1 \in C(\mathbf{X})$ a cluster obtained by the C algorithm on $\mathbf{X}$
+  \item Let $\boldsymbol{\mu} = (\mu_{ij})_{ij}$ be the mean matrix of $\mathbf{X}$ i.e $\mu_{ij} = \mathbb{E}[X_{ij}]$
+\item Let $\bar{\mu}_G = \dfrac{1}{|G|} \displaystyle\sum_{i \in G} \mu_i \in \mathbb{R}^p\quad\text{and}\quad\bar{X}_G = \dfrac{1}{|G|} \displaystyle\sum_{i \in G} X_i \in \mathbb{R}^p$, for $G$ a subset of $\{1,...,n\}$
+
+
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Gao \textit{et al.}'s approach}
+
+  \blue{Model :}
+  \begin{equation*}
+    \mathbf{X} \sim \mathcal{MN}_{n\times p}(\boldsymbol{\mu}, \mathbb{I}_n, \sigma^2\mathbb{I}_p)
+  \end{equation*}
+  i.e. rows of $\mathbf{X}$ are independent $\mathcal{N}_p(\mu_i, \sigma^2\mathbb{I}_p)$ \textbf{independent features}
+
+  \vspace{0.5em}
+
+  \blue{Goal :} test equality of means between two clusters $C_1, C_2 \in \mathcal{C}(\mathbf{X})$
+  \begin{equation*}
+    \mathcal{H}_0^{\{C_1,C_2\}} : \bar{\mu}_{C_1} = \bar{\mu}_{C_2} \iff \nu^\top\boldsymbol{\mu} = 0
+  \end{equation*}
+  where $\nu_i = \frac{1}{|C_1|}$ if $i \in C_1$, $-\frac{1}{|C_2|}$ if $i \in C_2$, $0$ otherwise
+
+\end{frame}
+
+
+
+
+\begin{frame}{Selective type I error for clustering}
+
+  \blue{Selective type I error :}
+  \begin{equation*}
+    \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\bigl(\text{Reject } \mathcal{H}_0^{\{C_1,C_2\}} \mid C_1,C_2 \in \mathcal{C}(\mathbf{X})\bigr) \leq \alpha
+  \end{equation*}
+
+  \vspace{0.3em}
+
+  \blue{Ideal $p$-value :}
+  \begin{equation*}
+    p_{ideal}(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\bigl(\|\nu^\top\mathbf{X}\|_2 \geq \|\nu^\top\mathbf{x}\|_2 \mid C_1,C_2 \in \mathcal{C}(\mathbf{X})\bigr)
+  \end{equation*}
+
+  \blue{Problem :}
+    $p_{ideal}$ depends on unknown parameters, intractable in practice
+
+  $\Rightarrow$ Add additional events $\xi(\mathbf{X},\mathbf{x})$ to the conditioning set
+
+  \blue{Tractable $p$-value :}
+  \begin{equation*}
+    p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\Bigl(\norm{\nu^T\mathbf{X}}_2 \geq \norm{\nu^T\mathbf{x}}_2 ~ | ~ C_1,C_2 \in \mathcal{C}(\mathbf{X}), \xi(\mathbf{X},\mathbf{x})\Bigr),
+  \end{equation*}
+
+\end{frame}
+
+
+\begin{frame}{Additional events}
+    \begin{equation*}
+        \mathbf{X} = \projnu\mathbf{X} + (\mathbb{I}_n - \projnu)\mathbf{X}
+        \quad \text{with} \quad 
+        \projnu = \mathbb{I}_n - \frac{\nu\nu^\top}{\norm{\nu}_2^2}
+    \end{equation*}
+
+
+    \begin{align*}
+        \mathbf{X} &= \projnu \mathbf{X} + \frac{\nu \nu^\top}{\norm{\nu}_2^2}\mathbf{X} \\ 
+                   &= \projnu \mathbf{X} + \frac{\nu}{\norm{\nu}_2^2} \left( \frac{\nu^\top \mathbf{X}}{\norm{\nu^\top \mathbf{X}}_2} \right) \norm{\nu^\top \mathbf{X}}_2 \\ 
+                   &= \projnu \mathbf{X} + \frac{\nu}{\norm{\nu}_2^2} \operatorname{dir}(\nu^\top \mathbf{X}) \norm{\nu^\top \mathbf{X}}_2
+    \end{align*}
+
+
+    \begin{equation*}
+        \operatorname{dir}(z) = \frac{z}{\norm{z}_2}, \quad z \in \mathbb{R}^p
+    \end{equation*}
+
+    \begin{equation*}
+        \xi(\mathbf{X},\mathbf{x}) = \bigl\{ \projnu \mathbf{X} = \projnu \mathbf{x}, ~ \operatorname{dir}(\nu^\top \mathbf{X}) = \operatorname{dir}(\nu^\top \mathbf{x})\bigr\}
+    \end{equation*}
+\end{frame}
+
+
+\begin{frame}{Tractable $p$-value}
+
+  \blue{Proposition} Under $\mathcal{H}_0$:
+  \begin{center}
+    (i) $\|\nu^\top \mathbf{X}\|_2 \indep \pi_\nu^\perp \mathbf{X}$ \qquad 
+    (ii) $\|\nu^\top \mathbf{X}\|_2 \indep \operatorname{dir}(\nu^\top \mathbf{X})$
+  \end{center}
+
+  \vspace{0.3em}
+
+  Following from the previous result, we can rewrite the $p$-value as:
+  
+  \begin{multline*}
+    p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0} \Bigl( \|\nu^\top \mathbf{X}\|_2 \geq \|\nu^\top \mathbf{x}\|_2 ~\Big|~ \\
+    C_1, C_2 \in \mathcal{C} \Bigl( \pi_\nu^\perp \mathbf{x} + \frac{\nu}{\|\nu\|^2_2} \operatorname{dir}(\nu^\top \mathbf{x}) \|\nu^\top \mathbf{X}\|_2 \Bigr) \Bigr)
+  \end{multline*}
+
+  \vspace{0.2em}
+\end{frame}
+
+
+\begin{frame}{Truncation set $\mathcal{S}$}
+
+  Let $\phi = \|\nu^\top \mathbf{X}\|_2$ and $\mathbf{x}'(\phi) = \pi_\nu^\perp \mathbf{x} + \dfrac{\nu}{\|\nu\|_2^2} \operatorname{dir}(\nu^\top \mathbf{x})\phi$
+
+  \vspace{0.4em}
+
+  \begin{equation*}
+    p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0}\Bigl(\phi \geq \|\nu^\top \mathbf{x}\|_2 ~\Big|~ \phi \in \mathcal{S}\bigl(\mathbf{x};\{C_1,C_2\}\bigr)\Bigr)
+  \end{equation*}
+
+  \vspace{0.3em}
+
+  where
+  \begin{equation*}
+    \mathcal{S}\bigl(\mathbf{x},\{C_1,C_2\}\bigr) = \Bigl\{\phi \geq 0 : C_1,C_2 \in \mathcal{C}\bigl(\mathbf{x}'(\phi)\bigr)\Bigr\}
+  \end{equation*}
+
+  \blue{Interpretation}
+    $\mathcal{S}$ is the set of perturbations of $\mathbf{x}$ that preserve the clusters $C_1, C_2$
+
+  \blue{Law of the test statistic} Under $\mathcal{H}_0^{\{C_1,C_2\}}$:
+  \begin{equation*}
+    \phi \sim \|\nu\|_2\,\sigma\,\chi_p
+  \end{equation*}
+
+
+
+\end{frame}
+
+
+\begin{frame}{Theorem 1 — Gao \textit{et al.}}
+
+  For any $C_1, C_2 \subseteq \{1,\ldots,n\}$ and any realization $\mathbf{x}$ of $\mathbf{X}$:
+  \begin{equation*}
+    p(\mathbf{x}) = 1 - \mathbb{F}\bigl(\|\nu^\top \mathbf{x}\|_2;\,\|\nu\|_2 \sigma;\,\mathcal{S}\bigl(\mathbf{x};\{C_1,C_2\}\bigr)\bigr)
+  \end{equation*}
+
+  where $\mathbb{F}(t; c; \mathcal{S})$ is the CDF of a $c\cdot\chi_p$ random variable truncated to the set $\mathcal{S}$
+
+  \vspace{0.3em}
+
+  Furthermore, if $\mathcal{H}_0^{\{C_1,C_2\}}$ is true:
+  \begin{equation*}
+    \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\Bigl(p(\mathbf{x}) \leq \alpha ~\Big|~ C_1,C_2 \in \mathcal{C}(\mathbf{X})\Bigr) = \alpha, \quad \forall\, \alpha \in [0,1]
+  \end{equation*}
+
+  \begin{alertblock}{}
+    \centering
+    $p(\mathbf{x})$ controls exactly the selective type I error for clustering
+  \end{alertblock}
+
+\end{frame}
+
+
+\begin{frame}{Interpretation of $\mathbf{x}'(\phi)$}
+
+  \begin{equation*}
+    \mathbf{x}'(\phi) = \mathbf{x} + \frac{\nu}{\|\nu\|_2^2}\operatorname{dir}(\nu^\top \mathbf{x})\,(\phi - \|\nu^\top \mathbf{x}\|_2)
+  \end{equation*}
+
+  $\mathbf{x}'(\phi)$ is a perturbation of $\mathbf{x}$ along the direction $\nu$ — clusters are pulled together or pushed apart depending on $\phi$
+
+  \vspace{0.4em}
+
+  \begin{columns}[T]
+    \begin{column}{0.32\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{images/original_data.png}\\
+      \small $\phi = \|\nu^\top \mathbf{x}\|_2$
+    \end{column}
+    \hfill
+    \begin{column}{0.32\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{images/perturbated_0_data.png}\\
+      \small $\phi = 0$ (pulled together)
+    \end{column}
+    \hfill
+    \begin{column}{0.32\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{images/perturbated_8_data.png}\\
+      \small $\phi = 8$ (pushed apart)
+    \end{column}
+  \end{columns}
+
+\end{frame}
 
 \section{Numerical experiments}
+\begin{frame}{Validation}
+  \blue{Model}
+  \begin{equation*}
+    \mathbf{X}\sim\mathcal{MN}_{n\times p}(\boldsymbol{\mu},\mathbb{I}_n,\sigma^2\mathbb{I}_p),n = 100 ,p = 5, \boldsymbol{\mu} = 0_p
+  \end{equation*}
 
-\begin{frame}{$p$-value in practice}
+  \blue{Setup} \\
+      Number of samples = 2000 \\
+      HAC: \texttt{clusterpval} (Gao et al.) K-means: \texttt{KmeansInference}
+
+\begin{figure}
+\begin{tabular}{cc}
+    \includegraphics[width=0.45\linewidth]{images/hac_pvalues_selective.png} &
+    \includegraphics[width=0.45\linewidth]{images/kmeans_pvalues_selective.png}
+\end{tabular}
+\end{figure}
+
 \end{frame}
 
-\begin{frame}{Robustness ...}
+\begin{frame}{Robustness to Feature Dependence}
+  \blue{Model}
+    \begin{align*}
+    & \mathbf{X} \sim \mathcal{MN}_{n \times p}\bigl(\boldsymbol{\mu},\mathbb{I}_n,\boldsymbol{\Sigma} \bigr), n = 100, p = 5, \boldsymbol{\mu} = 0_p,\\ 
+    & \boldsymbol{\Sigma} = \rho^{|i-j|} ~\text{for}~ 1 \leq i,j \leq p ~\text{and}~ \rho \in (0,1].
+  \end{align*}
+\centering
+\begin{figure}
+\begin{tabular}{cc}
+    \includegraphics[width=0.41\linewidth]{images/hac_pvalues_grad_rho.png} &
+    \includegraphics[width=0.41\linewidth]{images/kmeans_pvalues_grad_rho.png} \\
+    \includegraphics[width=0.41\linewidth]{images/hac_pvalues_grad_p.png} &
+    \includegraphics[width=0.41\linewidth]{images/kmeans_pvalues_grad_p.png}
+\end{tabular}
+\end{figure}
 \end{frame}
 
-\begin{frame}{Genotype data}
+\subsection{Data Application}
 
+\begin{frame}{1KGP Data Set}
+  \begin{itemize}
+    \item Genetic information encoded in DNA sequences (nucleotides A, C, G, T)
+    \item DNA sequences are long: individuals compared to a reference genome $\rightarrow$ SNP matrix
+    \item 1000 Genomes Project (\blue{1KGP}): 3,450 individuals from 26 human populations across 5 super-populations (AFR, AMR, EAS, EUR, SAS)
+    \item \blue{1KGP} $\xrightarrow{\text{PCA}}$ \blue{1KGP\_100PC} \quad (first 100 principal components)
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Clustering}
+  HAC clustering with $K = 26$ on \blue{1KGP\_100PC}
+  \begin{columns}[c]
+    \begin{column}{0.48\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{images/PCA.png}\\[0.3em]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{images/PCAcluster.png}\\[0.3em]
+    \end{column}
+  \end{columns}
+  \vspace{0.4em}
 \end{frame}
 
 \begin{frame}{Clustering}
+  \centering
+  \includegraphics[width=0.70\textwidth]{images/heatmap_clust_pop.png}\\[0.4em]
+  \begin{itemize}
+    \item Approximately diagonal structure: each cluster mostly corresponds to a single population
+    \item Some populations spread across several clusters: PJL, ASW, GIH
+    \item Some clusters contain individuals from multiple populations: clusters 1, 3, 16
+  \end{itemize}
+\end{frame}
 
+\begin{frame}{Suitability of Gao \textit{et al.}'s approach}
+  \begin{columns}[c]
+    \begin{column}{0.40\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{images/pval_12_26.png}\\[0.2em]
+      \includegraphics[width=\textwidth]{images/pval_5_7.png}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{images/pval_13_8.png}\\[0.2em]
+      \includegraphics[width=\textwidth]{images/pval_9_16.png}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 
-
-\begin{frame}
-encl
-
+\begin{frame}{Intercontinental vs intracontinental differences}
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/heatmap_pval.png}
 \end{frame}
 
-\section{Conclusion}
+\section{Discussion}
+
+\begin{frame}{Discussion}
+  \begin{itemize}
+    \item Gao \textit{et al.}'s approach: seminal contribution to the conditional inference framework
+      \pause
+    \item First procedure to test the equality of means between clusters estimated via HAC, under a Gaussian model with independent features
+      \pause
+    \item Asymptotically valid when $\sigma$ is overestimated
+      \pause
+    \item When the independence assumption is violated, the $p$-value deviates from super-uniformity and the deviation increases with both $\rho$ and $p$
+      \pause
+    \item These limitations persist on real data, yet the method successfully recovers broad population structure
+      \pause
+    \item Gonz\'{a}lez-Delgado \textit{et al.} proposed an extension that remains valid under arbitrary dependence structures between observations and features
+  \end{itemize}
+\end{frame}
 
 
+  
+\begin{frame}{}
+  \centering
+  \vfill
+  {\LARGE \blue{\textbf{Thank you for your attention}}}
+  \vfill
+\end{frame}
 
 
 
