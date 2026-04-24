@@ -16,8 +16,10 @@
 \newcommand{\norm}[1]{||#1||}
 \newcommand{\projnu}{\pi_{\nu}^{\perp}}
 \newcommand{\indep}{\perp \!\!\! \perp}
+
+\usepackage{appendixnumberbeamer}
 \newcommand{\sectionslide}[1]{
-    \begin{frame}{}
+  \begin{frame}[noframenumbering]{}
         \centering
         \vfill
         {\LARGE \violet{\textbf{#1}}}
@@ -541,12 +543,20 @@ If a $p$-value is valid, its ECDF lies \textit{below} the diagonal.
   \end{itemize}
 \end{frame}
 
+\appendix
 
-  
-\begin{frame}{}
+\begin{frame}[noframenumbering]{}
   \centering
   \vfill
   {\LARGE \blue{\textbf{Thank you for your attention}}}
+  \vfill
+\end{frame}
+
+
+\begin{frame}[noframenumbering]{}
+  \centering
+  \vfill
+  {\LARGE \blue{\textbf{Proofs}}}
   \vfill
 \end{frame}
 
