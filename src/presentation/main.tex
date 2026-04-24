@@ -8,6 +8,7 @@
 
 \setbeamercolor{frametitle}{fg=darkviolet}
 \setbeamercolor{structure}{fg=navblue}
+\setbeamerfont{block title}{size=\normalsize}
 
 \usepackage{dsfont} %for \mathds
 \newcommand{\blue}[1]{\textcolor{navblue}{#1}}
@@ -23,6 +24,7 @@
         \vfill
     \end{frame}
 }
+
 \usepackage{amsthm}
 \setbeamertemplate{navigation symbols}{}
 
@@ -34,6 +36,10 @@
 }
 \makeatother
 
+\setbeamertemplate{sidebar right}{}
+\setbeamertemplate{footline}{%
+\hfill\usebeamertemplate***{navigation symbols}
+\insertframenumber{}/\inserttotalframenumber}
 
 
 \begin{document}
@@ -95,22 +101,35 @@ Lucy L. Gao, Jacob Bien, Daniela Witten\\
 \end{frame}
 
 \begin{frame}{Hypothesis testing}
-  \blue{Type I error :}a valid test satisfies:
+
+\begin{block}{Type I error}
+A valid test satisfies:
   \begin{equation*}
-    \mathbb{P}(\text{Reject } \mathcal{H}_0) \leq \alpha
+    \mathbb{P}(\text{Reject } \mathcal{H}_0) \leq \alpha.
   \end{equation*}
-  \blue{$p$-value :} characterized type I error control. 
-  $p$ is a $p$-value for $\mathcal{H}_0$ if:
-  \begin{equation*}
-    \mathbb{P}_{\mathcal{H}_0}(p \leq u) \leq u, \quad \forall\, u \in [0,1]
+\end{block}
+\pause
+\vspace{-0.2cm}
+\begin{block}{Testing via $p$-values}
+The quantity $p$ is a $p$-value for $\mathcal{H}_0$ if:
+\begin{equation*}
+    \mathbb{P}_{\mathcal{H}_0}(p \leq u) \leq u, \quad \forall\, u \in [0,1].
     \qquad \text{(\textit{super-uniformity})}
   \end{equation*}
+\end{block}
+\pause
+\vspace{-0.2cm}
+\begin{block}{Rejection rule}
+The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level $\alpha$.
+\end{block}
+\pause
 
-  \blue{Rejection rule :} $\mathds{1}\{p \leq \alpha\}$ controls type I error at level $\alpha$
-
-  \blue{Reading a $p$-value ECDF}
-    If $p$ is valid, its ECDF lies \textit{below} the diagonal. 
+\begin{block}{Interpreting a $p$-value ECDF}
+If a $p$-value is valid, its ECDF lies \textit{below} the diagonal. 
     Deviation above $\Rightarrow$ type I error inflation.
+\end{block}
+
+    
 \end{frame}
 
 
