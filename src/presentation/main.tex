@@ -17,6 +17,9 @@
 \newcommand{\projnu}{\pi_{\nu}^{\perp}}
 \newcommand{\indep}{\perp \!\!\! \perp}
 
+\newtheorem{proposition}{Proposition}
+\newtheorem{remark}{Remark}
+
 \usepackage{appendixnumberbeamer}
 \usepackage{caption}
 \newcommand{\sectionslide}[1]{
@@ -130,8 +133,8 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
 \begin{frame}{Interpreting a $p$-value ECDF}
 
   \begin{itemize}
-    \item valid $p$-value : ECDF lies \textit{below} the diagonal
-    \item Deviation \textit{above}: type I error inflation
+    \item valid $p$-value : ECDF lies \textit{below} the diagonal.
+    \item Deviation \textit{above}: type I error inflation.
   \end{itemize}
   \vspace{3em}
     \begin{columns}[c]
@@ -152,14 +155,14 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
 \begin{frame}{Motivating examples}
   \blue{Clustering}
 \begin{itemize}
-    \item Simulate $n = 100$ i.i.d. observations from $\mathcal{N}_5(0, \mathbb{I}_5)$
+    \item Simulate $n = 100$ i.i.d. observations from $\mathcal{N}_5(0, \mathbb{I}_5)$.
       \pause
-    \item Partition into $K = 3$ clusters using HAC and $k$-means
+    \item Partition into $K = 3$ clusters using HAC and $k$-means.
       \pause
     \item Test $\mathcal{H}_0^{\{C_1, C_2\}}: \bar{\mu}_{C_1} = \bar{\mu}_{C_2}$ 
-    with a classical $t$-test for two randomly selected clusters $C_1, C_2$
+    with a classical $t$-test for two randomly selected clusters $C_1, C_2$.
     \pause
-    \item Repeat $M = 2000$ times and plot the ECDF of the resulting $p$-values
+    \item Repeat $M = 2000$ times and plot the ECDF of the resulting $p$-values.
 \end{itemize}
 \pause
   \vspace{0.3cm}
@@ -180,13 +183,13 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
 
 \begin{itemize}
     \item Consider $Y = X\beta + \varepsilon$, $\varepsilon \sim \mathcal{N}(0,1)$, 
-    $\beta = (3, 1.5, 0, 0, 2, 0, 0, 0)^\top$ with $n = 100$ i.i.d. observations
+    $\beta = (3, 1.5, 0, 0, 2, 0, 0, 0)^\top$ with $n = 100$ i.i.d. observations.
     \pause
-    \item Select variables using Lasso regression
+    \item Select variables using Lasso regression.
       \pause
-    \item Test $\mathcal{H}_0: \beta_j = 0$ for a randomly chosen truly null coefficient $\beta_j$ selected by Lasso
+    \item Test $\mathcal{H}_0: \beta_j = 0$ for a randomly chosen truly null coefficient $\beta_j$ selected by Lasso.
       \pause
-    \item Repeat $M = 2000$ times and plot the ECDF of the resulting $p$-values
+    \item Repeat $M = 2000$ times and plot the ECDF of the resulting $p$-values.
 \end{itemize}
 \pause
   \centering
@@ -213,7 +216,7 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
 
   \vspace{0.5em}
 
-  \blue{Analogy with supervised learning :} using the same data for training and evaluation leads to overfitting : the model captures noise rather than signal
+  \blue{Analogy with supervised learning :} using the same data for training and evaluation leads to overfitting : the model captures noise rather than signal.
 
   \vspace{0.4em}
 
@@ -224,7 +227,7 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
 
 \end{frame}
 
-\begin{frame}[noframenumbering]{Addressing Selective Inference}
+\begin{frame}{Addressing Selective Inference}
   \blue{Sample Splitting}
   
 
@@ -245,7 +248,7 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
 \begin{itemize}
     \item Controls the family-wise error rate:
       \begin{equation*}\mathbb{P}(\text{at least 1 false positive amoung all hypothesis}) \leq \alpha\end{equation*}
-    \item Too conservative, no post-clustering method proposed to date
+    \item Too conservative, no post-clustering method proposed to date.
 \end{itemize}
 \end{block}
 \vspace{1em}
@@ -253,7 +256,7 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
   \begin{itemize}
     \item Controls the selective type I error:
       \begin{equation*}\mathbb{P}\!\left(\text{Reject } \mathcal{H}_0(X) ~\text{being true} \mid \mathcal{H}_0 \text{ selected}\right) \leq \alpha\end{equation*}
-    \item State-of-the-art framework, basis of Gao et al.'s approach
+    \item State-of-the-art framework, basis of Gao et al.'s approach.
   \end{itemize}
 \end{block}
 
@@ -265,42 +268,36 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
 
 \begin{frame}{Notations}
   \begin{itemize}
-  \item Let $\mathbf{X} = (X_{ij})_{ij} \in \mathbb{R}^{n \times p}$ be the design matrix
+  \item Let $\mathbf{X} = (X_{ij})_{ij} \in \mathbb{R}^{n \times p}$ be the design matrix.
     \vspace{0.9em}
-  \item Let $C$ a clustering algorithm and $G \in C(\mathbf{X})$ a cluster obtained by the C algorithm on $\mathbf{X}$
+  \item Let $C$ a clustering algorithm and $G \in C(\mathbf{X})$ a cluster obtained by the C algorithm on $\mathbf{X}$.
     \vspace{0.9em}
-  \item Let $\boldsymbol{\mu} = (\mu_{ij})_{ij}$ be the mean matrix of $\mathbf{X}$ i.e $\mu_{ij} = \mathbb{E}[X_{ij}]$
+  \item Let $\boldsymbol{\mu} = (\mu_{ij})_{ij}$ be the mean matrix of $\mathbf{X}$ i.e $\mu_{ij} = \mathbb{E}[X_{ij}]$.
     \vspace{0.9em}
-\item Let $\bar{\mu}_G = \dfrac{1}{|G|} \displaystyle\sum_{i \in G} \mu_i \in \mathbb{R}^p\quad\text{and}\quad\bar{X}_G = \dfrac{1}{|G|} \displaystyle\sum_{i \in G} X_i \in \mathbb{R}^p$, for $G$ a subset of $\{1,...,n\}$
+\item Let $\bar{\mu}_G = \dfrac{1}{|G|} \displaystyle\sum_{i \in G} \mu_i \in \mathbb{R}^p\quad\text{and}\quad\bar{X}_G = \dfrac{1}{|G|} \displaystyle\sum_{i \in G} X_i \in \mathbb{R}^p$, for $G$ a subset of $\{1,...,n\}$.
   \vspace{0.5em}
   \begin{block}{Null hypothesis}
 \begin{equation*}
     \mathcal{H}_0^{\{C_1,C_2\}} : \bar{\mu}_{C_1} = \bar{\mu}_{C_2} \iff \nu^\top\boldsymbol{\mu} = 0
   \end{equation*}
   \vspace{0.2em}
-  where $\nu_i = \frac{1}{|C_1|}$ if $i \in C_1$, $-\frac{1}{|C_2|}$ if $i \in C_2$, $0$ otherwise
+  where $\nu_i = \frac{1}{|C_1|}$ if $i \in C_1$, $-\frac{1}{|C_2|}$ if $i \in C_2$, $0$ otherwise.
   \end{block}
 
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Gao \textit{et al.}'s approach}
+\begin{frame}{Model}
 
-  \blue{Model :}
+  \begin{block}{Model :}
   \begin{equation*}
     \mathbf{X} \sim \mathcal{MN}_{n\times p}(\boldsymbol{\mu}, \mathbb{I}_n, \sigma^2\mathbb{I}_p)
   \end{equation*}
-  i.e. rows of $\mathbf{X}$ are independent $\mathcal{N}_p(\mu_i, \sigma^2\mathbb{I}_p)$ \textbf{independent features}
+  i.e. rows of $\mathbf{X}$ are independent $\mathcal{N}_p(\mu_i, \sigma^2\mathbb{I}_p)$ \textbf{independent features}.
+\end{block}
 
-  \vspace{0.5em}
 
-  \blue{Goal :} test equality of means between two clusters $C_1, C_2 \in \mathcal{C}(\mathbf{X})$
-  \begin{equation*}
-    \mathcal{H}_0^{\{C_1,C_2\}} : \bar{\mu}_{C_1} = \bar{\mu}_{C_2} \iff \nu^\top\boldsymbol{\mu} = 0
-  \end{equation*}
-  where $\nu_i = \frac{1}{|C_1|}$ if $i \in C_1$, $-\frac{1}{|C_2|}$ if $i \in C_2$, $0$ otherwise
-
-\end{frame}
+  \end{frame}
 
 
 
@@ -309,13 +306,13 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
 
   \begin{block}{Selective type I error :}
   \begin{equation*}
-    \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\bigl(\text{Reject } \mathcal{H}_0^{\{C_1,C_2\}} \mid C_1,C_2 \in \mathcal{C}(\mathbf{X})\bigr) \leq \alpha
+    \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\bigl(\text{Reject } \mathcal{H}_0^{\{C_1,C_2\}} \mid C_1,C_2 \in \mathcal{C}(\mathbf{X})\bigr) \leq \alpha.
   \end{equation*}
 \end{block}
 
   \begin{block}{Ideal $p$-value :}
   \begin{equation*}
-    p_{ideal}(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\bigl(\|\nu^\top\mathbf{X}\|_2 \geq \|\nu^\top\mathbf{x}\|_2 \mid C_1,C_2 \in \mathcal{C}(\mathbf{X})\bigr)
+    p_{ideal}(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\bigl(\|\nu^\top\mathbf{X}\|_2 \geq \|\nu^\top\mathbf{x}\|_2 \mid C_1,C_2 \in \mathcal{C}(\mathbf{X})\bigr).
   \end{equation*}
 \end{block}
 \begin{block}{Problem :}
@@ -324,9 +321,9 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
   $\Rightarrow$ Add additional events $\xi(\mathbf{X},\mathbf{x})$ to the conditioning set.
 \end{block}
 \begin{block}{Tractable $p$-value :}
-  \vspace{-0.8em}
+  \vspace{-2em}
   \begin{equation*}
-    p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\Bigl(\norm{\nu^T\mathbf{X}}_2 \geq \norm{\nu^T\mathbf{x}}_2 ~ | ~ C_1,C_2 \in \mathcal{C}(\mathbf{X}), \xi(\mathbf{X},\mathbf{x})\Bigr)
+    p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\Bigl(\norm{\nu^T\mathbf{X}}_2 \geq \norm{\nu^T\mathbf{x}}_2 ~ | ~ C_1,C_2 \in \mathcal{C}(\mathbf{X}), \xi(\mathbf{X},\mathbf{x})\Bigr).
   \end{equation*}
 \end{block}
 \end{frame}
@@ -367,10 +364,11 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
 
   Following from the previous result, we can rewrite the $p$-value as:
   
-  \begin{multline*}
+  \begin{multline}
     p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0} \Bigl( \|\nu^\top \mathbf{X}\|_2 \geq \|\nu^\top \mathbf{x}\|_2 ~\Big|~ \\
     C_1, C_2 \in \mathcal{C} \Bigl( \pi_\nu^\perp \mathbf{x} + \frac{\nu}{\|\nu\|^2_2} \operatorname{dir}(\nu^\top \mathbf{x}) \|\nu^\top \mathbf{X}\|_2 \Bigr) \Bigr).
-  \end{multline*}
+    \label{pval_final}
+  \end{multline}
 
 \end{frame}
 
@@ -389,18 +387,18 @@ Let $\mathbf{x}'(\phi) = \pi_\nu^\perp \mathbf{x} + \dfrac{\nu}{\|\nu\|_2^2} \op
   \vspace{0.4em}
 
   \begin{equation*}
-    p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0}\Bigl(\phi \geq \|\nu^\top \mathbf{x}\|_2 ~\Big|~ \phi \in \mathcal{S}\bigl(\mathbf{x};\{C_1,C_2\}\bigr)\Bigr)
+    p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0}\Bigl(\phi \geq \|\nu^\top \mathbf{x}\|_2 ~\Big|~ \phi \in \mathcal{S}\bigl(\mathbf{x};\{C_1,C_2\}\bigr)\Bigr),
   \end{equation*}
 
   \vspace{0.3em}
 
   where
   \begin{equation*}
-    \mathcal{S}\bigl(\mathbf{x},\{C_1,C_2\}\bigr) = \Bigl\{\phi \geq 0 : C_1,C_2 \in \mathcal{C}\bigl(\mathbf{x}'(\phi)\bigr)\Bigr\}
+    \mathcal{S}\bigl(\mathbf{x},\{C_1,C_2\}\bigr) = \Bigl\{\phi \geq 0 : C_1,C_2 \in \mathcal{C}\bigl(\mathbf{x}'(\phi)\bigr)\Bigr\}.
   \end{equation*}
 
   \begin{block}{Interpretation}
-    $\mathcal{S}$ is the set of perturbations of $\mathbf{x}$ that preserve the clusters $C_1, C_2$
+    $\mathcal{S}$ is the set of perturbations of $\mathbf{x}$ that preserve the clusters $C_1, C_2$.
   \end{block}
    
 
@@ -408,12 +406,12 @@ Let $\mathbf{x}'(\phi) = \pi_\nu^\perp \mathbf{x} + \dfrac{\nu}{\|\nu\|_2^2} \op
 
 \end{frame}
 \begin{frame}{Interpretation of $\mathbf{x}'(\phi)$}
-
+  We can rewrite $\mathbf{x}'(\phi) $ as :
   \begin{equation*}
-    \text{Let} ~\mathbf{x}'(\phi) = \mathbf{x} + \frac{\nu}{\|\nu\|_2^2}\operatorname{dir}(\nu^\top \mathbf{x})\,(\phi - \|\nu^\top \mathbf{x}\|_2)
+    \mathbf{x}'(\phi) = \mathbf{x} + \frac{\nu}{\|\nu\|_2^2}\operatorname{dir}(\nu^\top \mathbf{x})\,(\phi - \|\nu^\top \mathbf{x}\|_2)
   \end{equation*}
   \vspace{1em}
-  $\mathbf{x}'(\phi)$ is a perturbation of $\mathbf{x}$ along the direction $\nu$ -- clusters are pulled together or pushed apart depending on $\phi$
+  $\mathbf{x}'(\phi)$ is a perturbation of $\mathbf{x}$ along the direction $\nu$ : clusters are pulled together or pushed apart depending on $\phi$.
 
   \vspace{1em}
 
@@ -439,20 +437,20 @@ Let $\mathbf{x}'(\phi) = \pi_\nu^\perp \mathbf{x} + \dfrac{\nu}{\|\nu\|_2^2} \op
 
 \end{frame}
 
-\begin{frame}{Theorem 1 — Gao \textit{et al.}}
-
+\begin{frame}[label=thm:1]{Theorem 1 — Gao \textit{et al.}}
+  
   For any $C_1, C_2 \subseteq \{1,\ldots,n\}$ and any realization $\mathbf{x}$ of $\mathbf{X}$:
   \begin{equation*}
     p(\mathbf{x}) = 1 - \mathbb{F}\bigl(\|\nu^\top \mathbf{x}\|_2;\,\|\nu\|_2 \sigma;\,\mathcal{S}\bigl(\mathbf{x};\{C_1,C_2\}\bigr)\bigr)
   \end{equation*}
 
-  where $\mathbb{F}(t; c; \mathcal{S})$ is the CDF of a $c\cdot\chi_p$ random variable truncated to the set $\mathcal{S}$
+  where $\mathbb{F}(t; c; \mathcal{S})$ is the CDF of a $c\cdot\chi_p$ random variable truncated to the set $\mathcal{S}$.
 
   \vspace{0.7em}
 
   Furthermore, if $\mathcal{H}_0^{\{C_1,C_2\}}$ is true:
-  \begin{equation*}
-    \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\Bigl(p(\mathbf{x}) \leq \alpha ~\Big|~ C_1,C_2 \in \mathcal{C}(\mathbf{X})\Bigr) = \alpha, \quad \forall\, \alpha \in [0,1]
+  \begin{equation*}\label{riskcontrol}
+    \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\Bigl(p(\mathbf{x}) \leq \alpha ~\Big|~ C_1,C_2 \in \mathcal{C}(\mathbf{X})\Bigr) = \alpha, \quad \forall\, \alpha \in [0,1].
   \end{equation*}
 \end{frame}
 
@@ -467,8 +465,8 @@ Let $\mathbf{x}'(\phi) = \pi_\nu^\perp \mathbf{x} + \dfrac{\nu}{\|\nu\|_2^2} \op
   \end{equation*}
 
   \blue{Setup} \\
-      Number of samples = 2000 \\
-      HAC: \texttt{clusterpval} (Gao et al.) K-means: \texttt{KmeansInference}
+      Number of samples = 2000. \\
+      HAC: \texttt{clusterpval} (Gao et al.) K-means: \texttt{KmeansInference}.
 
 \begin{figure}
 \begin{tabular}{cc}
@@ -486,24 +484,32 @@ Let $\mathbf{x}'(\phi) = \pi_\nu^\perp \mathbf{x} + \dfrac{\nu}{\|\nu\|_2^2} \op
     & \boldsymbol{\Sigma} = \rho^{|i-j|} ~\text{for}~ 1 \leq i,j \leq p ~\text{and}~ \rho \in (0,1].
   \end{align*}
 \centering
+
+\end{frame}
+
+
+\begin{frame}{Robustness to Feature Dependence}
 \begin{figure}
 \begin{tabular}{cc}
-    \includegraphics[width=0.41\linewidth]{images/hac_pvalues_grad_rho.png} &
-    \includegraphics[width=0.41\linewidth]{images/kmeans_pvalues_grad_rho.png} \\
-    \includegraphics[width=0.41\linewidth]{images/hac_pvalues_grad_p.png} &
-    \includegraphics[width=0.41\linewidth]{images/kmeans_pvalues_grad_p.png}
+    \includegraphics[width=0.50\linewidth]{images/hac_pvalues_grad_rho.png} &
+    \includegraphics[width=0.50\linewidth]{images/kmeans_pvalues_grad_rho.png} \\
+    \pause
+    \includegraphics[width=0.50\linewidth]{images/hac_pvalues_grad_p.png} &
+    \includegraphics[width=0.50\linewidth]{images/kmeans_pvalues_grad_p.png}
 \end{tabular}
 \end{figure}
+
 \end{frame}
+
 
 \subsection{Data Application}
 
 \begin{frame}{1KGP Data Set}
   \begin{itemize}
-    \item Genetic information encoded in DNA sequences (nucleotides A, C, G, T)
-    \item DNA sequences are long: individuals compared to a reference genome $\rightarrow$ SNP matrix
-    \item 1000 Genomes Project (\blue{1KGP}): 3,450 individuals from 26 human populations across 5 super-populations (AFR, AMR, EAS, EUR, SAS)
-    \item \blue{1KGP} $\xrightarrow{\text{PCA}}$ \blue{1KGP\_100PC} \quad (first 100 principal components)
+    \item Genetic information encoded in DNA sequences (nucleotides A, C, G, T).
+    \item DNA sequences are long: individuals compared to a reference genome $\rightarrow$ SNP matrix.
+    \item 1000 Genomes Project (\blue{1KGP}): 3,450 individuals from 26 human populations across 5 super-populations (AFR, AMR, EAS, EUR, SAS).
+    \item \blue{1KGP} $\xrightarrow{\text{PCA}}$ \blue{1KGP\_100PC} \quad (first 100 principal components).
   \end{itemize}
 \end{frame}
 
@@ -535,23 +541,23 @@ population labels for the 1KGP individuals.}
 
 \begin{frame}{Suitability of Gao \textit{et al.}'s approach}
 
-  \blue{In practice:} keep as many PCs as possible to minimize information loss
+  \blue{In practice:} keep as many PCs as possible to minimize information loss.
 \pause
 
   \vspace{0.4em}
-  \blue{But:} large $p$ $\Rightarrow$ deviation from super-uniformity $\Rightarrow$ type I error no longer controlled
+  \blue{But:} large $p$ $\Rightarrow$ deviation from super-uniformity $\Rightarrow$ type I error no longer controlled.
 
 \pause
 
   \vspace{0.4em}
   \blue{Power of a test:} probability of rejecting $\mathcal{H}_0$ when it is false\\
-  $\Rightarrow$ a useful test must be both \textit{valid} and \textit{powerful}
+  $\Rightarrow$ a useful test must be both \textit{valid} and \textit{powerful}.
 
   \vspace{0.4em}
 \pause
   \begin{alertblock}{}
     \centering
-    In practice, validity and power cannot be achieved simultaneously
+    In practice, validity and power cannot be achieved simultaneously.
   \end{alertblock}
 
 \end{frame}
@@ -599,17 +605,17 @@ linkage method on the first 100 principal components.}
 
 \begin{frame}{Discussion}
   \begin{itemize}
-    \item Gao \textit{et al.}'s approach: seminal contribution to the conditional inference framework
+    \item Gao \textit{et al.}'s approach: seminal contribution to the conditional inference framework.
       \pause
-    \item First procedure to test the equality of means between clusters estimated via HAC, under a Gaussian model with independent features
+    \item First procedure to test the equality of means between clusters estimated via HAC, under a Gaussian model with independent features.
       \pause
-    \item Asymptotically valid when $\sigma$ is overestimated
+    \item Asymptotically valid when $\sigma$ is overestimated.
       \pause
-    \item When the independence assumption is violated, the $p$-value deviates from super-uniformity and the deviation increases with both $\rho$ and $p$
+    \item When the independence assumption is violated, the $p$-value deviates from super-uniformity and the deviation increases with both $\rho$ and $p$.
       \pause
-    \item These limitations persist on real data, yet the method successfully recovers broad population structure
+    \item These limitations persist on real data, yet the method successfully recovers broad population structure.
       \pause
-    \item Gonz\'{a}lez-Delgado \textit{et al.} proposed an extension that remains valid under arbitrary dependence structures between observations and features
+    \item Gonz\'{a}lez-Delgado \textit{et al.} proposed an extension that remains valid under arbitrary dependence structures between observations and features.
   \end{itemize}
 \end{frame}
 
@@ -630,7 +636,277 @@ linkage method on the first 100 principal components.}
   \vfill
 \end{frame}
 
+% TODO: mettre en blue les titres partout
+\begin{frame}{Proposition 1}
+  \begin{proposition}\label{prop_repartition}
+    Let $X$ and $Y$ be real-valued random variables, with cumulative distribution functions $F_X$ and $F_Y$, respectively.
+    If $X \preceq_{\mathrm{st}} Y$, then $F_X(Y) \sim \mathcal{SU}(0,1)$.
+  \end{proposition}
+\end{frame}
 
-% TODO: rajouter annexes proposition & preuves
+\begin{frame}[allowframebreaks]{Proof of Proposition 1}
+  \textit{Proof of Proposition 1}
+    Let \(G_X\) denote the generalized inverse (quantile function) of \(F_X\),
+    defined for \(u\in[0,1]\) as
+    \begin{equation*}
+      G_X(u) = \inf\{x\in\mathbb{R} : F_X(x) \ge u\}.
+    \end{equation*}
+    By definition of the generalized inverse,
+    \begin{equation*}
+      \{F_X(Y) \le u\} = \{Y < G_X(u)\}.
+    \end{equation*}
+    Therefore,
+    \begin{equation*}
+      \mathbb{P}\bigl(F_X(Y)\le u\bigr)
+      = \mathbb{P}\bigl(Y < G_X(u)\bigr)
+      = F_Y\bigl(G_X(u)^-\bigr),
+    \end{equation*}
+    where \(G_X(u)^-\) denotes the left limit at \(G_X(u)\).
+    Since \(X \preceq_{\mathrm{st}} Y\), we have \(F_Y \le F_X\) pointwise, and thus
+    \begin{equation*}
+      F_Y\bigl(G_X(u)^-\bigr) \le F_X\bigl(G_X(u)^-\bigr).
+    \end{equation*}
+    By the defining property of the generalized inverse,
+    \begin{equation*}
+      F_X\bigl(G_X(u)^-\bigr) \le u.
+    \end{equation*}
+    Combining these inequalities yields
+    \begin{equation*}
+      \mathbb{P}\bigl(F_X(Y)\le u\bigr) \leq u, \quad \forall\, u\in[0,1],
+    \end{equation*}
+    which proves that \(F_X(Y)\) is super-uniform.
+\end{frame}
 
+\begin{frame}{Remark 1}
+  \begin{remark}\label{remark_FXX_unif}
+    If \(X=Y\), then \(F_X(X)\) is super-uniform on \([0,1]\).
+    Moreover, if \(X\) has a continuous distribution function \(F_X\), then
+    \begin{equation*}
+      F_X(X) \sim \mathcal{U}(0,1).
+    \end{equation*}
+  \end{remark}
+\end{frame}
+
+\begin{frame}{Proof of Remark 1}
+  \begin{proof}[Proof of Remark~\ref{remark_FXX_unif}]
+    By Proposition~\ref{prop_repartition}, we have that $F_X(X) \sim \mathcal{SU}(0,1)$.
+    If \(F_X\) is continuous, then \(F_X(G_X(u)) = u\) for all \(u\in[0,1]\), and hence
+    \begin{equation*}
+      \mathbb{P}\bigl(F_X(X)\le u\bigr)
+      = F_X\bigl(G_X(u)\bigr)
+      = u, \quad \forall\,u\in[0,1],
+    \end{equation*}
+    which concludes the proof.
+  \end{proof}
+\end{frame}
+
+\begin{frame}{Proposition 2}
+  \begin{proposition}\label{prop_rejection_rule}
+    Let $\mathcal{H}_0$ be a hypothesis and $p$ a $p$-value for $\mathcal{H}_0$. Then, the test $\pi_{\mathcal{H}_0} = \mathds{1}{\{p \leq \alpha\}}$ controls the type I error at level $\alpha$, for $\alpha\in(0,1)$.
+  \end{proposition}
+\end{frame}
+
+\begin{frame}{Proof of Proposition 2}
+  \begin{proof}[Proof of Proposition~\ref{prop_rejection_rule}]
+    By definition of the rejection rule,
+    \begin{equation*}
+      \mathbb{P}_{\mathcal{H}_0}(\text{Reject} ~ \mathcal{H}_0)
+      = \mathbb{P}_{\mathcal{H}_0}(p \le \alpha).
+    \end{equation*}
+    Since \(p\) is a $p$-value for \(\mathcal{H}_0\), it is super-uniform under
+    \(\mathcal{H}_0\), hence
+    \begin{equation*}
+      \mathbb{P}_{\mathcal{H}_0}(p \le \alpha) \le \alpha.
+    \end{equation*}
+    This establishes control of the type~I error at level \(\alpha\).
+  \end{proof}
+\end{frame}
+
+\begin{frame}{Proposition 3}
+  \begin{proposition}\label{prop_test_stat_pvalue}
+    Let \(T\) and \(T'\) be two test statistics. Let \(X\) be a random variable and \(x\) a realization of \(X\) and consider
+    \begin{equation*}
+      p(x) = \mathbb{P}_{\mathcal{H}_0}\!\bigl(T'(X) \ge T(x)\bigr).
+    \end{equation*}
+    Then, if $T'(X) \preceq_{\mathrm{st}} T(X)$ under $\mathcal{H}_0$,
+    the quantity \(p\) is a $p$-value for \(\mathcal{H}_0\).
+  \end{proposition}
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Proof of Proposition 3}
+  \textit{Proof of Proposition~\ref{prop_test_stat_pvalue}}
+    Let \(F_{T'(X)}\) denote the distribution function of \(T'(X)\) under $\mathcal{H}_0$.
+    By Proposition~\ref{prop_repartition}, the stochastic dominance
+    \(T'(X) \preceq_{\mathrm{st}} T(X)\) implies that
+    \begin{equation*}
+      F_{T'(X)}\bigl(T(X)\bigr) \sim \mathcal{SU}(0,1).
+    \end{equation*}
+    By definition,
+    \begin{equation*}
+      p(x) = \mathbb{P}_{\mathcal{H}_0}\!\bigl(T'(X) \ge T(x)\bigr)
+           = 1 - F_{T'(X)}\bigl(T(x)\bigr).
+    \end{equation*}
+    Let \(u \in [0,1]\). Then
+    \begin{align*}
+      \mathbb{P}_{\mathcal{H}_0}\bigl(p(X) \le u\bigr)
+      &= \mathbb{P}_{\mathcal{H}_0}\!\left(1 - F_{T'(X)}(T(X)) \le u\right) \\
+      &= \mathbb{P}_{\mathcal{H}_0}\!\left(F_{T'(X)}(T(X)) \ge 1-u\right) \\
+      &= 1 - \mathbb{P}_{\mathcal{H}_0}\!\left(F_{T'(X)}(T(X)) \le 1-u\right).
+    \end{align*}
+    Since \(F_{T'(X)}(T(X))\) is super-uniform,
+    \begin{equation*}
+      \mathbb{P}_{\mathcal{H}_0}\!\left(F_{T'(X)}(T(X)) \le 1-u\right) \le 1-u,
+    \end{equation*}
+    and therefore
+    \begin{equation*}
+      \mathbb{P}_{\mathcal{H}_0}\bigl(p(X) \le u\bigr) \le u.
+    \end{equation*}
+    Thus, \(p\) is super-uniform under \(\mathcal{H}_0\), and hence a $p$-value.
+\end{frame}
+
+\begin{frame}{Remark 2}
+  \begin{remark}\label{remark_equal_statistics}
+    If \(T' = T\) and the cumulative distribution function \(F_T\) of \(T(X)\) is continuous
+    under \(\mathcal{H}_0\), we have
+    \begin{equation*}
+      p \;\overset{\mathcal{H}_0}{\sim}\; \mathcal{U}(0,1).
+    \end{equation*}
+  \end{remark}
+\end{frame}
+
+\begin{frame}{Proof of Remark 2}
+  \textit{Proof of Remark~\ref{remark_equal_statistics}}
+    When \(T'=T\)
+    \begin{equation*}
+      p(X) = \mathbb{P}_{\mathcal{H}_0}\bigl(T(X) \ge T(X)\bigr)
+            = 1 - F_T\bigl(T(X)\bigr).
+    \end{equation*}
+    By Remark~\ref{remark_FXX_unif}, if \(F_T\) is continuous,
+    \begin{equation*}
+      F_T\bigl(T(X)\bigr) \sim \mathcal{U}(0,1).
+    \end{equation*}
+    Consequently, for any \(u\in[0,1]\),
+    \begin{align*}
+      \mathbb{P}_{\mathcal{H}_0}\bigl(p(X) \le u\bigr)
+      &= \mathbb{P}_{\mathcal{H}_0}\bigl(1 - F_T(T(X)) \le u\bigr) \\
+      &= \mathbb{P}_{\mathcal{H}_0}\bigl(F_T(T(X)) \ge 1-u\bigr) \\
+      &= 1 - \mathbb{P}_{\mathcal{H}_0}\bigl(F_T(T(X)) \le 1-u\bigr) \\
+      &= 1 - (1-u) \\
+      &= u.
+    \end{align*}
+    Thus \(p\) is uniformly distributed on \([0,1]\) under \(\mathcal{H}_0\).
+\end{frame}
+
+\begin{frame}{Lemma 1}
+  \begin{lemma}\label{lemma_indep_add_events}
+    Under the null hypothesis, the following statements hold:
+    \begin{align*}
+      &\text{(i)}  & \|\nu^\top \mathbf{X}\|_2 &\indep \projnu \mathbf{X},\\
+      &\text{(ii)} & \|\nu^\top \mathbf{X}\|_2 &\indep \operatorname{dir}(\nu^\top \mathbf{X}).
+    \end{align*}
+  \end{lemma}
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Proof of Lemma 1}
+  \textit{Proof of Lemma~\ref{lemma_indep_add_events}}
+    \textit{i)}
+    \begin{equation*}
+      \begin{aligned}
+        \mathbb{E}(\nu^\top\mathbf{X} (\projnu \mathbf{X})^T)
+        &= \mathbb{E}(\nu^\top \mathbf{X} \mathbf{X}^\top (\projnu)^\top) \\
+        &= \nu^\top \mathbb{E}(\mathbf{X}\mathbf{X}^\top)(\projnu)^\top \\
+        &= \nu^\top(\mathbb{V}(\mathbf{X})+\mathbb{E}(\mathbf{X})\mathbb{E}(\mathbf{X})^\top)(\projnu)^\top.
+      \end{aligned}
+    \end{equation*}
+    Let $X \sim \mathcal{MN}(\mu, \mathbf{U}, \mathbf{\Sigma})$. Then, let us state $\mathbb{V}(\mathbf{X}) = \mathbf{U} \operatorname{Trace}(\mathbf{\Sigma})$. We prove the previous equality as a technical lemma after the proof.
+    In this case $\mathbb{V}(\mathbf{X}) = \mathbb{I}_n \operatorname{Trace}(\sigma^2\mathbb{I}_p) = \sigma^2 p \mathbb{I}_n$. Therefore,
+    \begin{equation*}
+      \begin{aligned}
+        \mathbb{E}(\nu^\top\mathbf{X} (\projnu \mathbf{X})^T)
+        &= \nu^\top(\sigma^2p\mathbb{I}_n + \mathbb{E}(\mathbf{X})\mathbb{E}(\mathbf{X})^\top)(\projnu)^\top \\
+        &= \sigma^2 p \nu^\top(\projnu)^\top + \nu^\top \mathbb{E}(\mathbf{X})\mathbb{E}(\mathbf{X})^\top(\projnu)^\top \\
+        &= \sigma^2 p \nu^\top(\mathbb{I}_n - \frac{\nu \nu^\top}{\|\nu\|_2^2}) + \mathbb{E}(\nu^\top \mathbf{X})\mathbb{E}(\projnu \mathbf{X})^\top \\
+        &= \sigma^2 p (\nu^\top - \frac{\|\nu\|_2^2\nu^\top}{\|\nu\|_2^2}) + \mathbb{E}(\nu^\top \mathbf{X})\mathbb{E}((\projnu \mathbf{X})^\top) \\
+        &= \mathbb{E}(\nu^\top \mathbf{X})\mathbb{E}((\projnu \mathbf{X})^\top).
+      \end{aligned}
+    \end{equation*}
+    \textit{ii)}
+    \begin{equation*}
+      \nu^T \mathbf{X} \sim \mathcal{MN}_{1 \times p}(\nu^\top\mu, \nu \nu^\top, \sigma^2\mathbb{I}_p) = \mathcal{N}_p(\nu^\top \mu,\|\nu\|_2^2\sigma^2 \mathbb{I}_p).
+    \end{equation*}
+    So $\nu^T \mathbf{X} \sim \mathcal{N}_p(0,\|\nu\|_2^2\sigma^2\mathbb{I}_p)$ under $\mathcal{H}_0$.
+    Yet, the density of a centered Gaussian random vector depends only on its norm, due to symmetry with respect to the origin. So $\|\nu^\top \mathbf{X}\|$ and $\text{dir}(\nu^\top\mathbf{X})$ are independent.
+\end{frame}
+
+\begin{frame}{Lemma 2}
+  \begin{lemma}\label{lemma_trace}
+    Let $X \sim \mathcal{MN}(\mu, \mathbf{U}, \mathbf{\Sigma})$, then $\mathbb{V}(\mathbf{X}) = \mathbf{U} \operatorname{Trace}(\mathbf{\Sigma})$.
+  \end{lemma}
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Proof of Lemma 2}
+  \textit{Proof of Lemma~\ref{lemma_trace}}
+    Let $\mathbf{Y} = \mathbf{X} - \mu$.
+    \begin{equation*}
+      \begin{aligned}
+        \mathbb{V}(\mathbf{X}) &= \mathbb{E}[(\mathbf{X}-\mu)(\mathbf{X}-\mu)^\top] \\
+                               &= \mathbb{E}(\mathbf{Y}\mathbf{Y}^\top).
+      \end{aligned}
+    \end{equation*}
+    And
+    \begin{equation*}
+      \begin{aligned}
+        (\mathbf{Y}\mathbf{Y}^T)_{ij} &= \sum_{k=1}^p \mathbf{Y}_{ik} \mathbf{Y}^\top_{kj} \\
+                                      &= \sum_{k=1}^p \mathbf{Y}_{ik} \mathbf{Y}_{jk}.
+      \end{aligned}
+    \end{equation*}
+    Therefore,
+    \begin{equation*}
+      \mathbb{E}((\mathbf{Y}\mathbf{Y}^\top)_{ij}) = \sum_{k=1}^p \mathbb{E}(\mathbf{Y}_{ik} \mathbf{Y}_{jk}).
+    \end{equation*}
+    As $\mathbf{Y}$ is centered, by definition of a normal matrix we have:
+    \begin{equation*}
+      \begin{aligned}
+        \mathbb{E}((\mathbf{Y}\mathbf{Y}^\top)_{ij}) &= \sum_{k=1}^p \mathbf{U}_{ij}\Sigma_{kk} \\
+                                                     &= \mathbf{U}_{ij} \sum_{k=1}^p \Sigma_{kk} \\
+                                                     &= \mathbf{U}_{ij} \operatorname{Trace}(\Sigma).
+      \end{aligned}
+    \end{equation*}
+\end{frame}
+
+\begin{frame}{Second part of Theorem 1}
+  \begin{equation*}
+    \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\Bigl(p(\mathbf{x}) \leq \alpha ~\Big|~ C_1,C_2 \in \mathcal{C}(\mathbf{X})\Bigr) = \alpha, \quad \forall\, \alpha \in [0,1].
+  \end{equation*}
+\end{frame}
+
+\begin{frame}[allowframebreaks=0.9]{Proof of second part of Theorem 1}
+
+  \textit{Proof of Equation~\ref{riskcontrol} in Theorem~\ref{thm:1}}
+    From the definition of $p(\mathbf{x})$, we have that for all $\mathbf{x} \in \mathbb{R}^{n \times p}$
+    \begin{multline*}
+      \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\bigl(p(\mathbf{x}) \leq \alpha ~|~ C_1,C_2 \in \mathcal{C}(\mathbf{X}), \\
+      \projnu \mathbf{X} = \projnu \mathbf{x}, \operatorname{dir}(\nu^\top \mathbf{X}) = \operatorname{dir}(\nu^\top \mathbf{x})\bigr) = \alpha.
+    \end{multline*}
+    Therefore, we have
+    \begin{equation*}
+      \begin{aligned}
+        & \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\big(p(\mathbf{x}) \le \alpha \,\big|\, C_1,C_2 \in \mathcal{C}(\mathbf{X})\big) \\
+        &= \mathbb{E}_{\mathcal{H}_0^{\{C_1,C_2\}}}
+            \Big[\mathds{1}\{p(\mathbf{x}) \le \alpha\} \,\big|\, C_1,C_2 \in \mathcal{C}(\mathbf{X})\Big] \\
+        &= \mathbb{E}_{\mathcal{H}_0^{\{C_1,C_2\}}}
+            \Big[\mathbb{E}_{\mathcal{H}_0^{\{C_1,C_2\}}}
+            \Big[\mathds{1}\{p(\mathbf{x}) \le \alpha\} \,\Big|\,
+            C_1,C_2 \in \mathcal{C}(\mathbf{X}),
+            \projnu \mathbf{X} = \projnu \mathbf{x}, \\
+        &\qquad\qquad\qquad
+            \operatorname{dir}(\nu^\top \mathbf{X}) = \operatorname{dir}(\nu^\top \mathbf{x})
+            \Big] \,\Big|\, C_1,C_2 \in \mathcal{C}(\mathbf{X})\Big] \\
+        &= \mathbb{E}_{\mathcal{H}_0^{\{C_1,C_2\}}}
+            \big[\alpha \,\big|\, C_1,C_2 \in \mathcal{C}(\mathbf{X})\big] \\
+        &= \alpha,
+      \end{aligned}
+    \end{equation*}
+    where the second equality follows from the law of total expectation.
+\end{frame}
 \end{document}
