@@ -11,11 +11,24 @@
 \setbeamerfont{block title}{size=\normalsize}
 
 \usepackage{dsfont} %for \mathds
+\usepackage{subcaption}
+\usepackage{graphicx}
 \newcommand{\blue}[1]{\textcolor{navblue}{#1}}
 \newcommand{\violet}[1]{\textcolor{darkviolet}{#1}}
 \newcommand{\norm}[1]{||#1||}
 \newcommand{\projnu}{\pi_{\nu}^{\perp}}
 \newcommand{\indep}{\perp \!\!\! \perp}
+
+\definecolor{projcolor}{HTML}{008080} % Teal
+\definecolor{dircolor}{HTML}{D2691E}  % Burnt Orange
+
+
+
+\usepackage{xcolor}
+
+
+\newcommand{\colproj}[1]{\textcolor{projcolor}{#1}}
+\newcommand{\coldir}[1]{\textcolor{dircolor}{#1}}
 
 \newtheorem{proposition}{Proposition}
 \newtheorem{remark}{Remark}
@@ -130,29 +143,29 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
     
 \end{frame}
 
-\begin{frame}{Interpreting a $p$-value ECDF}
+\begin{frame}{Interpreting a $p$-value CDF}{Null distribution of the $p$-value}
 
   \begin{itemize}
-    \item valid $p$-value : ECDF lies \textit{below} the diagonal.
+    \item valid $p$-value : CDF lies \textit{below} the diagonal.
     \item Deviation \textit{above}: type I error inflation.
   \end{itemize}
   \vspace{3em}
     \begin{columns}[c]
-      \begin{column}{0.48\textwidth}
+      \begin{column}{0.55\textwidth}
         \centering
         \includegraphics[width=\linewidth]{images/super_uniform.png}
         \captionof*{figure}{Super-uniform}
       \end{column}
-      \begin{column}{0.48\textwidth}
+      \begin{column}{0.55\textwidth}
         \centering
         \includegraphics[width=\linewidth]{images/sous_uniform.png}
-        \captionof*{figure}{Under-uniform}
+        \captionof*{figure}{Sub-uniform}
       \end{column}
     \end{columns}
 
 \end{frame}
 
-\begin{frame}{Motivating examples}
+\begin{frame}{Motivating examples}{Null distribution of the $p$-value}
   \blue{Clustering}
 \begin{itemize}
     \item Simulate $n = 100$ i.i.d. observations from $\mathcal{N}_5(0, \mathbb{I}_5)$.
@@ -178,7 +191,7 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
   \end{columns}
 \end{frame}
 
-\begin{frame}{Motivating examples}
+\begin{frame}{Motivating examples}{Null distribution of the $p$-value}
   \blue{Lasso regression}
 
 \begin{itemize}
@@ -198,31 +211,35 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
 
 
 \begin{frame}{Selective inference}
-\blue{Classical inference :}
+  \begin{block}{Classical inference :}
   \begin{center}
     Fix $\mathcal{H}_0$ \textit{a priori} $\longrightarrow$ Test $\mathcal{H}_0$ on $\mathbf{X}$
   \end{center}
-\pause
-  \vspace{0.5em}
+  \end{block}
 
-  \blue{Post-clustering inference :}
-  \begin{center}
-    Cluster $\mathbf{X}$ $\longrightarrow$ $\mathcal{H}_0$ defined from $\mathbf{X}$ $\longrightarrow$ Test $\mathcal{H}_0$ on $\mathbf{X}$
-  \end{center}
 \pause
-  \vspace{0.5em}
-
+  \begin{block}{Data driven null hypothesis}
+    \vspace{-0.7em}
+    \hspace{1em} 
+    \begin{minipage}{0.95\textwidth}
+        \small
+        \addtolength{\jot}{0.5em} % Vertical padding
+        \begin{align*}
+            &\text{\blue{Clustering:}} \hspace{-1em} & \text{Cluster } \mathbf{X} &\longrightarrow \mathcal{H}_0^{\{C_1, C_2\}} \! : \bar{\mu}_{C_1} = \bar{\mu}_{C_2} \hspace{-0.8em} &\longrightarrow \text{Test on } \mathbf{X} \\
+            &\text{\blue{Lasso:}} \hspace{-1em} & \text{Lasso Selection} &\longrightarrow \mathcal{H}_0 : \beta_j = 0 \hspace{-0.8em} &\longrightarrow \text{Test on } \mathbf{X}
+        \end{align*}
+    \end{minipage}
+    \vspace{0.3em}
+\end{block}
+\pause
+\vspace{0.5em}
   $\Rightarrow$ \textbf{Double-dipping :} $\mathbf{X}$ is used both to \textit{select} and to \textit{test} $\mathcal{H}_0$
-
   \vspace{0.5em}
-
   \blue{Analogy with supervised learning :} using the same data for training and evaluation leads to overfitting : the model captures noise rather than signal.
-
-  \vspace{0.4em}
 
   \begin{alertblock}{}
     \centering
-    This is \textbf{selective inference :} a different framework is needed
+    A different framework is needed $\longrightarrow$ This is \textbf{selective inference}
   \end{alertblock}
 
 \end{frame}
@@ -230,7 +247,6 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
 \begin{frame}{Addressing Selective Inference}
   \blue{Sample Splitting}
   
-
   \vspace{0.5em}
 
   \begin{center}
@@ -247,7 +263,7 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
   \begin{block}{Simultaneous Inference}
 \begin{itemize}
     \item Controls the family-wise error rate:
-      \begin{equation*}\mathbb{P}(\text{at least 1 false positive amoung all hypothesis}) \leq \alpha\end{equation*}
+      \begin{equation*}\mathbb{P}(\text{at least 1 false positive amoung all hypotheses}) \leq \alpha\end{equation*}
     \item Too conservative, no post-clustering method proposed to date.
 \end{itemize}
 \end{block}
@@ -289,13 +305,18 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
 
 \begin{frame}{Model}
 
-  \begin{block}{Model :}
+\begin{block}{Model :}
   \begin{equation*}
     \mathbf{X} \sim \mathcal{MN}_{n\times p}(\boldsymbol{\mu}, \mathbb{I}_n, \sigma^2\mathbb{I}_p)
   \end{equation*}
-  i.e. rows of $\mathbf{X}$ are independent $\mathcal{N}_p(\mu_i, \sigma^2\mathbb{I}_p)$ \textbf{independent features}.
+  \vspace{0.2em}
+  \small
+  This implies the rows $\mathbf{X}_{i, \cdot}$ are independent Gaussian vectors:
+  \begin{equation*}
+    \mathbf{X}_{i, \cdot} \sim \mathcal{N}_p(\mu_i, \sigma^2\mathbb{I}_p), \quad i=1, \dots, n
+  \end{equation*}
+  where features are i.i.d. with common variance $\sigma^2$.
 \end{block}
-
 
   \end{frame}
 
@@ -316,7 +337,7 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
   \end{equation*}
 \end{block}
 \begin{block}{Problem :}
-    $p_{ideal}$ depends on unknown parameters, intractable in practice
+    $p_{ideal}$ depends on unknown parameters, intractable in practice.
 
   $\Rightarrow$ Add additional events $\xi(\mathbf{X},\mathbf{x})$ to the conditioning set.
 \end{block}
@@ -329,63 +350,133 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
 \end{frame}
 
 
+
+
 \begin{frame}{Additional events}
+\begin{block}{Decomposition of $\mathbf{X}$}
+\begin{equation*}
+\mathbf{X}
+= \colproj{\projnu} \mathbf{X}
++ \frac{\nu}{\|\nu\|_2^2}\,
+\coldir{\operatorname{dir}(\nu^\top \mathbf{X})}\,
+\|\nu^\top \mathbf{X}\|_2
+\end{equation*}
+\end{block}
 
-  \begin{block}{Decomposition of $\mathbf{X}$}
-    \begin{equation*}
-      \mathbf{X} = \projnu \mathbf{X} + \frac{\nu}{\|\nu\|_2^2} \operatorname{dir}(\nu^\top \mathbf{X}) \|\nu^\top \mathbf{X}\|_2
-    \end{equation*}
-  \end{block}
+\begin{equation*}
+\text{with} \quad
+\colproj{\projnu} = \mathbb{I}_n - \frac{\nu\nu^\top}{\|\nu\|_2^2}
+\qquad \text{and} \qquad
+\coldir{\operatorname{dir}(z)} = \frac{z}{\|z\|_2}, \quad z \in \mathbb{R}^p
+\end{equation*}
 
-  \begin{equation*}
-    \text{with} ~\projnu = \mathbb{I}_n - \frac{\nu\nu^\top}{\|\nu\|_2^2} \qquad \text{and} \qquad \operatorname{dir}(z) = \frac{z}{\|z\|_2}, \quad z \in \mathbb{R}^p
-  \end{equation*}
 \pause
-  \vspace{1em}
+\vspace{1em}
 
-  \blue{Additional events:}
-  \begin{equation*}
-    \xi(\mathbf{X},\mathbf{x}) = \bigl\{ \projnu \mathbf{X} = \projnu \mathbf{x}, \quad \operatorname{dir}(\nu^\top \mathbf{X}) = \operatorname{dir}(\nu^\top \mathbf{x})\bigr\}
-  \end{equation*}
-
+\blue{Additional events:}
+\begin{equation*}
+\xi(\mathbf{X},\mathbf{x})
+=
+\bigl\{
+\colproj{\projnu \mathbf{X}} = \colproj{\projnu \mathbf{x}},
+\quad
+\coldir{\operatorname{dir}(\nu^\top \mathbf{X})}
+=
+\coldir{\operatorname{dir}(\nu^\top \mathbf{x})}
+\bigr\}
+\end{equation*}
 \end{frame}
 
 
 \begin{frame}{Tractable $p$-value}
 
-  \begin{block}{Proposition} Under $\mathcal{H}_0$:
-  \begin{center}
-    (i) $\|\nu^\top \mathbf{X}\|_2 \indep \pi_\nu^\perp \mathbf{X}$ \qquad 
-    (ii) $\|\nu^\top \mathbf{X}\|_2 \indep \operatorname{dir}(\nu^\top \mathbf{X})$
-  \end{center}
+\begin{overlayarea}{\textwidth}{0.38\textheight}
+\only<1-2>{
+\begin{multline*}
+p(\mathbf{x})
+=
+\mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}
+\Bigl(
+\norm{\nu^\top \mathbf{X}}_2 \geq \norm{\nu^\top \mathbf{x}}_2
+\;\Bigm|\;
+C_1,C_2 \in \mathcal{C}(\mathbf{X}),
+\\
+\bigl\{
+\projnu \mathbf{X} = \projnu \mathbf{x},
+\quad
+\operatorname{dir}(\nu^\top \mathbf{X})
+=
+\operatorname{dir}(\nu^\top \mathbf{x})
+\bigr\}
+\Bigr).
+\end{multline*}
+}
 
-\end{block}
-  \vspace{0.5em}
+\only<3>{
+\begin{multline*}
+p(\mathbf{x})
+=
+\mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}
+\Bigl(
+\norm{\nu^\top \mathbf{X}}_2 \geq \norm{\nu^\top \mathbf{x}}_2
+\;\Bigm|\;
+C_1,C_2 \in \mathcal{C}(\mathbf{X})
+\Bigr).
+\end{multline*}
+}
 
-  Following from the previous result, we can rewrite the $p$-value as:
-  
-  \begin{multline}
+\only<4>{
+\begin{multline*}
     p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0} \Bigl( \|\nu^\top \mathbf{X}\|_2 \geq \|\nu^\top \mathbf{x}\|_2 ~\Big|~ \\
     C_1, C_2 \in \mathcal{C} \Bigl( \pi_\nu^\perp \mathbf{x} + \frac{\nu}{\|\nu\|^2_2} \operatorname{dir}(\nu^\top \mathbf{x}) \|\nu^\top \mathbf{X}\|_2 \Bigr) \Bigr).
     \label{pval_final}
-  \end{multline}
+  \end{multline*}
+
+
+
+
+}
+
+\only<5>{
+\begin{multline*}
+p(\mathbf{x})
+=
+\mathbb{P}_{\mathcal{H}_0}
+\Bigl(
+\overbrace{\|\nu^\top \mathbf{X}\|_2}^{\phi}
+\geq
+\|\nu^\top \mathbf{x}\|_2
+~\Big|~ \\
+C_1, C_2 \in
+\mathcal{C}\Bigl(
+\underbrace{
+\projnu \mathbf{x}
++
+\frac{\nu}{\|\nu\|_2^2}\,
+\operatorname{dir}(\nu^\top \mathbf{x})\,
+\phi
+}_{\mathbf{x}'(\phi)}
+\Bigr)
+\Bigr).
+\end{multline*}
+}
+
+\end{overlayarea}
+\only<2->{
+\begin{block}{Proposition}
+Under $\mathcal{H}_0$:
+\[
+\text{(i)}\quad \|\nu^\top \mathbf{X}\|_2 \indep \projnu \mathbf{X}
+\qquad
+\text{(ii)}\quad \|\nu^\top \mathbf{X}\|_2 \indep \operatorname{dir}(\nu^\top \mathbf{X})
+\]
+\end{block}
+}
 
 \end{frame}
 
-
 \begin{frame}{Truncation set $\mathcal{S}$}
-
-  Let $\phi = \|\nu^\top \mathbf{X}\|_2$ 
- \begin{block}{Distribution of the test statistic} Under $\mathcal{H}_0^{\{C_1,C_2\}}$:
-  \begin{equation*}
-    \phi \sim \|\nu\|_2\,\sigma\,\chi_p
-  \end{equation*}
-\end{block}
-
-\vspace{0.4em}
-Let $\mathbf{x}'(\phi) = \pi_\nu^\perp \mathbf{x} + \dfrac{\nu}{\|\nu\|_2^2} \operatorname{dir}(\nu^\top \mathbf{x})\phi$
-  \vspace{0.4em}
-
+ 
   \begin{equation*}
     p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0}\Bigl(\phi \geq \|\nu^\top \mathbf{x}\|_2 ~\Big|~ \phi \in \mathcal{S}\bigl(\mathbf{x};\{C_1,C_2\}\bigr)\Bigr),
   \end{equation*}
@@ -400,11 +491,9 @@ Let $\mathbf{x}'(\phi) = \pi_\nu^\perp \mathbf{x} + \dfrac{\nu}{\|\nu\|_2^2} \op
   \begin{block}{Interpretation}
     $\mathcal{S}$ is the set of perturbations of $\mathbf{x}$ that preserve the clusters $C_1, C_2$.
   \end{block}
-   
-
-
-
 \end{frame}
+
+
 \begin{frame}{Interpretation of $\mathbf{x}'(\phi)$}
   We can rewrite $\mathbf{x}'(\phi) $ as :
   \begin{equation*}
@@ -437,7 +526,7 @@ Let $\mathbf{x}'(\phi) = \pi_\nu^\perp \mathbf{x} + \dfrac{\nu}{\|\nu\|_2^2} \op
 
 \end{frame}
 
-\begin{frame}[label=thm:1]{Theorem 1 — Gao \textit{et al.}}
+\begin{frame}[label=thm:1]{Theorem 1 — Gao \textit{et al.} 2022}
   
   For any $C_1, C_2 \subseteq \{1,\ldots,n\}$ and any realization $\mathbf{x}$ of $\mathbf{X}$:
   \begin{equation*}
@@ -458,7 +547,7 @@ Let $\mathbf{x}'(\phi) = \pi_\nu^\perp \mathbf{x} + \dfrac{\nu}{\|\nu\|_2^2} \op
 
 
 \section{Numerical experiments}
-\begin{frame}{Validation}
+\begin{frame}{Validation}{Null distribution of the $p$-value}
   \blue{Model}
   \begin{equation*}
     \mathbf{X}\sim\mathcal{MN}_{n\times p}(\boldsymbol{\mu},\mathbb{I}_n,\sigma^2\mathbb{I}_p),n = 100 ,p = 5, \boldsymbol{\mu} = 0_p
@@ -490,13 +579,33 @@ Let $\mathbf{x}'(\phi) = \pi_\nu^\perp \mathbf{x} + \dfrac{\nu}{\|\nu\|_2^2} \op
 
 \begin{frame}{Robustness to Feature Dependence}
 \begin{figure}
-\begin{tabular}{cc}
-    \includegraphics[width=0.50\linewidth]{images/hac_pvalues_grad_rho.png} &
-    \includegraphics[width=0.50\linewidth]{images/kmeans_pvalues_grad_rho.png} \\
-    \pause
-    \includegraphics[width=0.50\linewidth]{images/hac_pvalues_grad_p.png} &
-    \includegraphics[width=0.50\linewidth]{images/kmeans_pvalues_grad_p.png}
-\end{tabular}
+\centering
+
+\begin{subfigure}{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{images/hac_pvalues_grad_rho.png}\\
+    {\small $p = 5$}
+\end{subfigure}\hfill
+\begin{subfigure}{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{images/kmeans_pvalues_grad_rho.png} \\
+    {\small $p = 5$}
+\end{subfigure}
+
+\pause
+
+\begin{subfigure}{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{images/hac_pvalues_grad_p.png}\\
+    {\small $\rho = 0.5$}
+\end{subfigure}\hfill
+\begin{subfigure}{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{images/kmeans_pvalues_grad_p.png}\\
+    {\small $\rho = 0.5$}
+\end{subfigure}
+
+\caption{P-value behavior under gradient changes.}
 \end{figure}
 
 \end{frame}
@@ -563,23 +672,30 @@ population labels for the 1KGP individuals.}
 \end{frame}
 
 \begin{frame}{Suitability of Gao \textit{et al.}'s approach}
-  \begin{columns}[c]
-    \begin{column}{0.40\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{images/pval_12_26.png}\\
-      {\small (a) clusters $\{12, 26\}$}\\[0.2em]
-      \includegraphics[width=\textwidth]{images/pval_5_7.png}\\
-      {\small (c) clusters $\{5, 7\}$}
-    \end{column}
-    \begin{column}{0.40\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{images/pval_13_8.png}\\
-      {\small (b) clusters $\{8, 13\}$}\\[0.2em]
-      \includegraphics[width=\textwidth]{images/pval_9_16.png}\\
-      {\small (d) clusters $\{9, 13\}$}
-    \end{column}
-  \end{columns}
-  \vspace{0.3em}
+ 
+
+\begin{columns}[c]
+\begin{column}{0.04\textwidth}
+    \vspace{-2.7em}
+    { $\mathcal{H}_0^{\{C_1,C_2\}}$}\\[8.7em]
+    { $\mathcal{H}_1^{\{C_1,C_2\}}$}
+\end{column}
+
+\begin{column}{0.96\textwidth}
+    \centering
+    \begin{tabular}{cc}
+        \includegraphics[width=0.44\textwidth]{images/pval_12_26.png} &
+        \includegraphics[width=0.44\textwidth]{images/pval_13_8.png} \\
+        {\small clusters $\{12,26\}$} &
+        {\small clusters $\{8,13\}$} \\[0.8em]
+        \includegraphics[width=0.44\textwidth]{images/pval_5_7.png} &
+        \includegraphics[width=0.44\textwidth]{images/pval_9_16.png} \\
+        {\small clusters $\{5,7\}$} &
+        {\small clusters $\{9,13\}$}
+    \end{tabular}
+\end{column}
+\end{columns}
+
   \begin{figure}
     \caption{\small $p$-values as a function of the number of PCs used for clustering.}
   \end{figure}
