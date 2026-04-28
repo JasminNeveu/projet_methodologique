@@ -139,7 +139,6 @@ The quantity $p$ is a $p$-value for $\mathcal{H}_0$ if:
 \begin{block}{Rejection rule}
 The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level $\alpha$.
 \end{block}
-\pause
     
 \end{frame}
 
@@ -206,6 +205,7 @@ The rejection rule $\mathds{1}\{p \leq \alpha\}$ controls type I error at level 
 \end{itemize}
 \pause
   \centering
+  \vspace{-0.6em}
   \includegraphics[width=0.60\textwidth]{images/lasso_pvalues.png}\\[0.4em]
 \end{frame}
 
@@ -427,7 +427,7 @@ C_1,C_2 \in \mathcal{C}(\mathbf{X})
 
 \only<4>{
 \begin{multline*}
-    p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0} \Bigl( \|\nu^\top \mathbf{X}\|_2 \geq \|\nu^\top \mathbf{x}\|_2 ~\Big|~ \\
+  p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}} \Bigl( \|\nu^\top \mathbf{X}\|_2 \geq \|\nu^\top \mathbf{x}\|_2 ~\Big|~ \\
     C_1, C_2 \in \mathcal{C} \Bigl( \pi_\nu^\perp \mathbf{x} + \frac{\nu}{\|\nu\|^2_2} \operatorname{dir}(\nu^\top \mathbf{x}) \|\nu^\top \mathbf{X}\|_2 \Bigr) \Bigr).
     \label{pval_final}
   \end{multline*}
@@ -441,7 +441,7 @@ C_1,C_2 \in \mathcal{C}(\mathbf{X})
 \begin{multline*}
 p(\mathbf{x})
 =
-\mathbb{P}_{\mathcal{H}_0}
+\mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}
 \Bigl(
 \overbrace{\|\nu^\top \mathbf{X}\|_2}^{\phi}
 \geq
@@ -478,7 +478,7 @@ Under $\mathcal{H}_0$:
 \begin{frame}{Truncation set $\mathcal{S}$}
  
   \begin{equation*}
-    p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0}\Bigl(\phi \geq \|\nu^\top \mathbf{x}\|_2 ~\Big|~ \phi \in \mathcal{S}\bigl(\mathbf{x};\{C_1,C_2\}\bigr)\Bigr),
+    p(\mathbf{x}) = \mathbb{P}_{\mathcal{H}_0^{\{C_1,C_2\}}}\Bigl(\phi \geq \|\nu^\top \mathbf{x}\|_2 ~\Big|~ \phi \in \mathcal{S}\bigl(\mathbf{x};\{C_1,C_2\}\bigr)\Bigr),
   \end{equation*}
 
   \vspace{0.3em}
@@ -695,7 +695,7 @@ population labels for the 1KGP individuals.}
     \end{tabular}
 \end{column}
 \end{columns}
-\vspace{-0.5em}
+\vspace{-0.6em}
   \begin{figure}
     \caption{\small $p$-values as a function of the number of PCs used for clustering.}
   \end{figure}
